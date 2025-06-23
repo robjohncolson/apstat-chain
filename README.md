@@ -83,7 +83,6 @@ This project is guided by a few key architectural decisions:
 2.  **User-Sovereign Identity:** User identity is self-managed via a mnemonic phrase, empowering the user and avoiding a centralized user database.
 3.  **Pure P2P Network (No Server):** The application is a purely static frontend that requires no custom backend server, maximizing resilience and simplifying deployment. Peer discovery is handled via DNS seeding.
 
-## License
 
 ## License
 
