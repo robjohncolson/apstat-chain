@@ -1,6 +1,10 @@
 import { useBlockchain } from '../providers/BlockchainProvider'
 
-export function Dashboard() {
+interface DashboardProps {
+  onDiscoverPeers?: () => Promise<void>
+}
+
+export function Dashboard({ onDiscoverPeers }: DashboardProps) {
   const { state } = useBlockchain()
 
   return (
@@ -60,6 +64,19 @@ export function Dashboard() {
                   </span>
                 </div>
               </div>
+
+              {/* Manual Peer Discovery Button */}
+              {onDiscoverPeers && state.peerId && (
+                <div className="pt-2">
+                  <button
+                    onClick={onDiscoverPeers}
+                    disabled={state.isConnecting}
+                    className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    {state.isConnecting ? 'Connecting...' : 'Discover & Connect to Peers'}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
