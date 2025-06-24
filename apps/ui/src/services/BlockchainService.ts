@@ -167,7 +167,7 @@ class BlockchainService {
 
       p2pNode.on('peer:connected', (peer: string) => {
         this.updateState({
-          connectedPeers: [...this.state.connectedPeers, peer],
+          connectedPeers: [...new Set([...this.state.connectedPeers, peer])],
         });
       });
 

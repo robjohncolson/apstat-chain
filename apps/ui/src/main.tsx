@@ -1,13 +1,12 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
 import './index.css'
+import App from './App.tsx'
 import { BlockchainProvider } from './providers/BlockchainProvider'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode> // <-- Temporarily commented out
     <BlockchainProvider>
       <App />
     </BlockchainProvider>
-  </StrictMode>,
+  // </StrictMode> // <-- Temporarily commented out
 )

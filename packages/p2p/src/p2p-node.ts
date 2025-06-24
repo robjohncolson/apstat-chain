@@ -7,12 +7,26 @@ export interface P2PMessage {
   data: any;
 }
 
+export interface PeerListMessage extends P2PMessage {
+  type: 'peer-list';
+  data: string[]; // An array of peer IDs
+}
+
 export interface TransactionMessage extends P2PMessage {
   type: 'transaction';
   data: Transaction;
 }
 
 export class P2PNode extends EventEmitter {
+  private handlePeerList(message: PeerListMessage): void {
+    const remotePeers = message.data;
+    console.log('Received peer list:', remotePeers);
+    for (const peerId of remotePeers) {
+      if (peerId !== this.getPeerId() && !this.isConnectedToPeer(peerId)) {
+        this.connectToPeer(peerId);
+      }
+    }
+  }
   private peer: Peer;
   private connections: Map<string, DataConnection> = new Map();
 
@@ -45,7 +59,18 @@ export class P2PNode extends EventEmitter {
       this.connections.set(conn.peer, conn);
       this.emit('peer:connected', conn.peer);
     });
-
+    conn.on('open', () => {
+      console.log(`Connection opened with: ${conn.peer}`);
+      this.connections.set(conn.peer, conn);
+      this.emit('peer:connected', conn.peer);
+    
+      // INTRODUCE YOURSELF: Send your known peers to the new connection.
+      const peerListMessage: PeerListMessage = {
+        type: 'peer-list',
+        data: this.getConnectedPeers()
+      };
+      conn.send(peerListMessage);
+    });
     conn.on('data', (data: any) => {
       this.handleIncomingData(data, conn.peer);
     });
@@ -77,6 +102,9 @@ export class P2PNode extends EventEmitter {
         case 'transaction':
           this.handleTransaction(message as TransactionMessage, fromPeer);
           break;
+          case 'peer-list':
+    this.handlePeerList(message as PeerListMessage);
+    break;
         default:
           console.log(`Received unknown message type: ${message.type} from ${fromPeer}`);
           this.emit('message:received', { type: message.type, data: message.data, fromPeer });

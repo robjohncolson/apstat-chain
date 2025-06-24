@@ -1,7 +1,7 @@
 // apps/ui/vite.config.ts
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
-import { nodePolyfills } from 'vite-plugin-node-polyfills'; // <-- IMPORT THE PLUGIN
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { nodePolyfills } from 'vite-plugin-node-polyfills' // <-- IMPORT THE PLUGIN
 
 // https://vite.dev/config/
 export default defineConfig({

@@ -5,22 +5,45 @@ import { useBlockchain } from './providers/BlockchainProvider';
 
 // Dashboard wrapper component that handles P2P initialization
 function DashboardWithP2P() {
-  // The `service` object is now stable and will not change between renders.
-  const { service } = useBlockchain();
+  const { service, state } = useBlockchain();
 
   useEffect(() => {
+    // This function will only run if the P2P node isn't already set up.
+    if (state.p2pNode) {
+      return;
+    }
+
     const initP2P = async () => {
       try {
         console.log('Initializing P2P...');
         const peerId = await service.initializeP2P();
         console.log('P2P initialized with Peer ID:', peerId);
 
-        console.log('Discovering and connecting to peers...');
-        const discoveredPeers = await service.discoverPeers();
-        const otherPeers = discoveredPeers.filter(p => p !== peerId);
+        // --- THIS IS THE NEW LOGIC ---
+        // Check the URL for a peer to connect to.
+        const urlParams = new URLSearchParams(window.location.search);
+        const bootstrapPeer = urlParams.get('connect_to');
+
+        let peersToConnect: string[] = [];
+
+        if (bootstrapPeer) {
+          console.log('Found bootstrap peer in URL:', bootstrapPeer);
+          peersToConnect = [bootstrapPeer];
+        } else {
+          // This is where you would normally use DNS discovery.
+          // For now, it will be empty if no ?connect_to= is present.
+          console.log('No bootstrap peer in URL. Acting as a seed node.');
+          // peersToConnect = await service.discoverPeers(); // DNS logic would go here
+        }
         
-        console.log('Found other peers:', otherPeers);
-        otherPeers.forEach(p => service.connectToPeer(p));
+        const otherPeers = peersToConnect.filter(p => p !== peerId);
+        
+        if (otherPeers.length > 0) {
+          console.log('Connecting to peers:', otherPeers);
+          otherPeers.forEach(p => service.connectToPeer(p));
+        } else {
+          console.log('No other peers to connect to.');
+        }
 
       } catch (error) {
         console.error('Failed during P2P setup:', error);
@@ -29,9 +52,7 @@ function DashboardWithP2P() {
 
     initP2P();
 
-    // The dependency array now contains `service`, which is guaranteed to be stable.
-    // This effect will run ONLY ONCE when the component mounts.
-  }, [service]);
+  }, [service, state.p2pNode]); // This will now run only once.
 
   return <Dashboard />;
 }
