@@ -1,32 +1,27 @@
+import { useEffect } from 'react'
+import { Dashboard } from './components/Dashboard'
 import { OnboardingFlow } from './components/OnboardingFlow'
 import { useBlockchain } from './providers/BlockchainProvider'
 
-// Placeholder Dashboard component
-function Dashboard() {
-  const { state, getMnemonic } = useBlockchain()
-  
-  return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-2xl">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
-          Welcome to APStat Chain Dashboard
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          Your wallet is initialized and ready to use!
-        </p>
-        {state.currentKeyPair && (
-          <div className="bg-green-50 dark:bg-green-900 p-4 rounded-lg">
-            <p className="text-green-800 dark:text-green-200 text-sm">
-              ✅ Wallet initialized successfully
-            </p>
-                         <p className="text-green-700 dark:text-green-300 text-xs mt-1">
-               Public Key: {state.currentKeyPair.publicKey.hex.slice(0, 16)}...
-             </p>
-          </div>
-        )}
-      </div>
-    </div>
-  )
+// Dashboard wrapper component that handles P2P initialization
+function DashboardWithP2P() {
+  const { initializeP2P } = useBlockchain()
+
+  useEffect(() => {
+    // Initialize P2P networking when Dashboard is first rendered
+    const initP2P = async () => {
+      try {
+        await initializeP2P()
+        console.log('P2P network initialized successfully')
+      } catch (error) {
+        console.error('Failed to initialize P2P network:', error)
+      }
+    }
+
+    initP2P()
+  }, [initializeP2P])
+
+  return <Dashboard />
 }
 
 function App() {
@@ -62,7 +57,7 @@ function App() {
     )
   }
 
-  return <Dashboard />
+  return <DashboardWithP2P />
 }
 
 export default App
