@@ -15,4 +15,11 @@ export interface Signature {
     readonly s: bigint;
     readonly recovery?: number;
 }
+export interface Transaction {
+    readonly payload: any;
+    readonly timestamp: number;
+    readonly authorPublicKey: PublicKey;
+    readonly id: string;
+    readonly signature: Signature;
+}
 //# sourceMappingURL=index.d.ts.map

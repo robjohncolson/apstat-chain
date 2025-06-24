@@ -19,4 +19,13 @@ export interface Signature {
   readonly r: bigint;
   readonly s: bigint;
   readonly recovery?: number;
+}
+
+// Transaction types
+export interface Transaction {
+  readonly payload: any;
+  readonly timestamp: number;
+  readonly authorPublicKey: PublicKey;
+  readonly id: string;
+  readonly signature: Signature;
 } 
