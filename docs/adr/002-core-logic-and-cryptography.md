@@ -1,7 +1,7 @@
 # 002. Core Logic and Cryptography
 
 - **Status:** Accepted
-- **Date:** (Today's Date)
+- **Date:** 6/23/25
 
 ## Context
 

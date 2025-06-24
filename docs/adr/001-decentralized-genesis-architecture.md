@@ -13,7 +13,7 @@
 # 001. Decentralized Genesis Architecture
 
 - **Status:** Accepted
-- **Date:** (Today's Date)
+- **Date:** 6/23/25
 
 ## Context
 
