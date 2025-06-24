@@ -1,0 +1,1 @@
+{"version":3,"file":"peer-discovery.d.ts","sourceRoot":"","sources":["../src/peer-discovery.ts"],"names":[],"mappings":"AAsCA;;;;;;;;;;GAUG;AACH,wBAAsB,aAAa,CAAC,UAAU,EAAE,MAAM,EAAE,aAAa,GAAE,MAAU,GAAG,OAAO,CAAC,MAAM,EAAE,CAAC,CA4EpG;AAED;;;;;;;GAOG;AACH,wBAAsB,sBAAsB,CAC1C,UAAU,EAAE,MAAM,EAClB,UAAU,GAAE,MAAU,EACtB,SAAS,GAAE,MAAa,GACvB,OAAO,CAAC,MAAM,EAAE,CAAC,CAkBnB"}

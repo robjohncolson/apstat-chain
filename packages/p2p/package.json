@@ -28,7 +28,8 @@
     "typescript": "^5.2.0",
     "vitest": "^1.0.0",
     "@vitest/coverage-v8": "^1.0.0",
-    "jsdom": "^23.0.0"
+    "jsdom": "^23.0.0",
+    "msw": "^2.0.0"
   },
   "files": [
     "dist"

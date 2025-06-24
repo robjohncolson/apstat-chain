@@ -18,7 +18,7 @@ export class P2PNode extends EventEmitter {
 
   constructor(peerId?: string) {
     super();
-    this.peer = new Peer(peerId);
+    this.peer = peerId ? new Peer(peerId) : new Peer();
     this.setupPeerEventHandlers();
   }
 

@@ -84,7 +84,7 @@ describe('P2PNode', () => {
     it('should initialize without peer ID to get random ID', () => {
       p2pNode = new P2PNode();
       
-      expect(MockedPeer).toHaveBeenCalledWith(undefined);
+      expect(MockedPeer).toHaveBeenCalledWith();
     });
   });
 
