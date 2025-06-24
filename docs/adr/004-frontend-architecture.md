@@ -1,7 +1,7 @@
 # 004. Frontend Architecture
 
 - **Status:** Accepted
-- **Date:** 2024
+- **Date:** 6/23/2025
 
 ## Context
 
