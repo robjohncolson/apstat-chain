@@ -5,14 +5,15 @@
 <<<<<<< HEAD
 
 =======
->>>>>>> 27bd7bf933c2a2995cd9b4dacd3ed179d2c49dce
->>>>>>> Stashed changes
-Now, open the file `docs/adr/001-decentralized-genesis-architecture.md` and populate it with a summary of the architectural pillars we just decided on.
+
+> > > > > > > 27bd7bf933c2a2995cd9b4dacd3ed179d2c49dce
+> > > > > > > Stashed changes
+> > > > > > > Now, open the file `docs/adr/001-decentralized-genesis-architecture.md` and populate it with a summary of the architectural pillars we just decided on.
 
 # 001. Decentralized Genesis Architecture
 
-*   **Status:** Accepted
-*   **Date:** (Today's Date)
+- **Status:** Accepted
+- **Date:** (Today's Date)
 
 ## Context
 
@@ -30,7 +31,7 @@ We will rebuild the application from the ground up on a new feature branch (`fea
 
 ## Consequences
 
-*   The entire application can be hosted on simple, static hosting providers (e.g., Vercel, Netlify, GitHub Pages).
-*   The system becomes highly resilient to outages, as its core functionality does not depend on a single server we maintain.
-*   The development process is simplified, with a clear separation between core logic, networking, and the UI.
-*   The responsibility for key management is shifted entirely to the user, which is a conscious design trade-off for decentralization.
+- The entire application can be hosted on simple, static hosting providers (e.g., Vercel, Netlify, GitHub Pages).
+- The system becomes highly resilient to outages, as its core functionality does not depend on a single server we maintain.
+- The development process is simplified, with a clear separation between core logic, networking, and the UI.
+- The responsibility for key management is shifted entirely to the user, which is a conscious design trade-off for decentralization.
