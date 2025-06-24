@@ -1,91 +1,81 @@
-import { useEffect } from 'react'
-import { Dashboard } from './components/Dashboard'
-import { OnboardingFlow } from './components/OnboardingFlow'
-import { useBlockchain } from './providers/BlockchainProvider'
+import { useEffect } from 'react';
+import { OnboardingFlow } from './components/OnboardingFlow';
+import { Dashboard } from './components/Dashboard';
+import { useBlockchain } from './providers/BlockchainProvider';
 
 // Dashboard wrapper component that handles P2P initialization
 function DashboardWithP2P() {
-  const { initializeP2P, discoverPeers, connectToPeer, state } = useBlockchain()
-
-  // Function to discover and connect to peers
-  const discoverAndConnectToPeers = async () => {
-    try {
-      console.log('Discovering peers...')
-      const discoveredPeers = await discoverPeers()
-      console.log('Discovered peers:', discoveredPeers)
-      
-      // Filter out our own peer ID to avoid self-connection
-      const otherPeers = discoveredPeers.filter(peerId => peerId !== state.peerId)
-      console.log('Connecting to other peers:', otherPeers)
-      
-      // Connect to each discovered peer
-      for (const peerId of otherPeers) {
-        try {
-          await connectToPeer(peerId)
-          console.log(`Successfully connected to peer: ${peerId}`)
-        } catch (error) {
-          console.error(`Failed to connect to peer ${peerId}:`, error)
-        }
-      }
-    } catch (error) {
-      console.error('Failed to discover peers:', error)
-    }
-  }
+  // The `service` object is now stable and will not change between renders.
+  const { service } = useBlockchain();
 
   useEffect(() => {
-    // Initialize P2P networking when Dashboard is first rendered
     const initP2P = async () => {
       try {
-        await initializeP2P()
-        console.log('P2P network initialized successfully')
+        console.log('Initializing P2P...');
+        const peerId = await service.initializeP2P();
+        console.log('P2P initialized with Peer ID:', peerId);
+
+        console.log('Discovering and connecting to peers...');
+        const discoveredPeers = await service.discoverPeers();
+        const otherPeers = discoveredPeers.filter(p => p !== peerId);
         
-        // After successful P2P initialization, discover and connect to peers
-        await discoverAndConnectToPeers()
+        console.log('Found other peers:', otherPeers);
+        otherPeers.forEach(p => service.connectToPeer(p));
+
       } catch (error) {
-        console.error('Failed to initialize P2P network:', error)
+        console.error('Failed during P2P setup:', error);
       }
-    }
+    };
 
-    initP2P()
-  }, [initializeP2P])
+    initP2P();
 
-  return <Dashboard onDiscoverPeers={discoverAndConnectToPeers} />
+    // The dependency array now contains `service`, which is guaranteed to be stable.
+    // This effect will run ONLY ONCE when the component mounts.
+  }, [service]);
+
+  return <Dashboard />;
 }
 
 function App() {
-  const { state } = useBlockchain()
+  // The hook now returns the stable service and the reactive state
+  const { service, state } = useBlockchain();
 
   const handleLogin = async () => {
     try {
-      // Get the mnemonic from the blockchain service
-      const mnemonic = state.mnemonic
+      // Get the mnemonic directly from the service state
+      const mnemonic = service.getMnemonic();
       
       if (mnemonic) {
-        // Persist mnemonic in localStorage
-        localStorage.setItem('apstat-mnemonic', mnemonic)
-        
-        // The wallet is already initialized through the OnboardingFlow's generateNewWallet call,
-        // so we don't need to call restoreWallet here. The state.isInitialized should already be true.
-        console.log('Mnemonic persisted successfully')
+        localStorage.setItem('apstat-mnemonic', mnemonic);
+        console.log('Mnemonic persisted successfully');
       }
     } catch (error) {
-      console.error('Failed to persist mnemonic:', error)
+      console.error('Failed to persist mnemonic:', error);
     }
-  }
+  };
 
-  // Check if there's a saved mnemonic on app startup and restore wallet if needed
-  // This would typically be done in a useEffect, but for this MVP we'll keep it simple
-  
+  // We add a startup effect to check for a saved wallet
+  useEffect(() => {
+    const savedMnemonic = localStorage.getItem('apstat-mnemonic');
+    if (savedMnemonic) {
+      console.log('Found saved mnemonic, restoring wallet...');
+      service.restoreWallet(savedMnemonic).catch(err => {
+        console.error("Failed to restore wallet, clearing saved mnemonic.", err);
+        localStorage.removeItem('apstat-mnemonic');
+      });
+    }
+  }, [service]); // Depends only on the stable service instance.
+
   // Conditional rendering based on wallet initialization status
   if (!state.isInitialized) {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
         <OnboardingFlow onLogin={handleLogin} />
       </div>
-    )
+    );
   }
 
-  return <DashboardWithP2P />
+  return <DashboardWithP2P />;
 }
 
-export default App
+export default App;

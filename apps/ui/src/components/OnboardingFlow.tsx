@@ -6,7 +6,7 @@ interface OnboardingFlowProps {
 }
 
 export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
-  const { generateNewWallet } = useBlockchain()
+  const { service } = useBlockchain()
   const [mnemonic, setMnemonic] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [hasConfirmedSaved, setHasConfirmedSaved] = useState(false)
@@ -16,7 +16,7 @@ export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
     try {
       setIsGenerating(true)
       setError(null)
-      const result = await generateNewWallet()
+      const result = await service.generateNewWallet()
       setMnemonic(result.mnemonic)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate wallet')

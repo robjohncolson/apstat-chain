@@ -1,100 +1,43 @@
-import type { KeyPair, Transaction } from '@apstat-chain/core';
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import BlockchainService, { type BlockchainState } from '../services/BlockchainService';
 
-interface BlockchainContextValue {
-  // State
-  state: BlockchainState;
-  
-  // Key Management
-  generateNewWallet: () => Promise<{ mnemonic: string; keyPair: KeyPair }>;
-  restoreWallet: (mnemonic: string) => Promise<KeyPair>;
-  getCurrentKeyPair: () => KeyPair | null;
-  getMnemonic: () => string | null;
-  
-  // Transaction Management
-  createTransaction: (payload: any) => Transaction;
-  verifyTransaction: (transaction: Transaction) => boolean;
-  getTransactions: () => Transaction[];
-  
-  // P2P Networking
-  initializeP2P: (peerId?: string) => Promise<string>;
-  connectToPeer: (peerId: string) => Promise<void>;
-  discoverPeers: (seedDomain?: string) => Promise<string[]>;
-  disconnectFromPeer: (peerId: string) => void;
-  getConnectedPeers: () => string[];
-  getPeerId: () => string | null;
-  
-  // Utility
-  clearError: () => void;
-  reset: () => void;
-}
+// The context will now hold the STABLE service instance itself.
+const BlockchainContext = createContext<BlockchainService | null>(null);
 
-const BlockchainContext = createContext<BlockchainContextValue | null>(null);
+// Create the single, global instance of the service OUTSIDE the component.
+const blockchainServiceInstance = BlockchainService.getInstance();
 
 interface BlockchainProviderProps {
   children: ReactNode;
 }
 
 export function BlockchainProvider({ children }: BlockchainProviderProps) {
-  const [state, setState] = useState<BlockchainState>(() => 
-    BlockchainService.getInstance().getState()
-  );
-
-  useEffect(() => {
-    const service = BlockchainService.getInstance();
-    
-    // Subscribe to state changes
-    const unsubscribe = service.subscribe((newState) => {
-      setState(newState);
-    });
-
-    // Cleanup subscription on unmount
-    return unsubscribe;
-  }, []);
-
-  const contextValue: BlockchainContextValue = {
-    state,
-    
-    // Key Management
-    generateNewWallet: () => BlockchainService.getInstance().generateNewWallet(),
-    restoreWallet: (mnemonic: string) => BlockchainService.getInstance().restoreWallet(mnemonic),
-    getCurrentKeyPair: () => BlockchainService.getInstance().getCurrentKeyPair(),
-    getMnemonic: () => BlockchainService.getInstance().getMnemonic(),
-    
-    // Transaction Management
-    createTransaction: (payload: any) => BlockchainService.getInstance().createTransaction(payload),
-    verifyTransaction: (transaction: Transaction) => BlockchainService.getInstance().verifyTransaction(transaction),
-    getTransactions: () => BlockchainService.getInstance().getTransactions(),
-    
-    // P2P Networking
-    initializeP2P: (peerId?: string) => BlockchainService.getInstance().initializeP2P(peerId),
-    connectToPeer: (peerId: string) => BlockchainService.getInstance().connectToPeer(peerId),
-    discoverPeers: (seedDomain?: string) => BlockchainService.getInstance().discoverPeers(seedDomain),
-    disconnectFromPeer: (peerId: string) => BlockchainService.getInstance().disconnectFromPeer(peerId),
-    getConnectedPeers: () => BlockchainService.getInstance().getConnectedPeers(),
-    getPeerId: () => BlockchainService.getInstance().getPeerId(),
-    
-    // Utility
-    clearError: () => BlockchainService.getInstance().clearError(),
-    reset: () => BlockchainService.getInstance().reset(),
-  };
-
+  // The only job of the provider is to expose the single service instance.
   return (
-    <BlockchainContext.Provider value={contextValue}>
+    <BlockchainContext.Provider value={blockchainServiceInstance}>
       {children}
     </BlockchainContext.Provider>
   );
 }
 
-export function useBlockchain(): BlockchainContextValue {
-  const context = useContext(BlockchainContext);
-  
-  if (!context) {
+// This is the new, correct way to use the hook.
+// It returns the stable service instance and the current state.
+export function useBlockchain() {
+  const service = useContext(BlockchainContext);
+  if (!service) {
     throw new Error('useBlockchain must be used within a BlockchainProvider');
   }
-  
-  return context;
-}
 
-export default BlockchainProvider; 
+  // We use a React hook to subscribe to state changes from the service.
+  const [state, setState] = useState<BlockchainState>(() => service.getState());
+
+  useEffect(() => {
+    const unsubscribe = service.subscribe(newState => {
+      setState(newState);
+    });
+    // The component will re-render only when the service's state actually changes.
+    return unsubscribe;
+  }, [service]); // The service instance itself is the only dependency, and it never changes.
+
+  return { service, state };
+}

@@ -5,7 +5,11 @@ interface DashboardProps {
 }
 
 export function Dashboard({ onDiscoverPeers }: DashboardProps) {
-  const { state } = useBlockchain()
+  const { service, state } = useBlockchain()
+  const handleDiscover = () => {
+    // We will implement this later if needed, for now just log
+    console.log("Manual discovery triggered");
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
