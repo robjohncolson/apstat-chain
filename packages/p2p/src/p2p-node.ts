@@ -20,9 +20,15 @@ export interface TransactionMessage extends P2PMessage {
 export class P2PNode extends EventEmitter {
   private handlePeerList(message: PeerListMessage): void {
     const remotePeers = message.data;
+    console.log(`[P2P HANDLE] Processing peer list:`, remotePeers);
+
     console.log('Received peer list:', remotePeers);
     for (const peerId of remotePeers) {
+      console.log(`[P2P HANDLE] Checking peer ${peerId}. Am I connected? ${this.isConnectedToPeer(peerId)}`);
+
       if (peerId !== this.getPeerId() && !this.isConnectedToPeer(peerId)) {
+        console.log(`[P2P HANDLE] Not connected to ${peerId}. Initiating connection.`);
+
         this.connectToPeer(peerId);
       }
     }
@@ -54,11 +60,11 @@ export class P2PNode extends EventEmitter {
   }
 
   private setupConnectionEventHandlers(conn: DataConnection): void {
-    conn.on('open', () => {
-      console.log(`Connection opened with: ${conn.peer}`);
-      this.connections.set(conn.peer, conn);
-      this.emit('peer:connected', conn.peer);
-    });
+    //conn.on('open', () => {
+    //  console.log(`Connection opened with: ${conn.peer}`);
+    //  this.connections.set(conn.peer, conn);
+    //  this.emit('peer:connected', conn.peer);
+    //});
     conn.on('open', () => {
       console.log(`Connection opened with: ${conn.peer}`);
       this.connections.set(conn.peer, conn);
@@ -69,7 +75,9 @@ export class P2PNode extends EventEmitter {
         type: 'peer-list',
         data: this.getConnectedPeers()
       };
-      conn.send(peerListMessage);
+       // ADD THIS LOG:
+  console.log(`[P2P SEND] Sending peer list to ${conn.peer}:`, peerListMessage.data);
+  conn.send(peerListMessage);
     });
     conn.on('data', (data: any) => {
       this.handleIncomingData(data, conn.peer);
@@ -89,6 +97,7 @@ export class P2PNode extends EventEmitter {
   }
 
   private handleIncomingData(data: any, fromPeer: string): void {
+    console.log(`[P2P RECV] Received data from ${fromPeer}:`, data);
     try {
       // Validate message structure
       if (!data || typeof data !== 'object' || !data.type) {

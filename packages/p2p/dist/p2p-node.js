@@ -1,6 +1,18 @@
 import { EventEmitter } from 'eventemitter3';
 import { Peer } from 'peerjs';
 export class P2PNode extends EventEmitter {
+    handlePeerList(message) {
+        const remotePeers = message.data;
+        console.log(`[P2P HANDLE] Processing peer list:`, remotePeers);
+        console.log('Received peer list:', remotePeers);
+        for (const peerId of remotePeers) {
+            console.log(`[P2P HANDLE] Checking peer ${peerId}. Am I connected? ${this.isConnectedToPeer(peerId)}`);
+            if (peerId !== this.getPeerId() && !this.isConnectedToPeer(peerId)) {
+                console.log(`[P2P HANDLE] Not connected to ${peerId}. Initiating connection.`);
+                this.connectToPeer(peerId);
+            }
+        }
+    }
     peer;
     connections = new Map();
     constructor(peerId) {
@@ -23,10 +35,23 @@ export class P2PNode extends EventEmitter {
         });
     }
     setupConnectionEventHandlers(conn) {
+        //conn.on('open', () => {
+        //  console.log(`Connection opened with: ${conn.peer}`);
+        //  this.connections.set(conn.peer, conn);
+        //  this.emit('peer:connected', conn.peer);
+        //});
         conn.on('open', () => {
             console.log(`Connection opened with: ${conn.peer}`);
             this.connections.set(conn.peer, conn);
             this.emit('peer:connected', conn.peer);
+            // INTRODUCE YOURSELF: Send your known peers to the new connection.
+            const peerListMessage = {
+                type: 'peer-list',
+                data: this.getConnectedPeers()
+            };
+            // ADD THIS LOG:
+            console.log(`[P2P SEND] Sending peer list to ${conn.peer}:`, peerListMessage.data);
+            conn.send(peerListMessage);
         });
         conn.on('data', (data) => {
             this.handleIncomingData(data, conn.peer);
@@ -43,6 +68,7 @@ export class P2PNode extends EventEmitter {
         });
     }
     handleIncomingData(data, fromPeer) {
+        console.log(`[P2P RECV] Received data from ${fromPeer}:`, data);
         try {
             // Validate message structure
             if (!data || typeof data !== 'object' || !data.type) {
@@ -53,6 +79,9 @@ export class P2PNode extends EventEmitter {
             switch (message.type) {
                 case 'transaction':
                     this.handleTransaction(message, fromPeer);
+                    break;
+                case 'peer-list':
+                    this.handlePeerList(message);
                     break;
                 default:
                     console.log(`Received unknown message type: ${message.type} from ${fromPeer}`);

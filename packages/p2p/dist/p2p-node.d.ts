@@ -4,11 +4,16 @@ export interface P2PMessage {
     type: string;
     data: any;
 }
+export interface PeerListMessage extends P2PMessage {
+    type: 'peer-list';
+    data: string[];
+}
 export interface TransactionMessage extends P2PMessage {
     type: 'transaction';
     data: Transaction;
 }
 export declare class P2PNode extends EventEmitter {
+    private handlePeerList;
     private peer;
     private connections;
     constructor(peerId?: string);
