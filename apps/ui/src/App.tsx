@@ -16,9 +16,7 @@ function DashboardWithP2P() {
         console.log('P2P initialized with Peer ID:', peerId);
 
         console.log('Discovering and connecting to peers...');
-        const discoveredPeers = ['4bcab647-8a64-48b1-a73a-e7d71ecbe6c5'];
-        //const discoveredPeers = await service.discoverPeers();
-
+        const discoveredPeers = await service.discoverPeers();
         const otherPeers = discoveredPeers.filter(p => p !== peerId);
         
         console.log('Found other peers:', otherPeers);

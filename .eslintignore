@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+
+# Coverage
+coverage/
+
+# Environment files
+.env*
+
+# Logs
+*.log
+
+# Editor and system files
+.DS_Store
+*.swp
+*.swo
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+*.generated.*
+*.d.ts
+
+# Configuration files that should be checked separately
+# but may not follow strict TypeScript rules
+vite.config.*
+vitest.config.*
+jest.config.*
+webpack.config.*
+rollup.config.* 

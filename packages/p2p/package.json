@@ -1,0 +1,46 @@
+{
+  "name": "@apstat-chain/p2p",
+  "version": "0.1.1",
+  "description": "Peer-to-peer networking layer for APStat Chain using WebRTC",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@apstat-chain/core": "file:../core",
+    "eventemitter3": "^5.0.1",
+    "peerjs": "^1.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "jsdom": "^23.0.0",
+    "msw": "^2.0.0",
+    "typescript": "^5.2.0",
+    "vitest": "^1.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "p2p",
+    "webrtc",
+    "networking",
+    "decentralized",
+    "peerjs"
+  ],
+  "license": "MIT"
+}
