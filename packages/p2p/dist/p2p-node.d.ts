@@ -1,5 +1,5 @@
 import type { Transaction } from '@apstat-chain/core';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 export interface P2PMessage {
     type: string;
     data: any;

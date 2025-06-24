@@ -1,5 +1,5 @@
 import type { Transaction } from '@apstat-chain/core';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import { Peer, type DataConnection } from 'peerjs';
 
 export interface P2PMessage {
