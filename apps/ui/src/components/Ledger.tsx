@@ -1,7 +1,10 @@
-import { useBlockchain } from '../providers/BlockchainProvider';
+import type { Transaction } from '@apstat-chain/core';
 
-export function Ledger() {
-  const { state } = useBlockchain();
+interface LedgerProps {
+  transactions: Transaction[];
+}
+
+export function Ledger({ transactions }: LedgerProps) {
 
   // Helper function to truncate long strings
   const truncate = (str: string, length: number = 12) => {
@@ -16,10 +19,10 @@ export function Ledger() {
   return (
     <div className="bg-indigo-50 dark:bg-indigo-900 p-6 rounded-lg">
       <h2 className="text-xl font-semibold text-indigo-800 dark:text-indigo-200 mb-4">
-        Global Ledger ({state.transactions.length} transactions)
+        Global Ledger ({transactions.length} transactions)
       </h2>
       
-      {state.transactions.length === 0 ? (
+      {transactions.length === 0 ? (
         <div className="text-indigo-700 dark:text-indigo-300 text-sm text-center py-4">
           No transactions yet. Complete a lesson to see your first transaction!
         </div>
@@ -43,7 +46,7 @@ export function Ledger() {
               </tr>
             </thead>
             <tbody>
-              {state.transactions.map((transaction, index) => (
+              {transactions.map((transaction, index) => (
                 <tr 
                   key={transaction.id} 
                   className={`border-b border-indigo-100 dark:border-indigo-800 ${

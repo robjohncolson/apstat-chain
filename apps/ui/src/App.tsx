@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'; // <-- Import useState
 import { OnboardingFlow } from './components/OnboardingFlow';
 import { Dashboard } from './components/Dashboard';
+import { Ledger } from './components/Ledger';
+import { Leaderboard } from './components/Leaderboard';
 import { useBlockchain } from './providers/BlockchainProvider';
 
 // Dashboard wrapper component that handles P2P initialization
@@ -54,7 +56,31 @@ function DashboardWithP2P() {
 
   }, [service, state.p2pNode]); // This will now run only once.
 
-  return <Dashboard />;
+  const handleCompleteLesson = (lessonId: string) => {
+    service.createTransaction({
+      type: 'LESSON_COMPLETE',
+      lessonId: lessonId
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      <Dashboard
+        publicKey={state.currentKeyPair?.publicKey || null}
+        peerId={state.p2pNode?.getPeerId() || null}
+        connectedPeers={state.p2pNode?.getConnectedPeers() || []}
+        isConnecting={false} // We can enhance this later with actual connection state
+        error={state.error}
+        onCompleteLesson={handleCompleteLesson}
+      />
+      <div className="max-w-4xl mx-auto px-4">
+        <Ledger transactions={state.transactions} />
+      </div>
+      <div className="max-w-4xl mx-auto px-4">
+        <Leaderboard transactions={state.transactions} />
+      </div>
+    </div>
+  );
 }
 function App() {
   const { service, state } = useBlockchain();

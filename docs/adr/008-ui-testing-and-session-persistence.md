@@ -1,56 +1,38 @@
-# ADR-008: UI Testing and Session Persistence
+# ADR-008: "Back to Basics" UI Testing Strategy
 
 ## Status
 Accepted
 
 ## Context
 
-After implementing the initial UI features in Phase 5 (`Ledger`, `Leaderboard`, transaction creation), a review revealed several quality issues that need to be addressed before proceeding to Phase 6:
+Our initial attempts to write high-level integration tests for UI components like `App.tsx` proved to be brittle and overly complex. The primary challenge was the difficulty of mocking a singleton service (`BlockchainService`) provided through React Context, leading to tests that were hard to maintain and unreliable. This complexity was hindering our ability to build a stable and well-tested UI layer.
 
-1. **Missing Test Coverage**: The UI components (`Dashboard`, `Ledger`, `Leaderboard`) were developed without corresponding tests, creating technical debt and reducing confidence in the codebase.
+## Decision: Pivot to a Simplified Testing Strategy
 
-2. **Incomplete Session Persistence**: The planned session persistence feature was not fully implemented, harming the user experience by requiring users to re-enter their wallet information on every application restart.
+To address these challenges and establish a more robust testing foundation, we are pivoting to a "Back to Basics" unit testing strategy.
 
-3. **Quality Inconsistency**: While our core packages (`@apstat-chain/core` and `@apstat-chain/p2p`) maintain high test coverage and quality standards, the UI layer lacks the same rigor.
+1.  **Abandon High-Level Integration Tests (For Now):** We will halt efforts to write complex integration tests for components that are deeply coupled with context-provided services.
 
-## Decision 1: Implement Test-Driven Session Persistence
+2.  **Focus on Low-Level Unit Tests:** Our primary focus will be on writing simple, isolated unit tests for individual React components. This allows us to verify component behavior in a controlled environment.
 
-We will add session persistence functionality to maintain user wallet state across application restarts:
+3.  **Refactor to "Dumb" Presentation Components:** Components responsible for displaying data, such as `Dashboard.tsx`, will be refactored into "dumb" presentation components. They will receive all required data and callback functions as props, eliminating internal state management and hook-based data fetching. This decoupling makes them significantly easier to test.
 
-- **Implementation**: Add a startup-only `useEffect` hook in `App.tsx` that attempts to restore a user's wallet from a mnemonic stored in `localStorage`
-- **Validation**: Create a new test file `App.test.tsx` that uses React Testing Library to verify the session restoration functionality with mocked `localStorage`
-- **User Experience**: This will eliminate the need for users to re-enter their wallet information on every application start
+4.  **Test Component "Contracts":** The goal of our unit tests will be to verify a component's "contract." For a given set of props, we will assert that:
+    - The component renders the expected output.
+    - The correct callback functions are invoked in response to user interactions.
 
-## Decision 2: Backfill Component Tests
-
-We will create comprehensive test coverage for existing UI components to bring them up to the same quality standard as our core packages:
-
-- **Test Framework**: Use React Testing Library and Vitest (consistent with our existing testing infrastructure)
-- **Component Coverage**: Create dedicated test files for:
-  - `Dashboard.test.tsx`
-  - `Ledger.test.tsx` 
-  - `Leaderboard.test.tsx`
-- **Test Scope**: Tests will verify:
-  - Components render correctly based on mocked data from the `BlockchainProvider`
-  - User interactions (like clicking "Complete Lesson") trigger the correct service methods
-  - Component state management and props handling
+We will explicitly avoid mocking the entire application state or complex service dependencies in these unit tests.
 
 ## Consequences
 
 ### Positive
-- **Increased Confidence**: Comprehensive test coverage will reduce the risk of regressions when making future changes
-- **Better User Experience**: Session persistence will complete the core user experience loop by maintaining wallet state
-- **Quality Consistency**: UI layer will match the high quality standards established in our core packages
-- **Foundation for Growth**: A well-tested codebase will support more complex features in Phase 6
+- **Simpler and Faster Tests:** Unit tests are less complex, faster to write, and quicker to run compared to our previous integration tests.
+- **Increased Stability:** By testing components in isolation, our test suite becomes more stable and less prone to breaking from unrelated changes.
+- **Improved Confidence:** We can build high confidence in the correctness of our individual UI building blocks.
 
 ### Negative
-- **Development Delay**: This "hardening" phase will slightly delay the implementation of the blockchain state layer (Phase 6)
-- **Context Switching**: Team will need to shift focus from new feature development to test implementation
+- **Lack of Integration Coverage:** This strategy does not verify the integration between the `BlockchainService` and the UI components. This is a deliberate trade-off.
+- **Reliance on Manual E2E Testing:** For the time being, the correctness of the service-to-component integration will be validated through manual end-to-end testing during the development and QA process.
 
 ### Neutral
-- **Technical Debt Reduction**: Addressing test coverage now prevents larger refactoring efforts later
-- **Established Patterns**: Component testing patterns established here will guide future UI development
-
-## Implementation Notes
-
-This decision prioritizes codebase stability and user experience over rapid feature development, aligning with our commitment to building a robust and reliable application foundation. 
+- **Clear Separation of Concerns:** This approach encourages better component design, promoting a clear separation between data/logic containers and simple presentation components. 

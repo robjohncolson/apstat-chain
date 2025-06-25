@@ -1,4 +1,4 @@
-import { useBlockchain } from '../providers/BlockchainProvider';
+import type { Transaction } from '@apstat-chain/core';
 
 interface LeaderboardEntry {
   publicKey: string;
@@ -6,8 +6,11 @@ interface LeaderboardEntry {
   rank: number;
 }
 
-export function Leaderboard() {
-  const { state } = useBlockchain();
+interface LeaderboardProps {
+  transactions: Transaction[];
+}
+
+export function Leaderboard({ transactions }: LeaderboardProps) {
 
   // Helper function to truncate long strings
   const truncate = (str: string, length: number = 20) => {
@@ -20,7 +23,7 @@ export function Leaderboard() {
     const userTransactions = new Map<string, Set<string>>();
 
     // Filter for LESSON_COMPLETE transactions and group by author
-    state.transactions
+    transactions
       .filter(transaction => transaction.payload?.type === 'LESSON_COMPLETE')
       .forEach(transaction => {
         const authorKey = transaction.authorPublicKey.hex;

@@ -1,110 +1,56 @@
-import { vi, describe, it, expect, beforeEach } from "vitest";
-import { screen, waitFor, act } from "@testing-library/react";
-import { render } from "@/test/test-utils";
-import App from "@/App";
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import BlockchainService from '@/services/BlockchainService';
+import App from '@/App';
+import * as BlockchainProvider from '@/providers/BlockchainProvider';
 
-let mockServiceInstance: any;
+vi.mock('@/services/BlockchainService');
 
-vi.mock("@/services/BlockchainService", () => {
-  const mockWallet = {
-    address: "0x123",
-    balance: "100",
-    mnemonic: "test mnemonic",
-  };
+describe('App Session Persistence', () => {
+  let mockService: any;
 
-  const mockInitialState = {
-    isInitialized: false,
-    currentKeyPair: null,
-    mnemonic: null,
-    p2pNode: null,
-    peerId: null,
-    connectedPeers: [],
-    transactions: [],
-    isConnecting: false,
-    error: null,
-  };
-
-  const createMockService = () => {
-    let listeners = new Set<(state: any) => void>();
-    let mockState: any = { ...mockInitialState };
-
-    const service = {
-      restoreWallet: vi.fn().mockImplementation(async (mnemonic) => {
-        if (!mnemonic) {
-          return null;
-        }
-        mockState = {
-          ...mockState,
-          isInitialized: true,
-          mnemonic: mnemonic,
-          currentKeyPair: { publicKey: { hex: "0xmockpubkey" } },
-        };
-        act(() => {
-          listeners.forEach((l) => l(mockState));
-        });
-        return mockWallet;
-      }),
-      getState: vi.fn(() => mockState),
-      subscribe: vi.fn((listener) => {
-        listeners.add(listener);
-        return () => listeners.delete(listener);
-      }),
-      getLeaderboard: vi.fn().mockResolvedValue([]),
-      getLedger: vi.fn().mockResolvedValue([]),
-      initializeP2P: vi.fn().mockResolvedValue("mock-peer-id"),
-      on: vi.fn(),
-      off: vi.fn(),
-      __reset: () => {
-        listeners = new Set();
-        mockState = { ...mockInitialState };
-      },
-    };
-    return service;
-  };
-
-  let instance: any;
-  return {
-    default: {
-      getInstance: () => {
-        if (!instance) {
-          instance = createMockService();
-        }
-        return instance;
-      },
-    },
-  };
-});
-
-describe("App", () => {
-  beforeEach(async () => {
-    const BlockchainService = (await import("@/services/BlockchainService"))
-      .default;
-    mockServiceInstance = BlockchainService.getInstance();
+  beforeEach(() => {
     vi.clearAllMocks();
-    (mockServiceInstance as any).__reset();
-    localStorage.clear();
+    mockService = {
+      getState: vi.fn().mockReturnValue({ isInitialized: false }),
+      subscribe: vi.fn().mockReturnValue(() => {}),
+      restoreWallet: vi.fn(),
+      initializeP2P: vi.fn(),
+    };
+    (BlockchainService.getInstance as vi.Mock).mockReturnValue(mockService);
   });
 
-  it("should show OnboardingFlow when no wallet is in localStorage", () => {
+  it('should show OnboardingFlow when no mnemonic is in localStorage', () => {
+    vi.spyOn(localStorage, 'getItem').mockReturnValue(null);
+
     render(<App />);
-    expect(
-      screen.getByRole("heading", { name: /welcome to apstat chain/i })
-    ).toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: /generate new account/i })).toBeInTheDocument();
   });
 
-  it("should show Dashboard when wallet is restored from localStorage", async () => {
-    localStorage.setItem("apstat-mnemonic", "test-mnemonic");
+  it('should restore wallet and show Dashboard when a valid mnemonic is found', async () => {
+    const testMnemonic = 'test mnemonic';
+    vi.spyOn(localStorage, 'getItem').mockReturnValue(testMnemonic);
+    
+    const state = { isInitialized: false };
+    const listener = vi.fn();
+    
+    mockService.getState.mockReturnValue(state);
+    mockService.subscribe.mockImplementation((cb) => {
+      listener.mockImplementation(cb);
+      return () => {};
+    });
+
+    mockService.restoreWallet.mockImplementation(async () => {
+      state.isInitialized = true;
+      listener(state);
+    });
 
     render(<App />);
 
     await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: /dashboard/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /dashboard/i })).toBeInTheDocument();
     });
-
-    expect(mockServiceInstance.restoreWallet).toHaveBeenCalledWith(
-      "test-mnemonic"
-    );
+    expect(mockService.restoreWallet).toHaveBeenCalledWith(testMnemonic);
   });
 });
