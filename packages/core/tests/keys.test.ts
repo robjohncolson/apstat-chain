@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateMnemonic, keyPairFromMnemonic } from '../src/crypto/keys.js';
+import { generateMnemonic, keyPairFromMnemonic, peerIdFromPublicKey } from '../src/crypto/keys.js';
 
 describe('Keys Module', () => {
   describe('generateMnemonic', () => {
@@ -77,6 +77,34 @@ describe('Keys Module', () => {
       const invalidMnemonic = 'invalid mnemonic phrase';
       
       expect(() => keyPairFromMnemonic(invalidMnemonic)).toThrow();
+    });
+  });
+
+  describe('peerIdFromPublicKey', () => {
+    const mnemonic1 = 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const mnemonic2 = 'utility during search tuition path common roof illness armed essay bargain tackle';
+    
+    it('should generate a consistent peer ID from the same public key', () => {
+      // Create two distinct keypairs from known mnemonics
+      const keyPair1 = keyPairFromMnemonic(mnemonic1);
+      const keyPair2 = keyPairFromMnemonic(mnemonic2);
+      
+      // Test first keypair produces non-empty string
+      const peerId1 = peerIdFromPublicKey(keyPair1.publicKey);
+      expect(peerId1).toBeTruthy();
+      expect(typeof peerId1).toBe('string');
+      expect(peerId1.length).toBeGreaterThan(0);
+      
+      // Test same keypair produces identical result
+      const peerId1Repeat = peerIdFromPublicKey(keyPair1.publicKey);
+      expect(peerId1Repeat).toBe(peerId1);
+      
+      // Test different keypair produces different peer ID
+      const peerId2 = peerIdFromPublicKey(keyPair2.publicKey);
+      expect(peerId2).not.toBe(peerId1);
+      expect(peerId2).toBeTruthy();
+      expect(typeof peerId2).toBe('string');
+      expect(peerId2.length).toBeGreaterThan(0);
     });
   });
 }); 
