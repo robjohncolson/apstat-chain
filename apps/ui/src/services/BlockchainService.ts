@@ -174,6 +174,8 @@ class BlockchainService {
               transactions: [...this.state.transactions, transaction],
             });
           }
+        } else {
+          console.warn('Received and discarded invalid transaction:', transaction);
         }
       });
 
