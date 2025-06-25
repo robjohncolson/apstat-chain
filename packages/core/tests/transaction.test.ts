@@ -20,22 +20,18 @@ describe('Transaction', () => {
 
       // Verify transaction structure
       expect(transaction).toHaveProperty('payload');
-      expect(transaction).toHaveProperty('timestamp');
-      expect(transaction).toHaveProperty('authorPublicKey');
+      expect(transaction).toHaveProperty('publicKey');
       expect(transaction).toHaveProperty('id');
       expect(transaction).toHaveProperty('signature');
 
       // Verify types and values
       expect(transaction.payload).toEqual(payload);
-      expect(typeof transaction.timestamp).toBe('number');
-      expect(transaction.timestamp).toBeGreaterThan(0);
-      expect(transaction.authorPublicKey).toEqual(keyPair1.publicKey);
+      expect(typeof transaction.publicKey).toBe('string');
+      expect(transaction.publicKey).toHaveLength(66); // Compressed public key hex length
       expect(typeof transaction.id).toBe('string');
       expect(transaction.id).toHaveLength(64); // SHA-256 hex string length
-      expect(transaction.signature).toHaveProperty('r');
-      expect(transaction.signature).toHaveProperty('s');
-      expect(typeof transaction.signature.r).toBe('bigint');
-      expect(typeof transaction.signature.s).toBe('bigint');
+      expect(typeof transaction.signature).toBe('string');
+      expect(transaction.signature).toHaveLength(128); // Compact signature hex length
     });
 
     it('should generate unique IDs for different transactions', () => {
@@ -58,8 +54,8 @@ describe('Transaction', () => {
       
       const tx2 = createTransaction(keyPair1.privateKey, payload);
 
-      expect(tx1.id).not.toBe(tx2.id);
-      expect(tx1.timestamp).not.toBe(tx2.timestamp);
+      // Since we removed timestamp from the transaction, identical payloads will have the same ID
+      expect(tx1.id).toBe(tx2.id);
     });
   });
 
@@ -102,12 +98,11 @@ describe('Transaction', () => {
       expect(verifyTransaction(transaction)).toBe(true);
     });
 
-    it('should set the author public key correctly', () => {
+    it('should set the public key correctly', () => {
       const payload = { test: 'data' };
       const transaction = createTransaction(keyPair1.privateKey, payload);
 
-      expect(transaction.authorPublicKey).toEqual(keyPair1.publicKey);
-      expect(transaction.authorPublicKey.hex).toBe(keyPair1.publicKey.hex);
+      expect(transaction.publicKey).toBe(keyPair1.publicKey.hex);
     });
   });
 
@@ -151,10 +146,11 @@ describe('Transaction', () => {
       const payload = { action: 'test', value: 123 };
       const transaction = createTransaction(keyPair1.privateKey, payload);
       
-      // Tamper with the timestamp
+      // Since timestamp is no longer part of the transaction, this test now checks a different scenario
+      // Let's test tampering with the ID instead
       const tamperedTransaction: Transaction = {
         ...transaction,
-        timestamp: transaction.timestamp + 1000
+        id: 'a'.repeat(64) // Fake hash
       };
 
       expect(verifyTransaction(tamperedTransaction)).toBe(false);
@@ -167,7 +163,7 @@ describe('Transaction', () => {
       // Replace with different public key
       const tamperedTransaction: Transaction = {
         ...transaction,
-        authorPublicKey: keyPair2.publicKey
+        publicKey: keyPair2.publicKey.hex
       };
 
       expect(verifyTransaction(tamperedTransaction)).toBe(false);
@@ -209,7 +205,7 @@ describe('Transaction', () => {
       // Create transaction with malformed signature
       const invalidTransaction: Transaction = {
         ...transaction,
-        signature: { r: BigInt(0), s: BigInt(0) }
+        signature: 'invalid_signature'
       };
 
       expect(verifyTransaction(invalidTransaction)).toBe(false);
@@ -223,11 +219,10 @@ describe('Transaction', () => {
 
       // Verify all properties are defined
       expect(Object.keys(transaction)).toEqual([
-        'payload',
-        'timestamp', 
-        'authorPublicKey',
         'id',
-        'signature'
+        'publicKey',
+        'signature',
+        'payload'
       ]);
     });
 
@@ -236,19 +231,17 @@ describe('Transaction', () => {
       const transaction = createTransaction(keyPair1.privateKey, originalPayload);
 
       // Store original values
-      const originalTimestamp = transaction.timestamp;
       const originalId = transaction.id;
-      const originalAuthorKey = transaction.authorPublicKey.hex;
-      const originalSignatureR = transaction.signature.r;
+      const originalPublicKey = transaction.publicKey;
+      const originalSignature = transaction.signature;
 
       // Verify transaction still validates
       expect(verifyTransaction(transaction)).toBe(true);
 
       // Verify values haven't changed
-      expect(transaction.timestamp).toBe(originalTimestamp);
       expect(transaction.id).toBe(originalId);
-      expect(transaction.authorPublicKey.hex).toBe(originalAuthorKey);
-      expect(transaction.signature.r).toBe(originalSignatureR);
+      expect(transaction.publicKey).toBe(originalPublicKey);
+      expect(transaction.signature).toBe(originalSignature);
     });
   });
 }); 

@@ -16,10 +16,9 @@ export interface Signature {
     readonly recovery?: number;
 }
 export interface Transaction {
-    readonly payload: any;
-    readonly timestamp: number;
-    readonly authorPublicKey: PublicKey;
     readonly id: string;
-    readonly signature: Signature;
+    readonly publicKey: string;
+    readonly signature: string;
+    readonly payload: any;
 }
 //# sourceMappingURL=index.d.ts.map

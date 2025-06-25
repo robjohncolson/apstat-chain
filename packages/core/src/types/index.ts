@@ -23,9 +23,8 @@ export interface Signature {
 
 // Transaction types
 export interface Transaction {
-  readonly payload: any;
-  readonly timestamp: number;
-  readonly authorPublicKey: PublicKey;
   readonly id: string;
-  readonly signature: Signature;
+  readonly publicKey: string;
+  readonly signature: string;
+  readonly payload: any;
 } 

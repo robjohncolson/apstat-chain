@@ -1,25 +1,10 @@
 import * as secp256k1 from '@noble/secp256k1';
 import { hash256 } from '../crypto/hashing.js';
-import { sign, verify } from '../crypto/secp256k1.js';
-import type { PrivateKey, PublicKey, Transaction } from '../types/index.js';
+import type { PrivateKey, Transaction } from '../types/index.js';
 
 // Re-export the Transaction type for convenience
 export type { Transaction } from '../types/index.js';
 
-/**
- * Derive public key from private key
- */
-function derivePublicKey(privateKey: PrivateKey): PublicKey {
-  const publicKeyBytes = secp256k1.getPublicKey(privateKey.bytes);
-  return {
-    bytes: publicKeyBytes,
-    hex: secp256k1.etc.bytesToHex(publicKeyBytes)
-  };
-}
-
-/**
- * Create a deterministic hash from transaction data (excluding signature)
- */
 /**
  * Create deterministic JSON string with sorted keys
  */
@@ -42,59 +27,35 @@ function deterministicStringify(obj: any): string {
   return '{' + pairs.join(',') + '}';
 }
 
-function createTransactionHash(payload: any, timestamp: number, authorPublicKey: PublicKey): string {
-  // Create a canonical string representation of the transaction data
-  const transactionData = {
-    authorPublicKey: authorPublicKey.hex,
-    payload,
-    timestamp
-  };
-  
-  // Convert to deterministic JSON string
-  const jsonString = deterministicStringify(transactionData);
-  
-  // Convert string to bytes and hash
-  const dataBytes = new TextEncoder().encode(jsonString);
-  const hashBytes = hash256(dataBytes);
-  
-  // Convert hash to hex string
-  return Array.from(hashBytes)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
-
 /**
  * Create and sign a new transaction
  */
 export function createTransaction(privateKey: PrivateKey, payload: any): Transaction {
   // Derive the public key from the private key
-  const authorPublicKey = derivePublicKey(privateKey);
+  const publicKey = secp256k1.getPublicKey(privateKey.bytes);
+  const publicKeyHex = secp256k1.etc.bytesToHex(publicKey);
   
-  const timestamp = Date.now();
-  
-  // Create the data that will be signed (without signature and ID)
+  // Create the data that will be signed
   const signingData = {
-    authorPublicKey: authorPublicKey.hex,
-    payload,
-    timestamp
+    publicKey: publicKeyHex,
+    payload
   };
   
   const signingString = deterministicStringify(signingData);
   const signingBytes = new TextEncoder().encode(signingString);
-  const signingHash = hash256(signingBytes);
+  const hash = hash256(signingBytes);
   
-  // Sign this hash
-  const signature = sign(signingHash, privateKey);
+  // Sign the hash
+  const signature = secp256k1.sign(hash, privateKey.bytes);
   
-  // Now create the transaction ID based on all data including signature
-  const id = createTransactionHash(payload, timestamp, authorPublicKey);
+  // Create transaction ID from the hash
+  const id = secp256k1.etc.bytesToHex(hash);
   
   return {
-    payload,
-    timestamp,
-    authorPublicKey,
     id,
-    signature
+    publicKey: publicKeyHex,
+    signature: signature.toCompactHex(),
+    payload,
   };
 }
 
@@ -103,30 +64,29 @@ export function createTransaction(privateKey: PrivateKey, payload: any): Transac
  */
 export function verifyTransaction(transaction: Transaction): boolean {
   try {
-    // 1. Verify the transaction ID is correct for the current data
-    const expectedId = createTransactionHash(
-      transaction.payload,
-      transaction.timestamp,
-      transaction.authorPublicKey
-    );
+    const { id, signature, payload, publicKey } = transaction;
     
-    if (transaction.id !== expectedId) {
-      return false;
-    }
-    
-    // 2. Recreate the data that should have been signed (without signature and ID)
+    // Recreate the data that should have been signed
     const signingData = {
-      authorPublicKey: transaction.authorPublicKey.hex,
-      payload: transaction.payload,
-      timestamp: transaction.timestamp
+      publicKey,
+      payload
     };
     
     const signingString = deterministicStringify(signingData);
     const signingBytes = new TextEncoder().encode(signingString);
-    const signingHash = hash256(signingBytes);
+    const hash = hash256(signingBytes);
     
-    // 3. Verify the signature against the recreated signing hash
-    return verify(transaction.signature, signingHash, transaction.authorPublicKey);
+    // Verify the transaction ID matches the hash
+    const expectedId = secp256k1.etc.bytesToHex(hash);
+    if (id !== expectedId) {
+      return false;
+    }
+    
+    // Verify the signature
+    const sig = secp256k1.Signature.fromCompact(signature);
+    const pubKeyBytes = secp256k1.etc.hexToBytes(publicKey);
+    
+    return secp256k1.verify(sig, hash, pubKeyBytes);
   } catch (error) {
     return false;
   }
