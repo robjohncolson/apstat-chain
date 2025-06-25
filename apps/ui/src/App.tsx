@@ -87,13 +87,10 @@ function App() {
   // ADD A LOADING STATE: This will help us manage the initial startup check.
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleLogin = () => {
-    const mnemonic = service.getMnemonic();
-    if (mnemonic) {
-      localStorage.setItem('apstat-mnemonic', mnemonic);
-      console.log('Mnemonic persisted successfully');
-      // No need to call restoreWallet here, the state is already updated.
-    }
+  const handleLogin = (mnemonic: string) => {
+    localStorage.setItem('apstat-mnemonic', mnemonic);
+    console.log('Mnemonic persisted successfully');
+    // No need to call restoreWallet here, the state is already updated.
   };
 
   // Session persistence: Check for saved wallet on startup
