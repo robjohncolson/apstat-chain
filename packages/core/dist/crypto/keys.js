@@ -52,4 +52,15 @@ export function keyPairFromMnemonic(mnemonic) {
         }
     };
 }
+/**
+ * Generate a peer ID from a public key
+ * Uses SHA256 hash of the public key bytes, taking the first 16 bytes as hex
+ */
+export function peerIdFromPublicKey(publicKey) {
+    // Hash the public key bytes using SHA256
+    const hash = sha256(publicKey.bytes);
+    // Take the first 16 bytes and convert to hex string
+    const peerIdBytes = hash.slice(0, 16);
+    return secp256k1.etc.bytesToHex(peerIdBytes);
+}
 //# sourceMappingURL=keys.js.map

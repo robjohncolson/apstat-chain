@@ -1,7 +1,7 @@
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
 import * as secp256k1 from '@noble/secp256k1';
-import type { KeyPair } from '../types/index.js';
+import type { KeyPair, PublicKey } from '../types/index.js';
 import { generateMnemonic as bip39GenerateMnemonic, mnemonicToSeedSync, validateMnemonic } from './mnemonic.js';
 
 // Set up HMAC for secp256k1
@@ -63,4 +63,17 @@ export function keyPairFromMnemonic(mnemonic: string): KeyPair {
       hex: secp256k1.etc.bytesToHex(publicKeyBytes)
     }
   };
+}
+
+/**
+ * Generate a peer ID from a public key
+ * Uses SHA256 hash of the public key bytes, taking the first 16 bytes as hex
+ */
+export function peerIdFromPublicKey(publicKey: PublicKey): string {
+  // Hash the public key bytes using SHA256
+  const hash = sha256(publicKey.bytes);
+  
+  // Take the first 16 bytes and convert to hex string
+  const peerIdBytes = hash.slice(0, 16);
+  return secp256k1.etc.bytesToHex(peerIdBytes);
 } 
