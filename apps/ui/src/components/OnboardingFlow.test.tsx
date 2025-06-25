@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { OnboardingFlow } from './OnboardingFlow';
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
@@ -20,62 +20,66 @@ describe('OnboardingFlow', () => {
     mockGenerateNewWallet.mockReset();
   });
 
-  it('should call onLogin when the flow is completed', async () => {
-    // Set up the mock for this test
+  it('should display the mnemonic phrase and confirmation step after generation', async () => {
+    // Mock the service to return a known mnemonic
+    const knownMnemonic = 'word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12';
     mockGenerateNewWallet.mockResolvedValue({
-      mnemonic: 'test mnemonic phrase a b c d e f g h i j k',
+      mnemonic: knownMnemonic,
       keyPair: { publicKey: 'mock-public-key', privateKey: 'mock-private-key' },
     });
 
-    // 1. Create a mock function for the onLogin prop
-    const handleLogin = vi.fn();
+    // Render the OnboardingFlow
+    render(<OnboardingFlow onLogin={vi.fn()} />);
 
-    // 2. Render the component
-    render(<OnboardingFlow onLogin={handleLogin} />);
-
-    // 3. Simulate clicking "Generate New Account"
+    // Simulate a click on the "Generate New Account" button
     fireEvent.click(screen.getByText('Generate New Account'));
 
-    // Wait for the mnemonic to be displayed
-    await screen.findByText('Your Recovery Phrase');
+    // Wait for and assert that the mnemonic phrase is now visible on the screen
+    await waitFor(() => {
+      expect(screen.getByText('Your Recovery Phrase')).toBeInTheDocument();
+    });
 
-    // 4. Simulate checking the "I have saved my phrase" checkbox
-    fireEvent.click(screen.getByLabelText('I have saved my phrase'));
-
-    // 5. Simulate clicking "Continue"
-    fireEvent.click(screen.getByText('Continue'));
-
-    // 6. Assert that the onLogin mock function was called
-    expect(handleLogin).toHaveBeenCalledTimes(1);
+    // Assert that the "Continue" button is now visible but disabled
+    const continueButton = screen.getByText('Continue');
+    expect(continueButton).toBeInTheDocument();
+    expect(continueButton).toBeDisabled();
   });
 
-  it('should call onLogin with the generated mnemonic when flow is completed', async () => {
-    // Set up the mock for this specific test
+  it('should call onLogin with the correct mnemonic upon completion', async () => {
+    // Mock the service to return a known mnemonic
+    const knownMnemonic = 'word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12';
     mockGenerateNewWallet.mockResolvedValue({
-      mnemonic: 'word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12',
+      mnemonic: knownMnemonic,
       keyPair: { publicKey: 'mock-public-key', privateKey: 'mock-private-key' },
     });
 
-    // 1. Create a mock function for the onLogin prop using vi.fn()
+    // Create a mock function for the onLogin prop
     const onLogin = vi.fn();
 
-    // 2. Render the <OnboardingFlow />, passing the mock onLogin function
+    // Render the OnboardingFlow
     render(<OnboardingFlow onLogin={onLogin} />);
 
-    // 3. Simulate a user clicking "Generate"
+    // Simulate a click on the "Generate New Account" button
     fireEvent.click(screen.getByText('Generate New Account'));
 
-    // Wait for the mnemonic to be displayed
-    await screen.findByText('Your Recovery Phrase');
+    // Wait for and assert that the mnemonic phrase is now visible on the screen
+    await waitFor(() => {
+      expect(screen.getByText('Your Recovery Phrase')).toBeInTheDocument();
+    });
 
-    // Simulate checking the "I have saved" box
+    // Assert that the "Continue" button is now visible but disabled
+    const continueButton = screen.getByText('Continue');
+    expect(continueButton).toBeInTheDocument();
+    expect(continueButton).toBeDisabled();
+
+    // Simulate a click on the "I have saved my phrase" checkbox
     fireEvent.click(screen.getByLabelText('I have saved my phrase'));
 
-    // Simulate clicking "Continue"
+    // Simulate a click on the "Continue" button
     fireEvent.click(screen.getByText('Continue'));
 
-    // 4. Assert that onLogin was called exactly once and with the specific mnemonic
+    // Assert that the onLogin prop was called exactly once, and was called with the known mnemonic string
     expect(onLogin).toHaveBeenCalledTimes(1);
-    expect(onLogin).toHaveBeenCalledWith('word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12');
+    expect(onLogin).toHaveBeenCalledWith(knownMnemonic);
   });
 });
