@@ -85,6 +85,27 @@ export function Dashboard({ onDiscoverPeers }: DashboardProps) {
           </div>
         </div>
 
+        {/* Lessons Section */}
+        <div className="mt-6 bg-yellow-50 dark:bg-yellow-900 p-6 rounded-lg">
+          <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-4">
+            Lessons
+          </h2>
+          
+          <div className="flex flex-col space-y-4">
+            <button
+              onClick={() => {
+                service.createTransaction({
+                  type: 'LESSON_COMPLETE',
+                  lessonId: 'unit-1-quiz'
+                })
+              }}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Complete Unit 1 Quiz
+            </button>
+          </div>
+        </div>
+
         {/* Connected Peers */}
         <div className="mt-6 bg-purple-50 dark:bg-purple-900 p-6 rounded-lg">
           <h2 className="text-xl font-semibold text-purple-800 dark:text-purple-200 mb-4">

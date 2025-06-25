@@ -1,7 +1,7 @@
 # 007. Core Application Features
 
 - **Status:** Accepted
-- **Date:** 12/16/2024
+- **Date:** 6/24/25
 
 ## Context
 

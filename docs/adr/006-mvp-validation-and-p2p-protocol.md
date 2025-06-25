@@ -1,6 +1,6 @@
 # ADR-006: MVP Validation and P2P Protocol
 
-Date: 2024-12-18
+Date: 6/24/25
 
 ## Status
 
