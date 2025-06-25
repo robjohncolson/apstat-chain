@@ -60,7 +60,7 @@ class BlockchainService {
   }
 
   private updateState(updates: Partial<BlockchainState>): void {
-    this.state = { ...this.state, ...updates };
+    this.state = Object.assign({}, this.state, updates);
     this.notify();
   }
 

@@ -2,24 +2,27 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { BlockchainProvider, useBlockchain } from './BlockchainProvider';
-import type { BlockchainState, BlockchainStateListener } from '@/services/BlockchainService';
+import type { BlockchainState, BlockchainStateListener } from '../services/BlockchainService';
 
 // Mock the BlockchainService
-vi.mock('@/services/BlockchainService', () => {
-  const mockService = {
-    getInstance: vi.fn(),
+vi.mock('../services/BlockchainService', () => {
+  const mockServiceInstance = {
     subscribe: vi.fn(),
     getState: vi.fn(),
   };
 
+  const mockBlockchainService = {
+    getInstance: vi.fn(() => mockServiceInstance),
+  };
+
   return {
-    default: mockService,
+    default: mockBlockchainService,
   };
 });
 
 describe('BlockchainProvider', () => {
-  let mockServiceInstance: any;
   let capturedListener: BlockchainStateListener | null = null;
+  let mockServiceInstance: any;
 
   // Test component that uses the useBlockchain hook
   const TestComponent = () => {
@@ -31,30 +34,29 @@ describe('BlockchainProvider', () => {
     // Reset the captured listener
     capturedListener = null;
 
-    // Create a mock service instance
-    mockServiceInstance = {
-      subscribe: vi.fn((listener: BlockchainStateListener) => {
-        // Capture the listener function that the provider passes to the service
-        capturedListener = listener;
-        // Return an unsubscribe function
-        return vi.fn();
-      }),
-      getState: vi.fn(() => ({
-        isInitialized: false,
-        currentKeyPair: null,
-        mnemonic: null,
-        p2pNode: null,
-        peerId: null,
-        connectedPeers: [],
-        transactions: [], // Initially empty
-        isConnecting: false,
-        error: null,
-      } as BlockchainState)),
-    };
+    // Get the mocked service instance
+    const { default: BlockchainService } = await import('../services/BlockchainService');
+    mockServiceInstance = BlockchainService.getInstance();
 
-    // Mock the singleton getInstance method
-    const { default: BlockchainService } = await import('@/services/BlockchainService');
-    vi.mocked(BlockchainService.getInstance).mockReturnValue(mockServiceInstance);
+    // Setup mock implementations
+    mockServiceInstance.subscribe.mockImplementation((listener: BlockchainStateListener) => {
+      // Capture the listener function that the provider passes to the service
+      capturedListener = listener;
+      // Return an unsubscribe function
+      return vi.fn();
+    });
+
+    mockServiceInstance.getState.mockReturnValue({
+      isInitialized: false,
+      currentKeyPair: null,
+      mnemonic: null,
+      p2pNode: null,
+      peerId: null,
+      connectedPeers: [],
+      transactions: [], // Initially empty
+      isConnecting: false,
+      error: null,
+    } as BlockchainState);
   });
 
   afterEach(() => {

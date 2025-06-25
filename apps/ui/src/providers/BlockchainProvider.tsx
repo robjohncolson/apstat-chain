@@ -20,24 +20,19 @@ export function BlockchainProvider({ children }: BlockchainProviderProps) {
   );
 }
 
-// This is the new, correct way to use the hook.
-// It returns the stable service instance and the current state.
 export function useBlockchain() {
   const service = useContext(BlockchainContext);
   if (!service) {
     throw new Error('useBlockchain must be used within a BlockchainProvider');
   }
 
-  // We use a React hook to subscribe to state changes from the service.
-  const [state, setState] = useState<BlockchainState>(() => service.getState());
+  const [state, setState] = useState(() => service.getState());
 
   useEffect(() => {
-    const unsubscribe = service.subscribe(newState => {
-      setState(newState);
-    });
-    // The component will re-render only when the service's state actually changes.
-    return unsubscribe;
-  }, [service]); // The service instance itself is the only dependency, and it never changes.
+    const unsubscribe = service.subscribe(setState);
+    // When the component unmounts, we clean up the subscription.
+    return () => unsubscribe();
+  }, [service]); // The effect depends only on the stable service instance.
 
   return { service, state };
 }
