@@ -34,6 +34,18 @@ vi.mock('peerjs', () => {
 import { Peer } from 'peerjs';
 const MockedPeer = Peer as any;
 
+// Mock KeyPair for tests
+const mockKeyPair = {
+  privateKey: {
+    bytes: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]),
+    hex: '0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20'
+  },
+  publicKey: {
+    bytes: new Uint8Array([2, 121, 190, 102, 126, 249, 220, 187, 172, 85, 160, 98, 149, 206, 135, 11, 7, 2, 155, 252, 219, 45, 206, 40, 217, 89, 242, 129, 91, 22, 248, 23, 152]),
+    hex: '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'
+  }
+};
+
 describe('P2PNode', () => {
   let p2pNode: P2PNode;
   let mockPeer: any;
@@ -67,7 +79,7 @@ describe('P2PNode', () => {
 
   describe('initialization', () => {
     it('should initialize a PeerJS instance', () => {
-      p2pNode = new P2PNode();
+      p2pNode = new P2PNode(mockKeyPair);
       
       expect(MockedPeer).toHaveBeenCalledTimes(1);
       expect(mockPeer.on).toHaveBeenCalledWith('open', expect.any(Function));
@@ -75,22 +87,9 @@ describe('P2PNode', () => {
       expect(mockPeer.on).toHaveBeenCalledWith('error', expect.any(Function));
     });
 
-    it('should initialize with custom peer ID if provided', () => {
-      const customId = 'custom-peer-id';
-      p2pNode = new P2PNode(customId);
-      
-      expect(MockedPeer).toHaveBeenCalledWith(customId);
-    });
-
-    it('should initialize without peer ID to get random ID', () => {
-      p2pNode = new P2PNode();
-      
-      expect(MockedPeer).toHaveBeenCalledWith();
-    });
-
     it('should initialize with a Peer ID derived from a keypair', () => {
       // Create a mock keypair object
-      const mockKeyPair = {
+      const testKeyPair = {
         privateKey: {
           bytes: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]),
           hex: '0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20'
@@ -102,10 +101,10 @@ describe('P2PNode', () => {
       };
 
       // Use the real peerIdFromPublicKey function to calculate the expected peer ID
-      const expectedPeerId = peerIdFromPublicKey(mockKeyPair.publicKey);
+      const expectedPeerId = peerIdFromPublicKey(testKeyPair.publicKey);
 
       // Instantiate a new P2PNode with the mock keypair
-      p2pNode = new P2PNode(mockKeyPair);
+      p2pNode = new P2PNode(testKeyPair);
 
       // Assert that the mocked Peer constructor was called with the expected peer ID
       expect(MockedPeer).toHaveBeenCalledWith(expectedPeerId);
@@ -114,7 +113,7 @@ describe('P2PNode', () => {
 
   describe('peer connections', () => {
     beforeEach(() => {
-      p2pNode = new P2PNode();
+      p2pNode = new P2PNode(mockKeyPair);
     });
 
     it('should connect to another peer', () => {
@@ -152,7 +151,7 @@ describe('P2PNode', () => {
 
     it('should return null for peer ID if not yet available', () => {
       mockPeer.id = null;
-      p2pNode = new P2PNode();
+      p2pNode = new P2PNode(mockKeyPair);
       
       expect(p2pNode.getPeerId()).toBeNull();
     });
@@ -162,7 +161,7 @@ describe('P2PNode', () => {
     let mockDataConnection2: any;
 
     beforeEach(() => {
-      p2pNode = new P2PNode();
+      p2pNode = new P2PNode(mockKeyPair);
       
       // Create a second mock connection for testing multiple peers
       mockDataConnection2 = {
@@ -220,21 +219,37 @@ describe('P2PNode', () => {
 
       p2pNode.broadcastTransaction(mockTransaction);
 
-      // Should send to both connections
-      expect(mockDataConnection.send).toHaveBeenCalledTimes(1);
-      expect(mockDataConnection2.send).toHaveBeenCalledTimes(1);
-      expect(mockDataConnection.send).toHaveBeenCalledWith({
+      // Should send to both connections: 1 call for peer list (on open) + 1 call for transaction
+      expect(mockDataConnection.send).toHaveBeenCalledTimes(2);
+      expect(mockDataConnection2.send).toHaveBeenCalledTimes(2);
+      
+      // Check that transaction was sent (should be the second call, after peer list)
+      // Note: BigInt values get serialized to strings for network transmission
+      const expectedSerializedTransaction = {
+        ...mockTransaction,
+        signature: {
+          r: '12345',
+          s: '67890',
+          recovery: undefined
+        }
+      };
+
+      expect(mockDataConnection.send).toHaveBeenNthCalledWith(2, {
         type: 'transaction',
-        data: mockTransaction
+        data: expectedSerializedTransaction
       });
-      expect(mockDataConnection2.send).toHaveBeenCalledWith({
+      expect(mockDataConnection2.send).toHaveBeenNthCalledWith(2, {
         type: 'transaction',
-        data: mockTransaction
+        data: expectedSerializedTransaction
       });
     });
 
     it('should not broadcast if no connections exist', () => {
-      const p2pNodeIsolated = new P2PNode();
+      const p2pNodeIsolated = new P2PNode(mockKeyPair);
+      
+      // Clear any previous calls since we're creating a new isolated instance
+      vi.clearAllMocks();
+      
       const mockTransaction: Transaction = {
         payload: { action: 'transfer', amount: 100 },
         timestamp: Date.now(),
@@ -251,7 +266,9 @@ describe('P2PNode', () => {
 
       p2pNodeIsolated.broadcastTransaction(mockTransaction);
 
+      // Since there are no connections, send should not be called at all
       expect(mockDataConnection.send).not.toHaveBeenCalled();
+      expect(mockDataConnection2.send).not.toHaveBeenCalled();
     });
 
     it('should handle broadcast errors gracefully', () => {
@@ -280,7 +297,7 @@ describe('P2PNode', () => {
 
   describe('transaction receiving', () => {
     beforeEach(() => {
-      p2pNode = new P2PNode();
+      p2pNode = new P2PNode(mockKeyPair);
     });
 
     it('should emit "transaction:received" event upon receiving a transaction', () => {
@@ -378,7 +395,7 @@ describe('P2PNode', () => {
 
   describe('cleanup', () => {
     beforeEach(() => {
-      p2pNode = new P2PNode();
+      p2pNode = new P2PNode(mockKeyPair);
     });
 
     it('should destroy peer connection on cleanup', () => {
@@ -396,7 +413,7 @@ describe('P2PNode', () => {
 
   describe('connection management', () => {
     beforeEach(() => {
-      p2pNode = new P2PNode();
+      p2pNode = new P2PNode(mockKeyPair);
     });
 
     it('should track connected peers', () => {

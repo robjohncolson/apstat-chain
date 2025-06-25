@@ -15,10 +15,15 @@ function DashboardWithP2P() {
       return;
     }
 
+    // Only initialize P2P if we have a currentKeyPair
+    if (!state.currentKeyPair) {
+      return;
+    }
+
     const initP2P = async () => {
       try {
         console.log('Initializing P2P...');
-        const peerId = await service.initializeP2P();
+        const peerId = await service.initializeP2P(state.currentKeyPair!);
         console.log('P2P initialized with Peer ID:', peerId);
 
         // --- THIS IS THE NEW LOGIC ---
@@ -54,7 +59,7 @@ function DashboardWithP2P() {
 
     initP2P();
 
-  }, [service, state.p2pNode]); // This will now run only once.
+  }, [service, state.p2pNode, state.currentKeyPair]); // Added state.currentKeyPair to dependencies
 
   const handleCompleteLesson = (lessonId: string) => {
     service.createTransaction({

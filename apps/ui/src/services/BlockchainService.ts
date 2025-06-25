@@ -136,11 +136,11 @@ class BlockchainService {
   }
 
   // P2P Networking
-  public async initializeP2P(peerId?: string): Promise<string> {
+  public async initializeP2P(keyPair: KeyPair): Promise<string> {
     try {
       this.updateState({ isConnecting: true, error: null });
 
-      const p2pNode = new P2PNode(peerId);
+      const p2pNode = new P2PNode(keyPair);
       
       // Set up event listeners
       p2pNode.on('ready', (id: string) => {

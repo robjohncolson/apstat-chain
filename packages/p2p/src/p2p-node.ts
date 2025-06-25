@@ -1,4 +1,5 @@
 import type { Transaction } from '@apstat-chain/core';
+import { peerIdFromPublicKey, type KeyPair } from '@apstat-chain/core';
 import { EventEmitter } from 'eventemitter3';
 import { Peer, type DataConnection } from 'peerjs';
 
@@ -36,9 +37,10 @@ export class P2PNode extends EventEmitter {
   private peer: Peer;
   private connections: Map<string, DataConnection> = new Map();
 
-  constructor(peerId?: string) {
+  constructor(keyPair: KeyPair) {
     super();
-    this.peer = peerId ? new Peer(peerId) : new Peer();
+    const derivedId = peerIdFromPublicKey(keyPair.publicKey);
+    this.peer = new Peer(derivedId);
     this.setupPeerEventHandlers();
   }
 
