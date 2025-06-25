@@ -1,4 +1,5 @@
 import type { Transaction } from '@apstat-chain/core';
+import { peerIdFromPublicKey } from '@apstat-chain/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { P2PNode } from '../src/p2p-node';
 
@@ -85,6 +86,29 @@ describe('P2PNode', () => {
       p2pNode = new P2PNode();
       
       expect(MockedPeer).toHaveBeenCalledWith();
+    });
+
+    it('should initialize with a Peer ID derived from a keypair', () => {
+      // Create a mock keypair object
+      const mockKeyPair = {
+        privateKey: {
+          bytes: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]),
+          hex: '0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20'
+        },
+        publicKey: {
+          bytes: new Uint8Array([2, 121, 190, 102, 126, 249, 220, 187, 172, 85, 160, 98, 149, 206, 135, 11, 7, 2, 155, 252, 219, 45, 206, 40, 217, 89, 242, 129, 91, 22, 248, 23, 152]),
+          hex: '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'
+        }
+      };
+
+      // Use the real peerIdFromPublicKey function to calculate the expected peer ID
+      const expectedPeerId = peerIdFromPublicKey(mockKeyPair.publicKey);
+
+      // Instantiate a new P2PNode with the mock keypair
+      p2pNode = new P2PNode(mockKeyPair);
+
+      // Assert that the mocked Peer constructor was called with the expected peer ID
+      expect(MockedPeer).toHaveBeenCalledWith(expectedPeerId);
     });
   });
 
