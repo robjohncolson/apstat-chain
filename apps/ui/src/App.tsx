@@ -72,9 +72,9 @@ function DashboardWithP2P() {
     <div className="space-y-6">
       <Dashboard
         publicKey={state.currentKeyPair?.publicKey || null}
-        peerId={state.p2pNode?.getPeerId() || null}
-        connectedPeers={state.p2pNode?.getConnectedPeers() || []}
-        isConnecting={false} // We can enhance this later with actual connection state
+        peerId={state.peerId}
+        connectedPeers={state.connectedPeers}
+        isConnecting={state.isConnecting}
         error={state.error}
         onCompleteLesson={handleCompleteLesson}
       />
