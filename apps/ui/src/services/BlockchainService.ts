@@ -73,7 +73,6 @@ class BlockchainService {
       this.updateState({
         currentKeyPair: keyPair,
         mnemonic,
-        isInitialized: true,
         error: null,
       });
 

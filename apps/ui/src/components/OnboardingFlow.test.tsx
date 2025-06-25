@@ -24,6 +24,7 @@ describe('OnboardingFlow', () => {
     // Set up the mock for this test
     mockGenerateNewWallet.mockResolvedValue({
       mnemonic: 'test mnemonic phrase a b c d e f g h i j k',
+      keyPair: { publicKey: 'mock-public-key', privateKey: 'mock-private-key' },
     });
 
     // 1. Create a mock function for the onLogin prop
@@ -52,6 +53,7 @@ describe('OnboardingFlow', () => {
     // Set up the mock for this specific test
     mockGenerateNewWallet.mockResolvedValue({
       mnemonic: 'word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12',
+      keyPair: { publicKey: 'mock-public-key', privateKey: 'mock-private-key' },
     });
 
     // 1. Create a mock function for the onLogin prop using vi.fn()
