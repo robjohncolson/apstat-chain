@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useBlockchain } from '../providers/BlockchainProvider'
 
 interface OnboardingFlowProps {
-  onLogin: () => void
+  onLogin: (mnemonic: string) => void
 }
 
 export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
@@ -26,7 +26,9 @@ export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
   }
 
   const handleContinue = () => {
-    onLogin()
+    if (mnemonic) {
+      onLogin(mnemonic)
+    }
   }
 
   const renderMnemonicWords = (mnemonic: string) => {
