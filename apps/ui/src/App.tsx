@@ -77,15 +77,20 @@ function App() {
 
   // We add a startup effect to check for a saved wallet
   useEffect(() => {
-    const savedMnemonic = localStorage.getItem('apstat-mnemonic');
-    if (savedMnemonic) {
-      console.log('Found saved mnemonic, restoring wallet...');
-      service.restoreWallet(savedMnemonic).catch(err => {
-        console.error("Failed to restore wallet, clearing saved mnemonic.", err);
-        localStorage.removeItem('apstat-mnemonic');
-      });
+    // Only attempt wallet restore if wallet isn't already initialized
+    if (!state.isInitialized) {
+      const savedMnemonic = localStorage.getItem('apstat-mnemonic');
+      if (savedMnemonic) {
+        console.log('Found saved mnemonic, restoring wallet...');
+        try {
+          service.restoreWallet(savedMnemonic);
+        } catch (error) {
+          console.error('Failed to restore wallet, clearing saved mnemonic:', error);
+          localStorage.removeItem('apstat-mnemonic');
+        }
+      }
     }
-  }, [service]); // Depends only on the stable service instance.
+  }, [service, state.isInitialized]); // Depends on the stable service instance and initialization state
 
   // Conditional rendering based on wallet initialization status
   if (!state.isInitialized) {
