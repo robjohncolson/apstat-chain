@@ -22,6 +22,8 @@ export declare class P2PNode extends EventEmitter {
     private handleIncomingData;
     private handleTransaction;
     connectToPeer(peerId: string): void;
+    private serializeTransaction;
+    private deserializeTransaction;
     broadcastTransaction(transaction: Transaction): void;
     getPeerId(): string | null;
     getConnectedPeers(): string[];

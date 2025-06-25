@@ -94,7 +94,8 @@ export class P2PNode extends EventEmitter {
     }
     handleTransaction(message, fromPeer) {
         console.log(`Received transaction ${message.data.id} from ${fromPeer}`);
-        this.emit('transaction:received', message.data);
+        const transaction = this.deserializeTransaction(message.data);
+        this.emit('transaction:received', transaction);
     }
     connectToPeer(peerId) {
         if (this.connections.has(peerId)) {
@@ -105,10 +106,33 @@ export class P2PNode extends EventEmitter {
         const conn = this.peer.connect(peerId);
         this.setupConnectionEventHandlers(conn);
     }
+    // Helper function to serialize bigint values for network transmission
+    serializeTransaction(transaction) {
+        return {
+            ...transaction,
+            signature: {
+                r: transaction.signature.r.toString(),
+                s: transaction.signature.s.toString(),
+                recovery: transaction.signature.recovery
+            }
+        };
+    }
+    // Helper function to deserialize bigint values from network transmission
+    deserializeTransaction(data) {
+        return {
+            ...data,
+            signature: {
+                r: BigInt(data.signature.r),
+                s: BigInt(data.signature.s),
+                recovery: data.signature.recovery
+            }
+        };
+    }
     broadcastTransaction(transaction) {
+        const serializedTransaction = this.serializeTransaction(transaction);
         const message = {
             type: 'transaction',
-            data: transaction
+            data: serializedTransaction
         };
         const connectedPeers = Array.from(this.connections.keys());
         console.log(`Broadcasting transaction ${transaction.id} to ${connectedPeers.length} peers`);
