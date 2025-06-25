@@ -30,7 +30,7 @@ export function keyPairFromMnemonic(mnemonic: string): KeyPair {
   
   // Use HMAC-SHA256 to derive a private key from the seed
   // This follows a similar pattern to BIP32 but simplified for our use case
-  const privateKeyMaterial = hmac(sha256, new Uint8Array([0]), seed);
+  const privateKeyMaterial = hmac(sha256, new Uint8Array([0]), new Uint8Array(seed));
   
   // Ensure the private key is valid for secp256k1
   let privateKeyBytes = privateKeyMaterial.slice(0, 32);
