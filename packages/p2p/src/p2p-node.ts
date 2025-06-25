@@ -40,7 +40,7 @@ export class P2PNode extends EventEmitter {
   constructor(keyPair: KeyPair) {
     super();
     const derivedId = peerIdFromPublicKey(keyPair.publicKey);
-    this.peer = new Peer(derivedId);
+    this.peer = new Peer({ id: derivedId });
     this.setupPeerEventHandlers();
   }
 
