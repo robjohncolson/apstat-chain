@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { generateKeyPair } from '../src/crypto/secp256k1.js';
+import { keyPairFromMnemonic } from '../src/crypto/keys.js';
 import { createTransaction, verifyTransaction, type Transaction } from '../src/transaction/index.js';
 
 describe('Transaction', () => {
@@ -111,6 +112,21 @@ describe('Transaction', () => {
   });
 
   describe('verifyTransaction', () => {
+    it('should create a transaction that can be successfully verified', () => {
+      // Generate a new KeyPair from a sample mnemonic
+      const sampleMnemonic = 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+      const keyPair = keyPairFromMnemonic(sampleMnemonic);
+      
+      // Create a sample transaction
+      const transaction = createTransaction(keyPair.privateKey, { a: 1 });
+      
+      // Attempt to verify this new transaction
+      const isValid = verifyTransaction(transaction);
+      
+      // Assert that the result of verifyTransaction is true
+      expect(isValid).toBe(true);
+    });
+
     it('should return true for a valid transaction', () => {
       const payload = { action: 'test', value: 123 };
       const transaction = createTransaction(keyPair1.privateKey, payload);
