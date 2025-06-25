@@ -90,7 +90,7 @@ function App() {
   const handleLogin = (mnemonic: string) => {
     localStorage.setItem('apstat-mnemonic', mnemonic);
     console.log('Mnemonic persisted successfully');
-    // No need to call restoreWallet here, the state is already updated.
+    service.restoreWallet(mnemonic);
   };
 
   // Session persistence: Check for saved wallet on startup
