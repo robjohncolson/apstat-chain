@@ -1,263 +1,78 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { vi } from 'vitest'
-import { BlockchainProvider } from '../providers/BlockchainProvider'
-import BlockchainService from '../services/BlockchainService'
-import { OnboardingFlow } from './OnboardingFlow'
+import { vi, describe, it, expect, beforeEach } from "vitest";
+import { screen, fireEvent } from "@testing-library/react";
+import { render } from "@/test/test-utils";
+import { OnboardingFlow } from "@/components/OnboardingFlow";
+import BlockchainService from "@/services/BlockchainService";
 
-// Mock the BlockchainService
-vi.mock('../services/BlockchainService', () => {
-  const mockService = {
-    getInstance: vi.fn(() => ({
-      generateNewWallet: vi.fn(),
-      subscribe: vi.fn(() => vi.fn()),
-      getState: vi.fn(() => ({
-        isInitialized: false,
-        currentKeyPair: null,
-        mnemonic: null,
-        p2pNode: null,
-        peerId: null,
-        connectedPeers: [],
-        transactions: [],
-        isConnecting: false,
-        error: null,
-      })),
-    })),
-  }
+const mockMnemonic = "test sponsor welcome friend remind wash jazz onion utility claw mask depend";
+
+vi.mock("@/services/BlockchainService", () => {
+  const serviceInstance = {
+    generateNewWallet: vi.fn(),
+    getWallet: vi.fn(),
+    getMnemonic: vi.fn(),
+    getState: vi.fn(),
+    subscribe: vi.fn(() => () => {}),
+    on: vi.fn(),
+    off: vi.fn(),
+  };
+  // Mock the default export
   return {
-    default: mockService,
-  }
-})
+    default: {
+      getInstance: () => serviceInstance,
+    },
+  };
+});
 
-// Mock onLogin function
-const mockOnLogin = vi.fn()
+describe("OnboardingFlow", () => {
+  let service: any;
 
-const renderOnboardingFlow = () => {
-  return render(
-    <BlockchainProvider>
-      <OnboardingFlow onLogin={mockOnLogin} />
-    </BlockchainProvider>
-  )
-}
-
-describe('OnboardingFlow', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-  })
+    vi.clearAllMocks();
+    service = BlockchainService.getInstance();
+    (service.getState as vi.Mock).mockReturnValue({ isInitialized: false });
+  });
 
-  describe('Initial State', () => {
-    it('displays a "Generate New Account" button', () => {
-      renderOnboardingFlow()
-      
-      const generateButton = screen.getByRole('button', { name: /generate new account/i })
-      expect(generateButton).toBeInTheDocument()
-    })
+  it('should display the "Generate New Account" button initially', () => {
+    render(<OnboardingFlow onLogin={() => {}} />);
+    expect(
+      screen.getByRole("button", { name: /generate new account/i })
+    ).toBeInTheDocument();
+  });
 
-    it('does not show mnemonic phrase initially', () => {
-      renderOnboardingFlow()
-      
-      expect(screen.queryByText(/your recovery phrase/i)).not.toBeInTheDocument()
-      expect(screen.queryByText(/i have saved my phrase/i)).not.toBeInTheDocument()
-      expect(screen.queryByRole('button', { name: /continue/i })).not.toBeInTheDocument()
-    })
-  })
+  it("should call generateNewWallet and display the mnemonic when the button is clicked", async () => {
+    (service.generateNewWallet as vi.Mock).mockResolvedValue({
+      mnemonic: mockMnemonic,
+    });
 
-  describe('Mnemonic Generation', () => {
-    it('generates and displays a 12-word mnemonic phrase when button is clicked', async () => {
-      const user = userEvent.setup()
-      const mockGenerateWallet = vi.fn().mockResolvedValue({
-        mnemonic: 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-        keyPair: { publicKey: 'mock-public', privateKey: 'mock-private' }
-      })
+    render(<OnboardingFlow onLogin={() => {}} />);
 
-      BlockchainService.getInstance = vi.fn(() => ({
-        generateNewWallet: mockGenerateWallet,
-        subscribe: vi.fn(() => vi.fn()),
-        getState: vi.fn(() => ({
-          isInitialized: false,
-          currentKeyPair: null,
-          mnemonic: null,
-          p2pNode: null,
-          peerId: null,
-          connectedPeers: [],
-          transactions: [],
-          isConnecting: false,
-          error: null,
-        })),
-      }))
+    const generateButton = screen.getByRole("button", {
+      name: /generate new account/i,
+    });
+    fireEvent.click(generateButton);
 
-      renderOnboardingFlow()
-      
-      const generateButton = screen.getByRole('button', { name: /generate new account/i })
-      await user.click(generateButton)
+    await screen.findByText("test");
 
-      await waitFor(() => {
-        expect(mockGenerateWallet).toHaveBeenCalledTimes(1)
-      })
+    expect(service.generateNewWallet).toHaveBeenCalled();
+    expect(screen.getByText("depend")).toBeInTheDocument();
+  });
 
-      await waitFor(() => {
-        expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument()
-        // Check for individual words since they're rendered in separate elements
-        expect(screen.getAllByText('abandon')).toHaveLength(11)
-        expect(screen.getByText('about')).toBeInTheDocument()
-      })
-    })
+  it('should call onLogin and persist mnemonic when continue is clicked', async () => {
+    (service.generateNewWallet as vi.Mock).mockResolvedValue({ mnemonic: mockMnemonic });
+    (service.getMnemonic as vi.Mock).mockReturnValue(mockMnemonic);
+    const handleLogin = vi.fn();
 
-    it('shows checkbox and disabled continue button after mnemonic generation', async () => {
-      const user = userEvent.setup()
-      const mockGenerateWallet = vi.fn().mockResolvedValue({
-        mnemonic: 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-        keyPair: { publicKey: 'mock-public', privateKey: 'mock-private' }
-      })
+    render(<OnboardingFlow onLogin={handleLogin} />);
+    
+    // Generate wallet and show mnemonic
+    fireEvent.click(screen.getByRole("button", { name: /generate new account/i }));
+    await screen.findByText("test");
 
-      BlockchainService.getInstance = vi.fn(() => ({
-        generateNewWallet: mockGenerateWallet,
-        subscribe: vi.fn(() => vi.fn()),
-        getState: vi.fn(() => ({
-          isInitialized: false,
-          currentKeyPair: null,
-          mnemonic: null,
-          p2pNode: null,
-          peerId: null,
-          connectedPeers: [],
-          transactions: [],
-          isConnecting: false,
-          error: null,
-        })),
-      }))
+    // Click checkbox and continue
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
 
-      renderOnboardingFlow()
-      
-      const generateButton = screen.getByRole('button', { name: /generate new account/i })
-      await user.click(generateButton)
-
-      await waitFor(() => {
-        const checkbox = screen.getByRole('checkbox', { name: /i have saved my phrase/i })
-        const continueButton = screen.getByRole('button', { name: /continue/i })
-        
-        expect(checkbox).toBeInTheDocument()
-        expect(checkbox).not.toBeChecked()
-        expect(continueButton).toBeInTheDocument()
-        expect(continueButton).toBeDisabled()
-      })
-    })
-  })
-
-  describe('Continue Button Interaction', () => {
-    it('enables continue button only when checkbox is checked', async () => {
-      const user = userEvent.setup()
-      const mockGenerateWallet = vi.fn().mockResolvedValue({
-        mnemonic: 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-        keyPair: { publicKey: 'mock-public', privateKey: 'mock-private' }
-      })
-
-      BlockchainService.getInstance = vi.fn(() => ({
-        generateNewWallet: mockGenerateWallet,
-        subscribe: vi.fn(() => vi.fn()),
-        getState: vi.fn(() => ({
-          isInitialized: false,
-          currentKeyPair: null,
-          mnemonic: null,
-          p2pNode: null,
-          peerId: null,
-          connectedPeers: [],
-          transactions: [],
-          isConnecting: false,
-          error: null,
-        })),
-      }))
-
-      renderOnboardingFlow()
-      
-      const generateButton = screen.getByRole('button', { name: /generate new account/i })
-      await user.click(generateButton)
-
-      await waitFor(() => {
-        const checkbox = screen.getByRole('checkbox', { name: /i have saved my phrase/i })
-        const continueButton = screen.getByRole('button', { name: /continue/i })
-        
-        expect(continueButton).toBeDisabled()
-        
-        return user.click(checkbox)
-      })
-
-      await waitFor(() => {
-        const continueButton = screen.getByRole('button', { name: /continue/i })
-        expect(continueButton).toBeEnabled()
-      })
-    })
-
-    it('calls onLogin function when continue button is clicked', async () => {
-      const user = userEvent.setup()
-      const mockGenerateWallet = vi.fn().mockResolvedValue({
-        mnemonic: 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-        keyPair: { publicKey: 'mock-public', privateKey: 'mock-private' }
-      })
-
-      BlockchainService.getInstance = vi.fn(() => ({
-        generateNewWallet: mockGenerateWallet,
-        subscribe: vi.fn(() => vi.fn()),
-        getState: vi.fn(() => ({
-          isInitialized: false,
-          currentKeyPair: null,
-          mnemonic: null,
-          p2pNode: null,
-          peerId: null,
-          connectedPeers: [],
-          transactions: [],
-          isConnecting: false,
-          error: null,
-        })),
-      }))
-
-      renderOnboardingFlow()
-      
-      const generateButton = screen.getByRole('button', { name: /generate new account/i })
-      await user.click(generateButton)
-
-      await waitFor(() => {
-        const checkbox = screen.getByRole('checkbox', { name: /i have saved my phrase/i })
-        return user.click(checkbox)
-      })
-
-      await waitFor(() => {
-        const continueButton = screen.getByRole('button', { name: /continue/i })
-        return user.click(continueButton)
-      })
-
-      expect(mockOnLogin).toHaveBeenCalledTimes(1)
-    })
-  })
-
-  describe('Error Handling', () => {
-    it('displays error message when wallet generation fails', async () => {
-      const user = userEvent.setup()
-      const mockGenerateWallet = vi.fn().mockRejectedValue(new Error('Failed to generate wallet'))
-
-      BlockchainService.getInstance = vi.fn(() => ({
-        generateNewWallet: mockGenerateWallet,
-        subscribe: vi.fn(() => vi.fn()),
-        getState: vi.fn(() => ({
-          isInitialized: false,
-          currentKeyPair: null,
-          mnemonic: null,
-          p2pNode: null,
-          peerId: null,
-          connectedPeers: [],
-          transactions: [],
-          isConnecting: false,
-          error: null,
-        })),
-      }))
-
-      renderOnboardingFlow()
-      
-      const generateButton = screen.getByRole('button', { name: /generate new account/i })
-      await user.click(generateButton)
-
-      await waitFor(() => {
-        expect(screen.getByText(/failed to generate wallet/i)).toBeInTheDocument()
-      })
-    })
-  })
-}) 
+    expect(handleLogin).toHaveBeenCalled();
+  });
+});

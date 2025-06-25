@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react'; // <-- Import useState
 import { OnboardingFlow } from './components/OnboardingFlow';
 import { Dashboard } from './components/Dashboard';
 import { useBlockchain } from './providers/BlockchainProvider';
@@ -56,43 +56,48 @@ function DashboardWithP2P() {
 
   return <Dashboard />;
 }
-
 function App() {
-  // The hook now returns the stable service and the reactive state
   const { service, state } = useBlockchain();
+  // ADD A LOADING STATE: This will help us manage the initial startup check.
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleLogin = async () => {
-    try {
-      // Get the mnemonic directly from the service state
-      const mnemonic = service.getMnemonic();
-      
-      if (mnemonic) {
-        localStorage.setItem('apstat-mnemonic', mnemonic);
-        console.log('Mnemonic persisted successfully');
-      }
-    } catch (error) {
-      console.error('Failed to persist mnemonic:', error);
+  const handleLogin = () => {
+    const mnemonic = service.getMnemonic();
+    if (mnemonic) {
+      localStorage.setItem('apstat-mnemonic', mnemonic);
+      console.log('Mnemonic persisted successfully');
+      // No need to call restoreWallet here, the state is already updated.
     }
   };
 
-  // We add a startup effect to check for a saved wallet
+  // Session persistence: Check for saved wallet on startup
   useEffect(() => {
-    // Only attempt wallet restore if wallet isn't already initialized
-    if (!state.isInitialized) {
+    const restoreSession = async () => {
       const savedMnemonic = localStorage.getItem('apstat-mnemonic');
-      if (savedMnemonic) {
+      
+      // We only try to restore if there's a mnemonic and the wallet isn't already initialized.
+      if (savedMnemonic && !service.getState().isInitialized) {
         console.log('Found saved mnemonic, restoring wallet...');
         try {
-          service.restoreWallet(savedMnemonic);
+          await service.restoreWallet(savedMnemonic);
         } catch (error) {
           console.error('Failed to restore wallet, clearing saved mnemonic:', error);
           localStorage.removeItem('apstat-mnemonic');
         }
       }
-    }
-  }, [service, state.isInitialized]); // Depends on the stable service instance and initialization state
+      // CRITICAL: After the check is complete, we set loading to false.
+      setIsLoading(false);
+    };
 
-  // Conditional rendering based on wallet initialization status
+    restoreSession();
+  }, [service]); // This effect should only run ONCE.
+
+  // While we're checking localStorage, show a simple loading indicator.
+  if (isLoading) {
+    return <div className="min-h-screen bg-gray-900" />; // Or a proper spinner
+  }
+
+  // After loading, check the initialized state to decide what to render.
   if (!state.isInitialized) {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
