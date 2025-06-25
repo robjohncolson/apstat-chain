@@ -7,7 +7,7 @@ interface OnboardingFlowProps {
 
 export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
   const { service } = useBlockchain()
-  const [mnemonic, setMnemonic] = useState<string | null>(null)
+  const [generatedMnemonic, setGeneratedMnemonic] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [hasConfirmedSaved, setHasConfirmedSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -17,7 +17,7 @@ export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
       setIsGenerating(true)
       setError(null)
       const result = await service.generateNewWallet()
-      setMnemonic(result.mnemonic)
+      setGeneratedMnemonic(result.mnemonic)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate wallet')
     } finally {
@@ -26,8 +26,8 @@ export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
   }
 
   const handleContinue = () => {
-    if (mnemonic) {
-      onLogin(mnemonic)
+    if (generatedMnemonic) {
+      onLogin(generatedMnemonic)
     }
   }
 
@@ -57,7 +57,7 @@ export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
         </div>
       )}
 
-      {!mnemonic ? (
+      {!generatedMnemonic ? (
         <div className="text-center">
           <button
             onClick={handleGenerateAccount}
@@ -88,7 +88,7 @@ export function OnboardingFlow({ onLogin }: OnboardingFlowProps) {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-6">
-              {renderMnemonicWords(mnemonic)}
+              {renderMnemonicWords(generatedMnemonic)}
             </div>
           </div>
 
