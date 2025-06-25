@@ -107,7 +107,7 @@ describe('P2PNode', () => {
       p2pNode = new P2PNode(testKeyPair);
 
       // Assert that the mocked Peer constructor was called with the expected peer ID
-      expect(MockedPeer).toHaveBeenCalledWith({ id: expectedPeerId });
+      expect(MockedPeer).toHaveBeenCalledWith(expectedPeerId);
     });
   });
 

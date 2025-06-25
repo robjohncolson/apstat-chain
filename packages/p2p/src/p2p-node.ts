@@ -200,10 +200,6 @@ export class P2PNode extends EventEmitter {
     });
   }
 
-  public getPeerJsId(): string {
-    return this.peer.id;
-  }
-
   public isConnectedToPeer(peerId: string): boolean {
     const conn = this.connections.get(peerId);
     return conn ? conn.open : false;
