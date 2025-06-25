@@ -66,22 +66,10 @@ class BlockchainService {
 
   // Key Management
   public async generateNewWallet(): Promise<{ mnemonic: string; keyPair: KeyPair }> {
-    try {
-      const mnemonic = generateMnemonic();
-      const keyPair = await keyPairFromMnemonic(mnemonic);
-      
-      this.updateState({
-        currentKeyPair: keyPair,
-        mnemonic,
-        error: null,
-      });
-
-      return { mnemonic, keyPair };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to generate wallet';
-      this.updateState({ error: errorMessage });
-      throw error;
-    }
+    const mnemonic = generateMnemonic();
+    const keyPair = await keyPairFromMnemonic(mnemonic);
+    
+    return { mnemonic, keyPair };
   }
 
   public async restoreWallet(mnemonic: string): Promise<KeyPair> {
