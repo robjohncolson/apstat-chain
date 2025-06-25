@@ -1,4 +1,5 @@
 import { useBlockchain } from '../providers/BlockchainProvider'
+import { Ledger } from './Ledger'
 
 interface DashboardProps {
   onDiscoverPeers?: () => Promise<void>
@@ -129,6 +130,11 @@ export function Dashboard({ onDiscoverPeers }: DashboardProps) {
               No peers connected yet
             </div>
           )}
+        </div>
+
+        {/* Global Ledger */}
+        <div className="mt-6">
+          <Ledger />
         </div>
 
         {/* Error Display */}
