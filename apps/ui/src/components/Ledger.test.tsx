@@ -51,4 +51,22 @@ describe('Ledger', () => {
     expect(screen.getByText('Global Ledger (0 transactions)')).toBeInTheDocument();
     expect(screen.getByText('No transactions yet. Complete a lesson to see your first transaction!')).toBeInTheDocument();
   });
+
+  it('should render a transaction without crashing', () => {
+    // Mock transaction using new flat structure
+    const mockTransaction = {
+      id: 'tx_12345678901234567890123456789012',
+      publicKey: '02a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890',
+      signature: '304402201234567890123456789012345678901234567890123456789012345678901234022012345678901234567890123456789012345678901234567890123456789012',
+      payload: {
+        type: 'lesson-completion',
+        data: { lessonId: 'lesson-1', score: 85 }
+      }
+    };
+
+    // This test will fail because the Ledger component expects 
+    // transaction.authorPublicKey.hex but the new structure has 
+    // transaction.publicKey (flat string)
+    render(<Ledger transactions={[mockTransaction]} />);
+  });
 }); 
