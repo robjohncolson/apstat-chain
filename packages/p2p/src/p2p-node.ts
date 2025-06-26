@@ -23,6 +23,16 @@ export interface BlockMessage extends P2PMessage {
   data: Block;
 }
 
+export interface ChainRequestMessage extends P2PMessage {
+  type: 'GET_CHAIN_REQUEST';
+  data: null; // No data needed for the request
+}
+
+export interface ChainResponseMessage extends P2PMessage {
+  type: 'CHAIN_RESPONSE';
+  data: any; // The chain data
+}
+
 export interface P2PNodeConfig {
   host?: string;
   port?: number;
@@ -147,6 +157,12 @@ export class P2PNode extends EventEmitter {
         case 'peer-list':
           this.handlePeerList(message as PeerListMessage);
           break;
+        case 'GET_CHAIN_REQUEST':
+          this.handleChainRequest(message as ChainRequestMessage, fromPeer);
+          break;
+        case 'CHAIN_RESPONSE':
+          this.handleChainResponse(message as ChainResponseMessage, fromPeer);
+          break;
         default:
           console.log(`Received unknown message type: ${message.type} from ${fromPeer}`);
           this.emit('message:received', { type: message.type, data: message.data, fromPeer });
@@ -166,6 +182,16 @@ export class P2PNode extends EventEmitter {
     console.log(`Received block ${message.data.id} from ${fromPeer}`);
     const block = this.deserializeBlock(message.data);
     this.emit('block:received', block);
+  }
+
+  private handleChainRequest(message: ChainRequestMessage, fromPeer: string): void {
+    console.log(`Received chain request from ${fromPeer}`);
+    this.emit('chain-request:received', fromPeer);
+  }
+
+  private handleChainResponse(message: ChainResponseMessage, fromPeer: string): void {
+    console.log(`Received chain response from ${fromPeer}`);
+    this.emit('chain:received', message.data);
   }
 
   public connectToPeer(peerId: string): void {
@@ -346,5 +372,45 @@ export class P2PNode extends EventEmitter {
     }
 
     this.removeAllListeners();
+  }
+
+  public requestChain(peerId: string): void {
+    const conn = this.connections.get(peerId);
+    if (!conn || !conn.open) {
+      console.error(`Cannot request chain from ${peerId}: Not connected`);
+      return;
+    }
+
+    const message: ChainRequestMessage = {
+      type: 'GET_CHAIN_REQUEST',
+      data: null
+    };
+
+    try {
+      conn.send(message);
+      console.log(`Sent chain request to ${peerId}`);
+    } catch (error) {
+      console.error(`Failed to send chain request to ${peerId}:`, error);
+    }
+  }
+
+  public sendChain(peerId: string, chain: any): void {
+    const conn = this.connections.get(peerId);
+    if (!conn || !conn.open) {
+      console.error(`Cannot send chain to ${peerId}: Not connected`);
+      return;
+    }
+
+    const message: ChainResponseMessage = {
+      type: 'CHAIN_RESPONSE',
+      data: chain
+    };
+
+    try {
+      conn.send(message);
+      console.log(`Sent chain response to ${peerId}`);
+    } catch (error) {
+      console.error(`Failed to send chain response to ${peerId}:`, error);
+    }
   }
 } 
