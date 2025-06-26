@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, vi, beforeEach } from 'vitest';
 import { createTransaction, keyPairFromMnemonic, generateMnemonic } from '@apstat-chain/core';
 import { P2PNode } from './p2p-node';
 

@@ -140,7 +140,11 @@ class BlockchainService {
     try {
       this.updateState({ isConnecting: true, error: null });
 
-      const p2pNode = new P2PNode(keyPair);
+      const p2pNode = new P2PNode(keyPair, {
+        host: import.meta.env.VITE_PEERJS_SERVER_HOST,
+        port: parseInt(import.meta.env.VITE_PEERJS_SERVER_PORT, 10),
+        path: import.meta.env.VITE_PEERJS_SERVER_PATH,
+      });
       
       // Set up event listeners
       p2pNode.on('ready', (id: string) => {

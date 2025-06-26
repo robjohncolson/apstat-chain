@@ -18,6 +18,12 @@ export interface TransactionMessage extends P2PMessage {
   data: Transaction;
 }
 
+export interface P2PNodeConfig {
+  host?: string;
+  port?: number;
+  path?: string;
+}
+
 export class P2PNode extends EventEmitter {
   private handlePeerList(message: PeerListMessage): void {
     const remotePeers = message.data;
@@ -37,10 +43,27 @@ export class P2PNode extends EventEmitter {
   private peer: Peer;
   private connections: Map<string, DataConnection> = new Map();
 
-  constructor(keyPair: KeyPair) {
+  constructor(keyPair: KeyPair, config?: P2PNodeConfig) {
     super();
     const derivedId = peerIdFromPublicKey(keyPair.publicKey);
-    this.peer = new Peer(derivedId);
+    
+    // Use config if provided, otherwise use environment variables or defaults
+    const peerConfig: any = {};
+    if (config?.host) {
+      peerConfig.host = config.host;
+    }
+    if (config?.port) {
+      peerConfig.port = config.port;
+    }
+    if (config?.path) {
+      peerConfig.path = config.path;
+    }
+    
+    // Only set configuration if at least one custom value is provided
+    this.peer = Object.keys(peerConfig).length > 0 
+      ? new Peer(derivedId, peerConfig)
+      : new Peer(derivedId);
+    
     this.setupPeerEventHandlers();
   }
 

@@ -77,7 +77,7 @@ describe('P2PNode', () => {
     const expectedPeerId = peerIdFromPublicKey(keyPair.publicKey);
     
     // Instantiate a new P2PNode
-    const p2pNode = new P2PNode(keyPair);
+    new P2PNode(keyPair);
     
     // Assert that the Peer constructor was called with the expected deterministic ID
     expect(MockedPeer).toHaveBeenCalledWith(expectedPeerId);

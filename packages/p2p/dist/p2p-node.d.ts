@@ -1,4 +1,5 @@
 import type { Transaction } from '@apstat-chain/core';
+import { type KeyPair } from '@apstat-chain/core';
 import { EventEmitter } from 'eventemitter3';
 export interface P2PMessage {
     type: string;
@@ -12,11 +13,16 @@ export interface TransactionMessage extends P2PMessage {
     type: 'transaction';
     data: Transaction;
 }
+export interface P2PNodeConfig {
+    host?: string;
+    port?: number;
+    path?: string;
+}
 export declare class P2PNode extends EventEmitter {
     private handlePeerList;
     private peer;
     private connections;
-    constructor(peerId?: string);
+    constructor(keyPair: KeyPair, config?: P2PNodeConfig);
     private setupPeerEventHandlers;
     private setupConnectionEventHandlers;
     private handleIncomingData;

@@ -1,3 +1,4 @@
+import { peerIdFromPublicKey } from '@apstat-chain/core';
 import { EventEmitter } from 'eventemitter3';
 import { Peer } from 'peerjs';
 export class P2PNode extends EventEmitter {
@@ -15,9 +16,24 @@ export class P2PNode extends EventEmitter {
     }
     peer;
     connections = new Map();
-    constructor(peerId) {
+    constructor(keyPair, config) {
         super();
-        this.peer = peerId ? new Peer(peerId) : new Peer();
+        const derivedId = peerIdFromPublicKey(keyPair.publicKey);
+        // Use config if provided, otherwise use environment variables or defaults
+        const peerConfig = {};
+        if (config?.host) {
+            peerConfig.host = config.host;
+        }
+        if (config?.port) {
+            peerConfig.port = config.port;
+        }
+        if (config?.path) {
+            peerConfig.path = config.path;
+        }
+        // Only set configuration if at least one custom value is provided
+        this.peer = Object.keys(peerConfig).length > 0
+            ? new Peer(derivedId, peerConfig)
+            : new Peer(derivedId);
         this.setupPeerEventHandlers();
     }
     setupPeerEventHandlers() {
@@ -106,27 +122,48 @@ export class P2PNode extends EventEmitter {
         const conn = this.peer.connect(peerId);
         this.setupConnectionEventHandlers(conn);
     }
-    // Helper function to serialize bigint values for network transmission
+    // Helper function to serialize transactions for network transmission
     serializeTransaction(transaction) {
-        return {
-            ...transaction,
-            signature: {
-                r: transaction.signature.r.toString(),
-                s: transaction.signature.s.toString(),
-                recovery: transaction.signature.recovery
+        try {
+            // Handle both old and new transaction structures
+            const txCopy = { ...transaction };
+            // If signature is an object with bigint values (old structure), convert to string
+            if (typeof txCopy.signature === 'object' && txCopy.signature !== null && 'r' in txCopy.signature) {
+                txCopy.signature = {
+                    r: txCopy.signature.r.toString(),
+                    s: txCopy.signature.s.toString(),
+                    recovery: txCopy.signature.recovery
+                };
             }
-        };
+            return txCopy;
+        }
+        catch (error) {
+            console.error('Error serializing transaction:', error);
+            throw new Error('Failed to serialize transaction');
+        }
     }
-    // Helper function to deserialize bigint values from network transmission
+    // Helper function to deserialize transactions from network transmission
     deserializeTransaction(data) {
-        return {
-            ...data,
-            signature: {
-                r: BigInt(data.signature.r),
-                s: BigInt(data.signature.s),
-                recovery: data.signature.recovery
+        try {
+            let transaction = data;
+            // Parse string data if needed
+            if (typeof data === 'string') {
+                transaction = JSON.parse(data);
             }
-        };
+            // If signature is an object with string values (serialized old structure), convert back to bigint
+            if (typeof transaction.signature === 'object' && transaction.signature !== null && 'r' in transaction.signature) {
+                transaction.signature = {
+                    r: BigInt(transaction.signature.r),
+                    s: BigInt(transaction.signature.s),
+                    recovery: transaction.signature.recovery
+                };
+            }
+            return transaction;
+        }
+        catch (error) {
+            console.error('Error deserializing transaction:', error);
+            throw new Error('Failed to deserialize transaction');
+        }
     }
     broadcastTransaction(transaction) {
         const serializedTransaction = this.serializeTransaction(transaction);
