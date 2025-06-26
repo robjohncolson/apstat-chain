@@ -22,6 +22,12 @@ export declare class Blockchain {
      */
     addBlock(newBlock: Block): void;
     /**
+     * Replace the current chain with a new chain if it's valid and longer
+     * @param newChain The new chain to potentially replace the current one
+     * @returns true if the chain was replaced, false otherwise
+     */
+    replaceChain(newChain: readonly Block[]): boolean;
+    /**
      * Validate an entire blockchain
      */
     static isValidChain(chain: readonly Block[]): boolean;

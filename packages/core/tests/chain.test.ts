@@ -200,4 +200,82 @@ describe('Blockchain', () => {
       expect(Blockchain.isValidChain(invalidChain)).toBe(false);
     });
   });
+
+  describe('replaceChain', () => {
+    it('should replace the chain and return true when newChain is valid and longer', () => {
+      const originalChain = blockchain.getChain();
+      expect(originalChain).toHaveLength(1); // Only genesis block
+
+      // Create a longer valid chain
+      const transaction1 = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
+      const block1 = createBlock({
+        privateKey: testPrivateKey,
+        previousHash: blockchain.getLatestBlock().id,
+        transactions: [transaction1]
+      });
+
+      const transaction2 = createTransaction(testPrivateKey, { type: 'test', data: 'block2' });
+      const block2 = createBlock({
+        privateKey: testPrivateKey,
+        previousHash: block1.id,
+        transactions: [transaction2]
+      });
+
+      const newChain = [originalChain[0], block1, block2]; // Include genesis + 2 new blocks
+      
+      const result = blockchain.replaceChain(newChain);
+      
+      expect(result).toBe(true);
+      expect(blockchain.getChain()).toHaveLength(3);
+      expect(blockchain.getLatestBlock()).toBe(block2);
+    });
+
+    it('should return false and not replace the chain when newChain is shorter', () => {
+      // First add a block to make the current chain longer
+      const transaction1 = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
+      const block1 = createBlock({
+        privateKey: testPrivateKey,
+        previousHash: blockchain.getLatestBlock().id,
+        transactions: [transaction1]
+      });
+      blockchain.addBlock(block1);
+
+      const originalChain = blockchain.getChain();
+      expect(originalChain).toHaveLength(2);
+
+      // Create a shorter chain (just genesis block)
+      const shorterChain = [originalChain[0]];
+      
+      const result = blockchain.replaceChain(shorterChain);
+      
+      expect(result).toBe(false);
+      expect(blockchain.getChain()).toHaveLength(2); // Should remain unchanged
+      expect(blockchain.getLatestBlock()).toBe(block1);
+    });
+
+    it('should return false and not replace the chain when newChain is invalid', () => {
+      const originalChain = blockchain.getChain();
+      
+      // Create an invalid chain with corrupted block signature
+      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
+      const validBlock = createBlock({
+        privateKey: testPrivateKey,
+        previousHash: blockchain.getLatestBlock().id,
+        transactions: [transaction]
+      });
+
+      const invalidBlock: Block = {
+        ...validBlock,
+        signature: 'corrupted_signature'
+      };
+
+      const invalidChain = [originalChain[0], invalidBlock];
+      
+      const result = blockchain.replaceChain(invalidChain);
+      
+      expect(result).toBe(false);
+      expect(blockchain.getChain()).toHaveLength(1); // Should remain unchanged (only genesis)
+      expect(blockchain.getLatestBlock()).toBe(originalChain[0]);
+    });
+  });
 }); 

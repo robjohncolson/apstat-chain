@@ -69,6 +69,27 @@ export class Blockchain {
   }
 
   /**
+   * Replace the current chain with a new chain if it's valid and longer
+   * @param newChain The new chain to potentially replace the current one
+   * @returns true if the chain was replaced, false otherwise
+   */
+  replaceChain(newChain: readonly Block[]): boolean {
+    // Don't replace if the new chain is not longer than the current chain
+    if (newChain.length <= this.chain.length) {
+      return false;
+    }
+
+    // Don't replace if the new chain is not valid
+    if (!Blockchain.isValidChain(newChain)) {
+      return false;
+    }
+
+    // Replace the chain and return true
+    this.chain = [...newChain];
+    return true;
+  }
+
+  /**
    * Validate an entire blockchain
    */
   static isValidChain(chain: readonly Block[]): boolean {
