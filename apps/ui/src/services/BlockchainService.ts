@@ -3,6 +3,8 @@ import {
     generateMnemonic,
     keyPairFromMnemonic,
     verifyTransaction,
+    Blockchain,
+    createBlock,
     type KeyPair,
     type Transaction
 } from '@apstat-chain/core';
@@ -15,7 +17,8 @@ export interface BlockchainState {
   p2pNode: P2PNode | null;
   peerId: string | null;
   connectedPeers: string[];
-  transactions: Transaction[];
+  blockchain: Blockchain;
+  pendingTransactions: Transaction[];
   isConnecting: boolean;
   error: string | null;
 }
@@ -35,7 +38,8 @@ class BlockchainService {
       p2pNode: null,
       peerId: null,
       connectedPeers: [],
-      transactions: [],
+      blockchain: new Blockchain(),
+      pendingTransactions: [],
       isConnecting: false,
       error: null,
     };
@@ -108,9 +112,9 @@ class BlockchainService {
     try {
       const transaction = createTransaction(this.state.currentKeyPair.privateKey, payload);
       
-      // Add to local transactions
+      // Add to pending transactions instead of directly to blockchain
       this.updateState({
-        transactions: [...this.state.transactions, transaction],
+        pendingTransactions: [...this.state.pendingTransactions, transaction],
         error: null,
       });
 
@@ -132,7 +136,54 @@ class BlockchainService {
   }
 
   public getTransactions(): Transaction[] {
-    return this.state.transactions;
+    // Return all transactions from all blocks in the blockchain
+    const allTransactions: Transaction[] = [];
+    for (const block of this.state.blockchain.getChain()) {
+      allTransactions.push(...block.transactions);
+    }
+    return allTransactions;
+  }
+
+  public getPendingTransactions(): Transaction[] {
+    return this.state.pendingTransactions;
+  }
+
+  public getBlockchain(): Blockchain {
+    return this.state.blockchain;
+  }
+
+  /**
+   * Mine all pending transactions into a new block and add it to the blockchain
+   */
+  public minePendingTransactions(): void {
+    if (!this.state.currentKeyPair) {
+      throw new Error('No wallet initialized. Please generate or restore a wallet first.');
+    }
+
+    if (this.state.pendingTransactions.length === 0) {
+      throw new Error('No pending transactions to mine');
+    }
+
+    try {
+      const latestBlock = this.state.blockchain.getLatestBlock();
+      const newBlock = createBlock({
+        privateKey: this.state.currentKeyPair.privateKey,
+        previousHash: latestBlock.id,
+        transactions: [...this.state.pendingTransactions]
+      });
+
+      this.state.blockchain.addBlock(newBlock);
+
+      // Clear pending transactions after successful mining
+      this.updateState({
+        pendingTransactions: [],
+        error: null,
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to mine pending transactions';
+      this.updateState({ error: errorMessage });
+      throw error;
+    }
   }
 
   // P2P Networking
@@ -171,11 +222,13 @@ class BlockchainService {
       p2pNode.on('transaction:received', (transaction: Transaction) => {
         // Verify the transaction before adding it
         if (this.verifyTransaction(transaction)) {
-          // Check if we already have this transaction
-          const exists = this.state.transactions.some(tx => tx.id === transaction.id);
-          if (!exists) {
+          // Check if we already have this transaction in pending or in blocks
+          const existsInPending = this.state.pendingTransactions.some(tx => tx.id === transaction.id);
+          const existsInBlocks = this.getTransactions().some(tx => tx.id === transaction.id);
+          
+          if (!existsInPending && !existsInBlocks) {
             this.updateState({
-              transactions: [...this.state.transactions, transaction],
+              pendingTransactions: [...this.state.pendingTransactions, transaction],
             });
           }
         } else {
@@ -274,7 +327,8 @@ class BlockchainService {
       p2pNode: null,
       peerId: null,
       connectedPeers: [],
-      transactions: [],
+      blockchain: new Blockchain(),
+      pendingTransactions: [],
       isConnecting: false,
       error: null,
     };

@@ -7,6 +7,8 @@ interface DashboardProps {
   isConnecting: boolean
   error: string | null
   onCompleteLesson: (lessonId: string) => void
+  onMinePendingTransactions: () => void
+  pendingTransactionsCount: number
 }
 
 export function Dashboard({
@@ -16,6 +18,8 @@ export function Dashboard({
   isConnecting,
   error,
   onCompleteLesson,
+  onMinePendingTransactions,
+  pendingTransactionsCount,
 }: DashboardProps) {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
@@ -92,6 +96,13 @@ export function Dashboard({
               className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
             >
               Complete Unit 1 Quiz
+            </button>
+            <button
+              onClick={onMinePendingTransactions}
+              disabled={pendingTransactionsCount === 0}
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Mine Pending Transactions ({pendingTransactionsCount})
             </button>
           </div>
         </div>

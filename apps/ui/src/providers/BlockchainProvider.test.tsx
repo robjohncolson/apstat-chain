@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { BlockchainProvider, useBlockchain } from './BlockchainProvider';
@@ -9,6 +8,7 @@ vi.mock('../services/BlockchainService', () => {
   const mockServiceInstance = {
     subscribe: vi.fn(),
     getState: vi.fn(),
+    getTransactions: vi.fn(() => []),
   };
 
   const mockBlockchainService = {
@@ -26,8 +26,8 @@ describe('BlockchainProvider', () => {
 
   // Test component that uses the useBlockchain hook
   const TestComponent = () => {
-    const { state } = useBlockchain();
-    return <div>Count: {state.transactions.length}</div>;
+    const { service } = useBlockchain();
+    return <div>Count: {service.getTransactions().length}</div>;
   };
 
   beforeEach(async () => {

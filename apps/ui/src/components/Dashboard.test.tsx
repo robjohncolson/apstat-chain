@@ -12,8 +12,9 @@ describe('Dashboard', () => {
       connectedPeers: ['PEER_1', 'PEER_2', 'PEER_3'],
       isConnecting: false,
       error: null,
-      transactions: [],
       onCompleteLesson: vi.fn(),
+      onMinePendingTransactions: vi.fn(),
+      pendingTransactionsCount: 0,
     };
 
     // 2. Render the component with mock data

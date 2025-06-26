@@ -68,6 +68,14 @@ function DashboardWithP2P() {
     });
   };
 
+  const handleMinePendingTransactions = () => {
+    try {
+      service.minePendingTransactions();
+    } catch (error) {
+      console.error('Failed to mine pending transactions:', error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Dashboard
@@ -77,12 +85,14 @@ function DashboardWithP2P() {
         isConnecting={state.isConnecting}
         error={state.error}
         onCompleteLesson={handleCompleteLesson}
+        onMinePendingTransactions={handleMinePendingTransactions}
+        pendingTransactionsCount={state.pendingTransactions.length}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Ledger transactions={state.transactions} />
+        <Ledger transactions={service.getTransactions()} />
       </div>
       <div className="max-w-4xl mx-auto px-4">
-        <Leaderboard transactions={state.transactions} />
+        <Leaderboard transactions={service.getTransactions()} />
       </div>
     </div>
   );

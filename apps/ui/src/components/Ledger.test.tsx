@@ -12,7 +12,7 @@ describe('Ledger', () => {
         authorPublicKey: { hex: 'ALICE_PUBLIC_KEY_123456789', bytes: new Uint8Array() },
         timestamp: 1234567890000,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-1-quiz' },
-        signature: { r: 123n, s: 456n }
+        signature: "1234567890abcdef"
       },
       {
         id: 'tx789012345678901234567890123456',
