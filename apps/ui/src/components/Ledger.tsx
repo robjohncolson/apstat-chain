@@ -7,7 +7,8 @@ interface LedgerProps {
 export function Ledger({ transactions }: LedgerProps) {
 
   // Helper function to truncate long strings
-  const truncate = (str: string, length: number = 12) => {
+  const truncate = (str: string | undefined, length: number = 12) => {
+    if (!str) return 'N/A';
     return str.length > length ? `${str.slice(0, length)}...` : str;
   };
 
@@ -59,12 +60,12 @@ export function Ledger({ transactions }: LedgerProps) {
                     </span>
                   </td>
                   <td className="py-3 px-3 font-mono text-xs">
-                    <span title={transaction.authorPublicKey.hex}>
-                      {truncate(transaction.authorPublicKey.hex, 16)}
+                    <span title={transaction.publicKey}>
+                      {truncate(transaction.publicKey, 16)}
                     </span>
                   </td>
                   <td className="py-3 px-3 text-xs">
-                    {formatTimestamp(transaction.timestamp)}
+                    {transaction.timestamp ? formatTimestamp(transaction.timestamp) : 'N/A'}
                   </td>
                   <td className="py-3 px-3 text-xs">
                     <div className="max-w-xs overflow-hidden">

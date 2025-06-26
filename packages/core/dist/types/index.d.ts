@@ -20,5 +20,6 @@ export interface Transaction {
     readonly publicKey: string;
     readonly signature: string;
     readonly payload: any;
+    readonly timestamp?: number;
 }
 //# sourceMappingURL=index.d.ts.map

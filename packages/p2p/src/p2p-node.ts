@@ -142,28 +142,52 @@ export class P2PNode extends EventEmitter {
     this.setupConnectionEventHandlers(conn);
   }
 
-  // Helper function to serialize bigint values for network transmission
+  // Helper function to serialize transactions for network transmission
   private serializeTransaction(transaction: Transaction): any {
-    return {
-      ...transaction,
-      signature: {
-        r: transaction.signature.r.toString(),
-        s: transaction.signature.s.toString(),
-        recovery: transaction.signature.recovery
+    try {
+      // Handle both old and new transaction structures
+      const txCopy = { ...transaction } as any;
+      
+      // If signature is an object with bigint values (old structure), convert to string
+      if (typeof txCopy.signature === 'object' && txCopy.signature !== null && 'r' in txCopy.signature) {
+        txCopy.signature = {
+          r: txCopy.signature.r.toString(),
+          s: txCopy.signature.s.toString(),
+          recovery: txCopy.signature.recovery
+        };
       }
-    };
+      
+      return txCopy;
+    } catch (error) {
+      console.error('Error serializing transaction:', error);
+      throw new Error('Failed to serialize transaction');
+    }
   }
 
-  // Helper function to deserialize bigint values from network transmission
+  // Helper function to deserialize transactions from network transmission
   private deserializeTransaction(data: any): Transaction {
-    return {
-      ...data,
-      signature: {
-        r: BigInt(data.signature.r),
-        s: BigInt(data.signature.s),
-        recovery: data.signature.recovery
+    try {
+      let transaction = data;
+      
+      // Parse string data if needed
+      if (typeof data === 'string') {
+        transaction = JSON.parse(data);
       }
-    };
+      
+      // If signature is an object with string values (serialized old structure), convert back to bigint
+      if (typeof transaction.signature === 'object' && transaction.signature !== null && 'r' in transaction.signature) {
+        transaction.signature = {
+          r: BigInt(transaction.signature.r),
+          s: BigInt(transaction.signature.s),
+          recovery: transaction.signature.recovery
+        };
+      }
+      
+      return transaction;
+    } catch (error) {
+      console.error('Error deserializing transaction:', error);
+      throw new Error('Failed to deserialize transaction');
+    }
   }
 
   public broadcastTransaction(transaction: Transaction): void {

@@ -26,7 +26,7 @@ export function Leaderboard({ transactions }: LeaderboardProps) {
     transactions
       .filter(transaction => transaction.payload?.type === 'LESSON_COMPLETE')
       .forEach(transaction => {
-        const authorKey = transaction.authorPublicKey.hex;
+        const authorKey = transaction.publicKey;
         const lessonId = transaction.payload.lessonId;
 
         if (!userTransactions.has(authorKey)) {
