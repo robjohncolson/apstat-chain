@@ -1,5 +1,5 @@
 import type { Transaction } from '@apstat-chain/core';
-import { peerIdFromPublicKey, type KeyPair } from '@apstat-chain/core';
+import { peerIdFromPublicKey, type KeyPair, type Block } from '@apstat-chain/core';
 import { EventEmitter } from 'eventemitter3';
 import { Peer, type DataConnection } from 'peerjs';
 
@@ -16,6 +16,11 @@ export interface PeerListMessage extends P2PMessage {
 export interface TransactionMessage extends P2PMessage {
   type: 'transaction';
   data: Transaction;
+}
+
+export interface BlockMessage extends P2PMessage {
+  type: 'block';
+  data: Block;
 }
 
 export interface P2PNodeConfig {
@@ -136,9 +141,12 @@ export class P2PNode extends EventEmitter {
         case 'transaction':
           this.handleTransaction(message as TransactionMessage, fromPeer);
           break;
-          case 'peer-list':
-    this.handlePeerList(message as PeerListMessage);
-    break;
+        case 'block':
+          this.handleBlock(message as BlockMessage, fromPeer);
+          break;
+        case 'peer-list':
+          this.handlePeerList(message as PeerListMessage);
+          break;
         default:
           console.log(`Received unknown message type: ${message.type} from ${fromPeer}`);
           this.emit('message:received', { type: message.type, data: message.data, fromPeer });
@@ -152,6 +160,12 @@ export class P2PNode extends EventEmitter {
     console.log(`Received transaction ${message.data.id} from ${fromPeer}`);
     const transaction = this.deserializeTransaction(message.data);
     this.emit('transaction:received', transaction);
+  }
+
+  private handleBlock(message: BlockMessage, fromPeer: string): void {
+    console.log(`Received block ${message.data.id} from ${fromPeer}`);
+    const block = this.deserializeBlock(message.data);
+    this.emit('block:received', block);
   }
 
   public connectToPeer(peerId: string): void {
@@ -231,6 +245,58 @@ export class P2PNode extends EventEmitter {
         }
       } catch (error) {
         console.error(`Failed to send transaction to ${peerId}:`, error);
+        // Don't remove connection here, let the error handler deal with it
+      }
+    }
+  }
+
+  // Helper function to serialize blocks for network transmission
+  private serializeBlock(block: Block): any {
+    try {
+      // Block structure is simple, just copy it
+      const blockCopy = { ...block };
+      return blockCopy;
+    } catch (error) {
+      console.error('Error serializing block:', error);
+      throw new Error('Failed to serialize block');
+    }
+  }
+
+  // Helper function to deserialize blocks from network transmission
+  private deserializeBlock(data: any): Block {
+    try {
+      let block = data;
+      
+      // Parse string data if needed
+      if (typeof data === 'string') {
+        block = JSON.parse(data);
+      }
+      
+      return block;
+    } catch (error) {
+      console.error('Error deserializing block:', error);
+      throw new Error('Failed to deserialize block');
+    }
+  }
+
+  public broadcastBlock(block: Block): void {
+    const serializedBlock = this.serializeBlock(block);
+    const message: BlockMessage = {
+      type: 'block',
+      data: serializedBlock
+    };
+
+    const connectedPeers = Array.from(this.connections.keys());
+    console.log(`Broadcasting block ${block.id} to ${connectedPeers.length} peers`);
+
+    for (const [peerId, conn] of this.connections) {
+      try {
+        if (conn.open) {
+          conn.send(message);
+          console.log(`Sent block ${block.id} to ${peerId}`);
+        }
+      } catch (error) {
+        console.error(`Failed to send block to ${peerId}:`, error);
         // Don't remove connection here, let the error handler deal with it
       }
     }

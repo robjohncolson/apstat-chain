@@ -1,5 +1,5 @@
 import type { Transaction } from '@apstat-chain/core';
-import { type KeyPair } from '@apstat-chain/core';
+import { type KeyPair, type Block } from '@apstat-chain/core';
 import { EventEmitter } from 'eventemitter3';
 export interface P2PMessage {
     type: string;
@@ -12,6 +12,10 @@ export interface PeerListMessage extends P2PMessage {
 export interface TransactionMessage extends P2PMessage {
     type: 'transaction';
     data: Transaction;
+}
+export interface BlockMessage extends P2PMessage {
+    type: 'block';
+    data: Block;
 }
 export interface P2PNodeConfig {
     host?: string;
@@ -27,10 +31,14 @@ export declare class P2PNode extends EventEmitter {
     private setupConnectionEventHandlers;
     private handleIncomingData;
     private handleTransaction;
+    private handleBlock;
     connectToPeer(peerId: string): void;
     private serializeTransaction;
     private deserializeTransaction;
     broadcastTransaction(transaction: Transaction): void;
+    private serializeBlock;
+    private deserializeBlock;
+    broadcastBlock(block: Block): void;
     getPeerId(): string | null;
     getConnectedPeers(): string[];
     isConnectedToPeer(peerId: string): boolean;

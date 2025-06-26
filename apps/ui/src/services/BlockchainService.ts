@@ -5,8 +5,10 @@ import {
     verifyTransaction,
     Blockchain,
     createBlock,
+    verifyBlock,
     type KeyPair,
-    type Transaction
+    type Transaction,
+    type Block
 } from '@apstat-chain/core';
 import { P2PNode, discoverPeers } from '@apstat-chain/p2p';
 
@@ -174,6 +176,11 @@ class BlockchainService {
 
       this.state.blockchain.addBlock(newBlock);
 
+      // Broadcast the new block to connected peers if P2P is available
+      if (this.state.p2pNode) {
+        this.state.p2pNode.broadcastBlock(newBlock);
+      }
+
       // Clear pending transactions after successful mining
       this.updateState({
         pendingTransactions: [],
@@ -233,6 +240,41 @@ class BlockchainService {
           }
         } else {
           console.warn('Received and discarded invalid transaction:', transaction);
+        }
+      });
+
+      p2pNode.on('block:received', (block: Block) => {
+        try {
+          // Verify the block before attempting to add it
+          if (verifyBlock(block)) {
+            // Check if we already have this block
+            const currentChain = this.state.blockchain.getChain();
+            const blockExists = currentChain.some(existingBlock => existingBlock.id === block.id);
+            
+            if (!blockExists) {
+              // Attempt to add the block to the local blockchain
+              this.state.blockchain.addBlock(block);
+              
+              // Remove any transactions from pending that are now in this block
+              const blockTransactionIds = new Set(block.transactions.map(tx => tx.id));
+              const updatedPendingTransactions = this.state.pendingTransactions.filter(
+                tx => !blockTransactionIds.has(tx.id)
+              );
+              
+              this.updateState({
+                pendingTransactions: updatedPendingTransactions,
+              });
+              
+              console.log(`Successfully added received block ${block.id} to local blockchain`);
+            } else {
+              console.log(`Block ${block.id} already exists in local blockchain`);
+            }
+          } else {
+            console.warn('Received and discarded invalid block:', block.id);
+          }
+        } catch (error) {
+          console.error('Error handling received block:', error);
+          // Gracefully handle errors - don't crash the application
         }
       });
 

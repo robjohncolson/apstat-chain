@@ -96,6 +96,9 @@ export class P2PNode extends EventEmitter {
                 case 'transaction':
                     this.handleTransaction(message, fromPeer);
                     break;
+                case 'block':
+                    this.handleBlock(message, fromPeer);
+                    break;
                 case 'peer-list':
                     this.handlePeerList(message);
                     break;
@@ -112,6 +115,11 @@ export class P2PNode extends EventEmitter {
         console.log(`Received transaction ${message.data.id} from ${fromPeer}`);
         const transaction = this.deserializeTransaction(message.data);
         this.emit('transaction:received', transaction);
+    }
+    handleBlock(message, fromPeer) {
+        console.log(`Received block ${message.data.id} from ${fromPeer}`);
+        const block = this.deserializeBlock(message.data);
+        this.emit('block:received', block);
     }
     connectToPeer(peerId) {
         if (this.connections.has(peerId)) {
@@ -182,6 +190,54 @@ export class P2PNode extends EventEmitter {
             }
             catch (error) {
                 console.error(`Failed to send transaction to ${peerId}:`, error);
+                // Don't remove connection here, let the error handler deal with it
+            }
+        }
+    }
+    // Helper function to serialize blocks for network transmission
+    serializeBlock(block) {
+        try {
+            // Block structure is simple, just copy it
+            const blockCopy = { ...block };
+            return blockCopy;
+        }
+        catch (error) {
+            console.error('Error serializing block:', error);
+            throw new Error('Failed to serialize block');
+        }
+    }
+    // Helper function to deserialize blocks from network transmission
+    deserializeBlock(data) {
+        try {
+            let block = data;
+            // Parse string data if needed
+            if (typeof data === 'string') {
+                block = JSON.parse(data);
+            }
+            return block;
+        }
+        catch (error) {
+            console.error('Error deserializing block:', error);
+            throw new Error('Failed to deserialize block');
+        }
+    }
+    broadcastBlock(block) {
+        const serializedBlock = this.serializeBlock(block);
+        const message = {
+            type: 'block',
+            data: serializedBlock
+        };
+        const connectedPeers = Array.from(this.connections.keys());
+        console.log(`Broadcasting block ${block.id} to ${connectedPeers.length} peers`);
+        for (const [peerId, conn] of this.connections) {
+            try {
+                if (conn.open) {
+                    conn.send(message);
+                    console.log(`Sent block ${block.id} to ${peerId}`);
+                }
+            }
+            catch (error) {
+                console.error(`Failed to send block to ${peerId}:`, error);
                 // Don't remove connection here, let the error handler deal with it
             }
         }
