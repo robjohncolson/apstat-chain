@@ -1,7 +1,10 @@
 # 009. Blockchain Structure
 
 - **Status:** Accepted
-- **Date:** (Today's Date)
+- **Date:** 6/26/2025
+
+
+
 
 ## Context
 
