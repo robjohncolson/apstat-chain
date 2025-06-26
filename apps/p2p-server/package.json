@@ -1,0 +1,15 @@
+{
+  "name": "@apstat-chain/p2p-server",
+  "version": "1.0.0",
+  "description": "P2P server for apstat-chain",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "peer": "^1.0.2"
+  },
+  "keywords": ["p2p", "server", "apstat-chain"],
+  "author": "",
+  "license": "ISC"
+} 
