@@ -181,7 +181,7 @@ export class P2PNode extends EventEmitter {
   private handleBlock(message: BlockMessage, fromPeer: string): void {
     console.log(`Received block ${message.data.id} from ${fromPeer}`);
     const block = this.deserializeBlock(message.data);
-    this.emit('block:received', block);
+    this.emit('block:received', block, fromPeer);
   }
 
   private handleChainRequest(message: ChainRequestMessage, fromPeer: string): void {

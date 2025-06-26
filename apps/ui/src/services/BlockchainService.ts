@@ -243,7 +243,7 @@ class BlockchainService {
         }
       });
 
-      p2pNode.on('block:received', (block: Block) => {
+      p2pNode.on('block:received', (block: Block, senderPeerId: string) => {
         try {
           // Verify the block before attempting to add it
           if (verifyBlock(block)) {
@@ -274,7 +274,45 @@ class BlockchainService {
           }
         } catch (error) {
           console.error('Error handling received block:', error);
+          // Check if this is a chain synchronization issue (e.g., previous hash doesn't match)
+          if (error instanceof Error && error.message.includes('Previous hash does not match')) {
+            console.log('Chain synchronization issue detected, requesting full chain from sender');
+            this.state.p2pNode?.requestChain(senderPeerId);
+          }
           // Gracefully handle errors - don't crash the application
+        }
+      });
+
+      p2pNode.on('chain-request:received', (requesterId: string) => {
+        console.log(`Received chain request from peer ${requesterId}`);
+        // Send our current chain to the requesting peer
+        this.state.p2pNode?.sendChain(requesterId, this.state.blockchain.getChain());
+      });
+
+      p2pNode.on('chain:received', (receivedChain: Block[]) => {
+        console.log('Received full chain from peer, attempting to replace local chain');
+        try {
+          const result = this.state.blockchain.replaceChain(receivedChain);
+          console.log('Chain replacement result:', result);
+          
+          // If chain was replaced successfully, update our state to reflect any changes
+          if (result) {
+            // Recalculate pending transactions - remove any that are now in the new chain
+            const allChainTransactionIds = new Set();
+            receivedChain.forEach(block => {
+              block.transactions.forEach(tx => allChainTransactionIds.add(tx.id));
+            });
+            
+            const updatedPendingTransactions = this.state.pendingTransactions.filter(
+              tx => !allChainTransactionIds.has(tx.id)
+            );
+            
+            this.updateState({
+              pendingTransactions: updatedPendingTransactions,
+            });
+          }
+        } catch (error) {
+          console.error('Error replacing chain:', error);
         }
       });
 
