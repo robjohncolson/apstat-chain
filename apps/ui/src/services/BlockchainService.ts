@@ -598,7 +598,7 @@ class BlockchainService {
   /**
    * Get all live transactions (both pending and confirmed)
    */
-  public getLiveTransactions(): Transaction[] {
+  public getAllTransactionsIncludingPending(): Transaction[] {
     const confirmedTransactions: Transaction[] = [];
     
     // Get all transactions from all blocks in the blockchain
@@ -608,6 +608,20 @@ class BlockchainService {
     
     // Combine confirmed transactions with pending transactions
     return [...confirmedTransactions, ...this.state.pendingTransactions];
+  }
+
+  /**
+   * Get only confirmed transactions from finalized blocks in the blockchain
+   */
+  public getConfirmedTransactions(): Transaction[] {
+    const confirmedTransactions: Transaction[] = [];
+    
+    // Get all transactions from all blocks in the blockchain
+    for (const block of this.state.blockchain.getChain()) {
+      confirmedTransactions.push(...block.transactions);
+    }
+    
+    return confirmedTransactions;
   }
 
   public clearError(): void {

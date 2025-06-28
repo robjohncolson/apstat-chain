@@ -80,10 +80,10 @@ function DashboardWithP2P() {
         service={service}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Ledger transactions={service.getLiveTransactions()} />
+        <Ledger transactions={service.getConfirmedTransactions()} />
       </div>
       <div className="max-w-4xl mx-auto px-4">
-        <Leaderboard transactions={service.getLiveTransactions()} />
+        <Leaderboard transactions={service.getConfirmedTransactions()} />
       </div>
     </div>
   );

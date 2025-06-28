@@ -1,7 +1,55 @@
-import type { KeyPair } from '@apstat-chain/core'
+import type { KeyPair, Transaction } from '@apstat-chain/core'
 import { MiningView } from './MiningView'
 import { AttestationView } from './AttestationView'
 import type BlockchainService from '../services/BlockchainService'
+
+interface MempoolViewProps {
+  transactions: Transaction[]
+}
+
+function MempoolView({ transactions }: MempoolViewProps) {
+  return (
+    <div className="bg-orange-50 dark:bg-orange-900 p-6 rounded-lg">
+      <h2 className="text-xl font-semibold text-orange-800 dark:text-orange-200 mb-4">
+        Mempool ({transactions.length} pending transactions)
+      </h2>
+      
+      {transactions.length === 0 ? (
+        <p className="text-orange-700 dark:text-orange-300 text-sm">
+          No pending transactions
+        </p>
+      ) : (
+        <div className="space-y-3">
+          {transactions.map((tx, index) => (
+            <div
+              key={tx.id}
+              className="bg-white dark:bg-gray-800 p-4 rounded border"
+            >
+              <div className="space-y-2">
+                <div>
+                  <label className="block text-xs font-medium text-orange-700 dark:text-orange-300 mb-1">
+                    Transaction ID
+                  </label>
+                  <div className="font-mono text-xs text-gray-600 dark:text-gray-400 break-all">
+                    {tx.id}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-orange-700 dark:text-orange-300 mb-1">
+                    Payload
+                  </label>
+                  <div className="font-mono text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                    {JSON.stringify(tx.payload, null, 2)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 interface DashboardProps {
   publicKey: KeyPair['publicKey'] | null
@@ -150,6 +198,11 @@ export function Dashboard({
             Review Candidate Blocks
           </h2>
           <AttestationView service={service} />
+        </div>
+
+        {/* Mempool Section */}
+        <div className="mt-6">
+          <MempoolView transactions={service.getPendingTransactions()} />
         </div>
 
         {/* Connected Peers */}
