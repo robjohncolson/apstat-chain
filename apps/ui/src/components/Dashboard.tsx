@@ -161,7 +161,7 @@ export function Dashboard({
 
           <div className="flex flex-col space-y-4">
             <button
-              onClick={() => onCompleteLesson('1-1', '1-1_quiz_1')}
+              onClick={() => onCompleteLesson('1-2', '1-2_q1 ')}
               className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
             >
               Complete Unit 1 Quiz
