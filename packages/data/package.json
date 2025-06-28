@@ -1,0 +1,22 @@
+{
+  "name": "@apstat-chain/data",
+  "version": "1.0.0",
+  "description": "Curriculum data package for AP Statistics Chain",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "rebuild": "npm run clean && npm run build"
+  },
+  "keywords": ["ap-statistics", "curriculum", "data"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "assets/**/*"
+  ]
+} 

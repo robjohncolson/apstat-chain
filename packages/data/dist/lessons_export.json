@@ -1,0 +1,2707 @@
+[
+    {
+        "id": "1-1",
+        "title": "Introducing Statistics: What Can We Learn from Data?",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "1-1_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.1",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-1_origami",
+                "type": "origami",
+                "title": "Origami: Paper Airplane (Classic Dart)",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-2",
+        "title": "The Language of Variation: Variables",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "1-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-2_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.2",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-2_origami",
+                "type": "origami",
+                "title": "Origami: Simple Boat",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-3",
+        "title": "Representing a Categorical Variable with Tables",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "1-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-3_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.3",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-3_origami",
+                "type": "origami",
+                "title": "Origami: Paper Hat",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-4",
+        "title": "Representing a Categorical Variable with Graphs",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-4_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-4_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.4",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-4_origami",
+                "type": "origami",
+                "title": "Origami: Fortune Teller (Cootie Catcher)",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-5",
+        "title": "Representing a Quantitative Variable with Graphs",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "1-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-5_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.5",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-5_origami",
+                "type": "origami",
+                "title": "Origami: Paper Cup",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-6",
+        "title": "Describing the Distribution of a Quantitative Variable",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "1-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-6_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.6",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-6_origami",
+                "type": "origami",
+                "title": "Origami: Simple Flower (Tulip)",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-7",
+        "title": "Summary Statistics for a Quantitative Variable",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-7_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-7_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.7",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-7_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.7",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-7_origami",
+                "type": "origami",
+                "title": "Origami: Jumping Frog",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-8",
+        "title": "Graphical Representations of Summary Statistics",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-8_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "1-8_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.8",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-8_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.8",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-8_origami",
+                "type": "origami",
+                "title": "Origami: Paper Crane (Simplified)",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-9",
+        "title": "Comparing Distributions of a Quantitative Variable",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-9_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "1-9_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.9",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-9_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.9",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-9_origami",
+                "type": "origami",
+                "title": "Origami: Butterfly",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-10",
+        "title": "The Normal Distribution",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-10_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "1-10_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "1-10_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "1-10_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 1.10",
+                "contribution": 0.5
+            },
+            {
+                "id": "1-10_blooket",
+                "type": "blooket",
+                "title": "Blooket: Topic 1.10",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-10_origami",
+                "type": "origami",
+                "title": "Origami: Simple Box",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "1-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit1",
+        "activities": [
+            {
+                "id": "1-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 1 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "1-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 1 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "1-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 1 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "1-capstone_blooket",
+                "type": "blooket",
+                "title": "Blooket: Unit 1 Progress Check",
+                "contribution": 0.15
+            },
+            {
+                "id": "1-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Star Box",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-1",
+        "title": "Introducing Statistics: Are Variables Related?",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "2-1_origami",
+                "type": "origami",
+                "title": "Origami: Paper Airplane (Glider)",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-2",
+        "title": "Representing Two Categorical Variables",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "2-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-2_origami",
+                "type": "origami",
+                "title": "Origami: Sailboat",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-3",
+        "title": "Statistics for Two Categorical Variables",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "2-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-3_origami",
+                "type": "origami",
+                "title": "Origami: Envelope",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-4",
+        "title": "Representing the Relationship Between Two Quantitative Variables",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-4_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-4_origami",
+                "type": "origami",
+                "title": "Origami: Simple Rose",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-5",
+        "title": "Correlation",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-5_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-5_origami",
+                "type": "origami",
+                "title": "Origami: Penguin",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-6",
+        "title": "Linear Regression Models",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-6_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-6_origami",
+                "type": "origami",
+                "title": "Origami: Heart",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-7",
+        "title": "Residuals",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-7_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-7_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.7",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-7_origami",
+                "type": "origami",
+                "title": "Origami: Candy Box",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-8",
+        "title": "Least Squares Regression",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-8_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "2-8_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "2-8_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "2-8_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.8",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-8_origami",
+                "type": "origami",
+                "title": "Origami: Lotus Flower",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-9",
+        "title": "Analyzing Departures from Linearity",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-9_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-9_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "2-9_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 2.9",
+                "contribution": 0.5
+            },
+            {
+                "id": "2-9_origami",
+                "type": "origami",
+                "title": "Origami: Peace Crane",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "2-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit2",
+        "activities": [
+            {
+                "id": "2-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 2 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "2-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 2 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "2-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 2 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "2-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Modular Cube (6 pieces)",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-1",
+        "title": "Introducing Statistics: Do the Data We Collected Tell the Truth?",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "3-1_origami",
+                "type": "origami",
+                "title": "Origami: Detective Hat",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-2",
+        "title": "Introduction to Planning a Study",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "3-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 3.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "3-2_origami",
+                "type": "origami",
+                "title": "Origami: Blueprint Box",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-3",
+        "title": "Random Sampling and Data Collection",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "3-3_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "3-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 3.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "3-3_origami",
+                "type": "origami",
+                "title": "Origami: Spinning Top",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-4",
+        "title": "Potential Problems with Sampling",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "3-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 3.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "3-4_origami",
+                "type": "origami",
+                "title": "Origami: Broken Chain",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-5",
+        "title": "Introduction to Experimental Design",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "3-5_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "3-5_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "3-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 3.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "3-5_origami",
+                "type": "origami",
+                "title": "Origami: Lab Coat",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-6",
+        "title": "Selecting an Experimental Design",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "3-6_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "3-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 3.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "3-6_origami",
+                "type": "origami",
+                "title": "Origami: Multi-Compartment Box",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-7",
+        "title": "Inference and Experiments",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "3-7_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 3.7",
+                "contribution": 0.5
+            },
+            {
+                "id": "3-7_origami",
+                "type": "origami",
+                "title": "Origami: Crystal Ball",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "3-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit3",
+        "activities": [
+            {
+                "id": "3-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 3 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "3-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 3 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "3-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 3 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "3-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Tessellation Pattern",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-1",
+        "title": "Introducing Statistics: Random and Non-Random Patterns?",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "4-1_origami",
+                "type": "origami",
+                "title": "Origami: Magic 8-Ball",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-2",
+        "title": "Estimating Probabilities Using Simulation",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-2_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-2_origami",
+                "type": "origami",
+                "title": "Origami: Computer Terminal",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-3",
+        "title": "Introduction to Probability",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "4-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-3_origami",
+                "type": "origami",
+                "title": "Origami: Probability Wheel",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-4",
+        "title": "Mutually Exclusive Events",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "4-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-4_origami",
+                "type": "origami",
+                "title": "Origami: Locked Treasure Chest",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-5",
+        "title": "Conditional Probability",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "4-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-5_origami",
+                "type": "origami",
+                "title": "Origami: Branching Tree",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-6",
+        "title": "Independent Events and Unions of Events",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "4-6_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "4-6_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "4-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-6_origami",
+                "type": "origami",
+                "title": "Origami: Double Bridge",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-7",
+        "title": "Introduction to Random Variables and Probability Distributions",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-7_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-7_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.7",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-7_origami",
+                "type": "origami",
+                "title": "Origami: Variable Box",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-8",
+        "title": "Mean and Standard Deviation of Random Variables",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-8_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "4-8_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.8",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-8_origami",
+                "type": "origami",
+                "title": "Origami: Balance Scale",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-9",
+        "title": "Combining Random Variables",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-9_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-9_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-9_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.9",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-9_origami",
+                "type": "origami",
+                "title": "Origami: Modular Flower",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-10",
+        "title": "Introduction to the Binomial Distribution",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-10_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "4-10_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.10",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-10_origami",
+                "type": "origami",
+                "title": "Origami: Binary Star System",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-11",
+        "title": "Parameters for a Binomial Distribution",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-11_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "4-11_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.11",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-11_origami",
+                "type": "origami",
+                "title": "Origami: Parametric Equation Spiral",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-12",
+        "title": "The Geometric Distribution",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-12_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-12_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "4-12_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 4.12",
+                "contribution": 0.5
+            },
+            {
+                "id": "4-12_origami",
+                "type": "origami",
+                "title": "Origami: Geometric Pattern Tile",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "4-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit4",
+        "activities": [
+            {
+                "id": "4-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 4 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "4-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 4 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "4-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 4 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "4-capstone_q4",
+                "type": "quiz",
+                "title": "Quiz: Unit 4 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "4-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Probability Rose (Advanced)",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-1",
+        "title": "Introducing Statistics: Why Is My Sample Not Like Yours?",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "5-1_origami",
+                "type": "origami",
+                "title": "Origami: Kaleidoscope Mandala",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-2",
+        "title": "The Normal Distribution, Revisited",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "5-2_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "5-2_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "5-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 5.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "5-2_origami",
+                "type": "origami",
+                "title": "Origami: Golden Ratio Nautilus",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-3",
+        "title": "The Central Limit Theorem",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-3_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 5.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "5-3_origami",
+                "type": "origami",
+                "title": "Origami: Converging Galaxy",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-4",
+        "title": "Biased and Unbiased Point Estimates",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "5-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 5.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "5-4_origami",
+                "type": "origami",
+                "title": "Origami: Truth vs. Illusion Mirror",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-5",
+        "title": "Sampling Distributions for Sample Proportions",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-5_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 5.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "5-5_origami",
+                "type": "origami",
+                "title": "Origami: Proportion Phoenix",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-6",
+        "title": "Sampling Distributions for Differences in Sample Proportions",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-6_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 5.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "5-6_origami",
+                "type": "origami",
+                "title": "Origami: Dueling Dragons",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-7",
+        "title": "Sampling Distributions for Sample Means",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-7_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-7_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 5.7",
+                "contribution": 0.5
+            },
+            {
+                "id": "5-7_origami",
+                "type": "origami",
+                "title": "Origami: Zen Garden Lotus",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-8",
+        "title": "Sampling Distributions for Differences in Sample Means",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-8_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-8_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "5-8_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 5.8",
+                "contribution": 0.5
+            },
+            {
+                "id": "5-8_origami",
+                "type": "origami",
+                "title": "Origami: Infinity Mobius Strip",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "5-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit5",
+        "activities": [
+            {
+                "id": "5-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 5 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "5-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 5 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "5-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 5 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "5-capstone_q4",
+                "type": "quiz",
+                "title": "Quiz: Unit 5 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "5-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Cosmic Mandala of Distributions",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-1",
+        "title": "Introducing Statistics: Why Be Normal?",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "6-1_origami",
+                "type": "origami",
+                "title": "Origami: Master's Bell Curve Sculpture",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-2",
+        "title": "Constructing a Confidence Interval for a Population Proportion",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-2_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-2_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-2_origami",
+                "type": "origami",
+                "title": "Origami: Precision Bridge Architecture",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-3",
+        "title": "Justifying a Claim Based on a Confidence Interval for a Population Proportion",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-3_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-3_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-3_origami",
+                "type": "origami",
+                "title": "Origami: Judicial Scales of Evidence",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-4",
+        "title": "Setting Up a Test for a Population Proportion",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-4_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-4_origami",
+                "type": "origami",
+                "title": "Origami: Master Architect's Blueprint",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-5",
+        "title": "Interpreting p-Values",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-5_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-5_origami",
+                "type": "origami",
+                "title": "Origami: Oracle's Probability Prism",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-6",
+        "title": "Concluding a Test for a Population Proportion",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-6_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-6_origami",
+                "type": "origami",
+                "title": "Origami: Expert Surgeon's Scalpel",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-7",
+        "title": "Potential Errors When Performing Tests",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-7_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-7_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.7",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-7_origami",
+                "type": "origami",
+                "title": "Origami: Master Blacksmith's Forge",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-8",
+        "title": "Confidence Intervals for the Difference of Two Proportions",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-8_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-8_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-8_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.8",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-8_origami",
+                "type": "origami",
+                "title": "Origami: Twin Tower Comparison",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-9",
+        "title": "Justifying a Claim Based on a Confidence Interval for a Difference of Population Proportions",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-9_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-9_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-9_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.9",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-9_origami",
+                "type": "origami",
+                "title": "Origami: Expert Detective's Magnifying Glass",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-10",
+        "title": "Setting Up a Test for the Difference of Two Population Proportions",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-10_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-10_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "6-10_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.10",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-10_origami",
+                "type": "origami",
+                "title": "Origami: Master Engineer's Dual Compass",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-11",
+        "title": "Carrying Out a Test for the Difference of Two Population Proportions",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-11_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-11_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-11_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "6-11_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 6.11",
+                "contribution": 0.5
+            },
+            {
+                "id": "6-11_origami",
+                "type": "origami",
+                "title": "Origami: Master Conductor's Baton",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "6-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit6",
+        "activities": [
+            {
+                "id": "6-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 6 Progress Check",
+                "contribution": 0.1
+            },
+            {
+                "id": "6-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 6 Progress Check",
+                "contribution": 0.1
+            },
+            {
+                "id": "6-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 6 Progress Check",
+                "contribution": 0.1
+            },
+            {
+                "id": "6-capstone_q4",
+                "type": "quiz",
+                "title": "Quiz: Unit 6 Progress Check",
+                "contribution": 0.1
+            },
+            {
+                "id": "6-capstone_q5",
+                "type": "quiz",
+                "title": "Quiz: Unit 6 Progress Check",
+                "contribution": 0.1
+            },
+            {
+                "id": "6-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Master Craftsman's Workshop",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-1",
+        "title": "Introducing Statistics: Should I Worry About Error?",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "7-1_origami",
+                "type": "origami",
+                "title": "Origami: Dragon's First Awakening",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-2",
+        "title": "Constructing a Confidence Interval for a Population Mean",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-2_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-2_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-2_origami",
+                "type": "origami",
+                "title": "Origami: Phoenix of Confidence",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-3",
+        "title": "Justifying a Claim About a Population Mean Based on a Confidence Interval",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-3_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-3_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-3_origami",
+                "type": "origami",
+                "title": "Origami: Oracle's Sacred Scroll",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-4",
+        "title": "Setting Up a Test for a Population Mean",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-4_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-4_origami",
+                "type": "origami",
+                "title": "Origami: Titan's Battle Arena",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-5",
+        "title": "Carrying Out a Test for the Population Mean",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-5_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-5_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-5_origami",
+                "type": "origami",
+                "title": "Origami: Thor's Mighty Hammer",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-6",
+        "title": "Confidence Intervals for the Difference of Two Means",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-6_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-6_origami",
+                "type": "origami",
+                "title": "Origami: Twin Dragons of Comparison",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-7",
+        "title": "Justifying a Claim About the Difference of Two Means Based on a Confidence Interval",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-7_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-7_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.7",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-7_origami",
+                "type": "origami",
+                "title": "Origami: Sage's Crystal Ball",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-8",
+        "title": "Setting Up a Test for the Difference of Two Population Means",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-8_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-8_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "7-8_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.8",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-8_origami",
+                "type": "origami",
+                "title": "Origami: Kraken's Battle Throne",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-9",
+        "title": "Carrying Out a Test for the Difference of Two Population Means",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-9_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-9_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-9_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "7-9_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 7.9",
+                "contribution": 0.5
+            },
+            {
+                "id": "7-9_origami",
+                "type": "origami",
+                "title": "Origami: Poseidon's Trident",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-10",
+        "title": "Skills Focus: Selecting, Implementing, and Communicating Inference Procedures",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-10_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.4
+            },
+            {
+                "id": "7-10_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.4
+            },
+            {
+                "id": "7-10_origami",
+                "type": "origami",
+                "title": "Origami: Merlin's Spellbook of Mastery",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "7-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit7",
+        "activities": [
+            {
+                "id": "7-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 7 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "7-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 7 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "7-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 7 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "7-capstone_q4",
+                "type": "quiz",
+                "title": "Quiz: Unit 7 Progress Check",
+                "contribution": 0.125
+            },
+            {
+                "id": "7-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Legendary Hall of Means",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-1",
+        "title": "Introducing Statistics: Are My Results Unexpected?",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "8-1_origami",
+                "type": "origami",
+                "title": "Origami: Renaissance Portrait Frame",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-2",
+        "title": "Setting Up a Chi-Square Goodness of Fit Test",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-2_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-2_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 8.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "8-2_origami",
+                "type": "origami",
+                "title": "Origami: Gallery Curator's Easel",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-3",
+        "title": "Carrying Out a Chi-Square Test for Goodness of Fit",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-3_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-3_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 8.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "8-3_origami",
+                "type": "origami",
+                "title": "Origami: Art Critic's Magnifying Monocle",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-4",
+        "title": "Expected Counts in Two-Way Tables",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.3
+            },
+            {
+                "id": "8-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 8.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "8-4_origami",
+                "type": "origami",
+                "title": "Origami: Master's Grid Canvas",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-5",
+        "title": "Setting Up a Chi-Square Test for Homogeneity or Independence",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "8-5_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "8-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 8.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "8-5_origami",
+                "type": "origami",
+                "title": "Origami: Venetian Masquerade Mask",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-6",
+        "title": "Carrying Out a Chi-Square Test for Homogeneity or Independence",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-6_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-6_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "8-6_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 8.6",
+                "contribution": 0.5
+            },
+            {
+                "id": "8-6_origami",
+                "type": "origami",
+                "title": "Origami: Sculptor's Finishing Chisel",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-7",
+        "title": "Skills Focus: Selecting an Appropriate Inference Procedure for Categorical Data",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-7_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "8-7_origami",
+                "type": "origami",
+                "title": "Origami: Master Curator's Selection Guide",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "8-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit8",
+        "activities": [
+            {
+                "id": "8-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 8 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "8-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 8 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "8-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 8 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "8-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Grand Gallery Exhibition Hall",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "9-1",
+        "title": "Introducing Statistics: Do Those Points Align?",
+        "unitId": "unit9",
+        "activities": [
+            {
+                "id": "9-1_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "9-1_origami",
+                "type": "origami",
+                "title": "Origami: Conductor's Precision Baton",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "9-2",
+        "title": "Confidence Intervals for the Slope of a Regression Model",
+        "unitId": "unit9",
+        "activities": [
+            {
+                "id": "9-2_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "9-2_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "9-2_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "9-2_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 9.2",
+                "contribution": 0.5
+            },
+            {
+                "id": "9-2_origami",
+                "type": "origami",
+                "title": "Origami: Virtuoso's Golden Violin",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "9-3",
+        "title": "Justifying a Claim About the Slope of a Regression Model Based on a Confidence Interval",
+        "unitId": "unit9",
+        "activities": [
+            {
+                "id": "9-3_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "9-3_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "9-3_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 9.3",
+                "contribution": 0.5
+            },
+            {
+                "id": "9-3_origami",
+                "type": "origami",
+                "title": "Origami: Opera Singer's Crystal Microphone",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "9-4",
+        "title": "Setting Up a Test for the Slope of a Regression Model",
+        "unitId": "unit9",
+        "activities": [
+            {
+                "id": "9-4_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.15
+            },
+            {
+                "id": "9-4_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.15
+            },
+            {
+                "id": "9-4_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 9.4",
+                "contribution": 0.5
+            },
+            {
+                "id": "9-4_origami",
+                "type": "origami",
+                "title": "Origami: Ballet Master's Performance Stage",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "9-5",
+        "title": "Carrying Out a Test for the Slope of a Regression Model",
+        "unitId": "unit9",
+        "activities": [
+            {
+                "id": "9-5_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "9-5_video_2",
+                "type": "video",
+                "title": "Video 2",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "9-5_video_3",
+                "type": "video",
+                "title": "Video 3",
+                "contribution": 0.09999999999999999
+            },
+            {
+                "id": "9-5_q1",
+                "type": "quiz",
+                "title": "Quiz: Topic 9.5",
+                "contribution": 0.5
+            },
+            {
+                "id": "9-5_origami",
+                "type": "origami",
+                "title": "Origami: Virtuoso Pianist's Grand Piano",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "9-6",
+        "title": "Skills Focus: Selecting an Appropriate Inference Procedure",
+        "unitId": "unit9",
+        "activities": [
+            {
+                "id": "9-6_video_1",
+                "type": "video",
+                "title": "Video 1",
+                "contribution": 0.8
+            },
+            {
+                "id": "9-6_origami",
+                "type": "origami",
+                "title": "Origami: Symphony Conductor's Score",
+                "contribution": 0.05
+            }
+        ]
+    },
+    {
+        "id": "9-capstone",
+        "title": "Capstone Assessment",
+        "unitId": "unit9",
+        "activities": [
+            {
+                "id": "9-capstone_q1",
+                "type": "quiz",
+                "title": "Quiz: Unit 9 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "9-capstone_q2",
+                "type": "quiz",
+                "title": "Quiz: Unit 9 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "9-capstone_q3",
+                "type": "quiz",
+                "title": "Quiz: Unit 9 Progress Check",
+                "contribution": 0.16666666666666666
+            },
+            {
+                "id": "9-capstone_origami",
+                "type": "origami",
+                "title": "Origami: Carnegie Hall of Statistical Virtuosity",
+                "contribution": 0.05
+            }
+        ]
+    }
+]
