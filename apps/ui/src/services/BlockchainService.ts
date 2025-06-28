@@ -320,6 +320,9 @@ class BlockchainService {
         port: parseInt(import.meta.env.VITE_PEERJS_SERVER_PORT, 10),
         path: import.meta.env.VITE_PEERJS_SERVER_PATH,
       });
+
+      // Provide the mempool getter to the P2P node
+      p2pNode.setMempoolGetter(() => this.getPendingTransactions());
       
       // Set up event listeners
       p2pNode.on('ready', (id: string) => {
@@ -335,11 +338,6 @@ class BlockchainService {
         this.updateState({
           connectedPeers: [...new Set([...this.state.connectedPeers, peer])],
         });
-        
-        // Request mempool from the newly connected peer
-        if (this.state.p2pNode) {
-          this.state.p2pNode.requestMempool(peer);
-        }
       });
 
       p2pNode.on('peer:disconnected', (peer: string) => {
@@ -510,15 +508,7 @@ class BlockchainService {
         });
       });
       
-      // Handle mempool request from other peers
-      p2pNode.on('mempool-request:received', (requesterId: string) => {
-        console.log(`Received mempool request from peer ${requesterId}`);
-        // Send our current pending transactions to the requester
-        const pendingTxs = this.getPendingTransactions();
-        if (this.state.p2pNode) {
-          this.state.p2pNode.sendMempool(requesterId, pendingTxs);
-        }
-      });
+
 
       // Handle incoming mempool from other peers
       p2pNode.on('mempool:received', (receivedTransactions: Transaction[]) => {
