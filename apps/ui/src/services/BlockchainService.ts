@@ -576,6 +576,40 @@ class BlockchainService {
     return { ...this.state };
   }
 
+  /**
+   * Get the total contribution value of all pending transactions
+   */
+  public getPendingContributionTotal(): number {
+    return this.state.pendingTransactions.reduce((total, transaction) => {
+      const contribution = transaction.payload?.contribution || 0;
+      return total + contribution;
+    }, 0);
+  }
+
+  /**
+   * Check if a user is eligible to mine (placeholder implementation)
+   * Complex "Relevant Knowledge" logic will be added later
+   */
+  public isEligibleToMine(publicKey: string): boolean {
+    // Simple placeholder: eligible if there are pending transactions and key is provided
+    return this.state.pendingTransactions.length > 0 && !!publicKey;
+  }
+
+  /**
+   * Get all live transactions (both pending and confirmed)
+   */
+  public getLiveTransactions(): Transaction[] {
+    const confirmedTransactions: Transaction[] = [];
+    
+    // Get all transactions from all blocks in the blockchain
+    for (const block of this.state.blockchain.getChain()) {
+      confirmedTransactions.push(...block.transactions);
+    }
+    
+    // Combine confirmed transactions with pending transactions
+    return [...confirmedTransactions, ...this.state.pendingTransactions];
+  }
+
   public clearError(): void {
     this.updateState({ error: null });
   }

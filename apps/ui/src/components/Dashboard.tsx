@@ -1,4 +1,7 @@
 import type { KeyPair } from '@apstat-chain/core'
+import { MiningView } from './MiningView'
+import { AttestationView } from './AttestationView'
+import type BlockchainService from '../services/BlockchainService'
 
 interface DashboardProps {
   publicKey: KeyPair['publicKey'] | null
@@ -7,6 +10,7 @@ interface DashboardProps {
   isConnecting: boolean
   error: string | null
   onCompleteLesson: (lessonId: string) => void
+  service: BlockchainService
 }
 
 export function Dashboard({
@@ -16,7 +20,12 @@ export function Dashboard({
   isConnecting,
   error,
   onCompleteLesson,
+  service,
 }: DashboardProps) {
+  // Get current network state
+  const pendingTotal = service.getPendingContributionTotal();
+  const isEligible = publicKey ? service.isEligibleToMine(publicKey.hex) : false;
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full">
@@ -80,6 +89,22 @@ export function Dashboard({
           </div>
         </div>
 
+        {/* Network Progress */}
+        <div className="mt-6 bg-indigo-50 dark:bg-indigo-900 p-6 rounded-lg">
+          <h2 className="text-xl font-semibold text-indigo-800 dark:text-indigo-200 mb-4">
+            Network Progress
+          </h2>
+          <div className="text-lg font-medium text-indigo-700 dark:text-indigo-300">
+            Network Progress: {pendingTotal.toFixed(2)} / 1.0
+          </div>
+          <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+            <div 
+              className="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" 
+              style={{ width: `${Math.min(100, (pendingTotal / 1.0) * 100)}%` }}
+            ></div>
+          </div>
+        </div>
+
         {/* Lessons Section */}
         <div className="mt-6 bg-yellow-50 dark:bg-yellow-900 p-6 rounded-lg">
           <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-4">
@@ -94,6 +119,37 @@ export function Dashboard({
               Complete Unit 1 Quiz
             </button>
           </div>
+        </div>
+
+        {/* Propose a New Block Section */}
+        <div className="mt-6">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+            Propose a New Block
+          </h2>
+          
+          {pendingTotal >= 1.0 && isEligible ? (
+            <MiningView service={service} />
+          ) : (
+            <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg text-center">
+              <p className="text-gray-600 dark:text-gray-300 mb-2">
+                Mining not available
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {pendingTotal < 1.0 
+                  ? `Need ${(1.0 - pendingTotal).toFixed(2)} more contribution to enable mining`
+                  : 'You are not eligible to mine at this time'
+                }
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Review Candidate Blocks Section */}
+        <div className="mt-6">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+            Review Candidate Blocks
+          </h2>
+          <AttestationView service={service} />
         </div>
 
         {/* Connected Peers */}

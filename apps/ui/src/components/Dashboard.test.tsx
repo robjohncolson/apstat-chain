@@ -5,7 +5,17 @@ import '@testing-library/jest-dom';
 
 describe('Dashboard', () => {
   it('should render wallet and network data correctly', () => {
-    // 1. Define mock data
+    // 1. Define mock service
+    const mockService = {
+      getPendingContributionTotal: vi.fn().mockReturnValue(0.5),
+      isEligibleToMine: vi.fn().mockReturnValue(false),
+      getCandidateBlocks: vi.fn().mockReturnValue([]),
+      submitAttestation: vi.fn(),
+      getMiningPuzzle: vi.fn(),
+      proposeBlock: vi.fn(),
+    };
+
+    // 2. Define mock data
     const mockData = {
       publicKey: { hex: '02_FAKE_PUBLIC_KEY', bytes: new Uint8Array() },
       peerId: 'FAKE_PEER_ID',
@@ -13,11 +23,10 @@ describe('Dashboard', () => {
       isConnecting: false,
       error: null,
       onCompleteLesson: vi.fn(),
-      onMinePendingTransactions: vi.fn(),
-      pendingTransactionsCount: 0,
+      service: mockService as any,
     };
 
-    // 2. Render the component with mock data
+    // 3. Render the component with mock data
     render(<Dashboard {...mockData} />);
 
     // 3. Assert that the data is visible

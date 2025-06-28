@@ -3,7 +3,6 @@ import { OnboardingFlow } from './components/OnboardingFlow';
 import { Dashboard } from './components/Dashboard';
 import { Ledger } from './components/Ledger';
 import { Leaderboard } from './components/Leaderboard';
-import { MiningView } from './components/MiningView';
 import { useBlockchain } from './providers/BlockchainProvider';
 
 // Dashboard wrapper component that handles P2P initialization
@@ -78,15 +77,13 @@ function DashboardWithP2P() {
         isConnecting={state.isConnecting}
         error={state.error}
         onCompleteLesson={handleCompleteLesson}
+        service={service}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <MiningView service={service} />
+        <Ledger transactions={service.getLiveTransactions()} />
       </div>
       <div className="max-w-4xl mx-auto px-4">
-        <Ledger transactions={state.allTransactions} />
-      </div>
-      <div className="max-w-4xl mx-auto px-4">
-        <Leaderboard transactions={state.allTransactions} />
+        <Leaderboard transactions={service.getLiveTransactions()} />
       </div>
     </div>
   );
