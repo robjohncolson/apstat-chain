@@ -2,8 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { Blockchain } from '../src/chain/index.js';
 import { createBlock, verifyBlock, type Block } from '../src/block/index.js';
 import { createTransaction } from '../src/transaction/index.js';
+import { createAttestation } from '../src/attestation/index.js';
 import { keyPairFromMnemonic } from '../src/crypto/keys.js';
-import type { PrivateKey } from '../src/types/index.js';
+import { generateKeyPair } from '../src/crypto/secp256k1.js';
+import type { PrivateKey, Attestation } from '../src/types/index.js';
 
 describe('Blockchain', () => {
   let blockchain: Blockchain;
@@ -15,6 +17,40 @@ describe('Blockchain', () => {
     const keyPair = keyPairFromMnemonic('abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about');
     testPrivateKey = keyPair.privateKey;
   });
+
+  // Helper function to create a valid block with transactions, puzzle data, and attestations
+  function createValidBlockWithTransactions(privateKey: PrivateKey, previousHash: string, transactionData: any[] = []): Block {
+    const puzzleId = 'test-puzzle-123';
+    const proposedAnswer = 'test-answer-123';
+    
+    // Create transactions
+    const transactions = transactionData.map(data => 
+      createTransaction(privateKey, data)
+    );
+    
+    // Create attestations from different peers
+    const attester1 = generateKeyPair();
+    const attester2 = generateKeyPair();
+    const attestations: Attestation[] = [
+      createAttestation({ privateKey: attester1.privateKey, puzzleId, proposedAnswer }),
+      createAttestation({ privateKey: attester2.privateKey, puzzleId, proposedAnswer })
+    ];
+    
+    // Create candidate block
+    const candidateBlock = createBlock({
+      privateKey,
+      previousHash,
+      transactions,
+      puzzleId,
+      proposedAnswer
+    });
+    
+    // Return final block with attestations
+    return {
+      ...candidateBlock,
+      attestations
+    };
+  }
 
   describe('Genesis Block', () => {
     it('should automatically contain a single Genesis Block when instantiated', () => {
@@ -37,28 +73,26 @@ describe('Blockchain', () => {
     });
 
     it('should return the most recently added block', () => {
-      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'hello' });
-      const newBlock = createBlock({
-        privateKey: testPrivateKey,
-        previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction]
-      });
+      const newBlock = createValidBlockWithTransactions(
+        testPrivateKey, 
+        blockchain.getLatestBlock().id, 
+        [{ type: 'test', data: 'hello' }]
+      );
 
       blockchain.addBlock(newBlock);
       
       const latestBlock = blockchain.getLatestBlock();
       expect(latestBlock).toBe(newBlock);
-      expect(latestBlock.transactions).toContain(transaction);
+      expect(latestBlock.transactions).toHaveLength(1);
     });
   });
 
   describe('addBlock', () => {
-    it('should successfully add a valid block', () => {
-      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'hello' });
+    it('should successfully add a valid block with no transactions', () => {
       const newBlock = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction]
+        transactions: []
       });
 
       expect(() => blockchain.addBlock(newBlock)).not.toThrow();
@@ -66,12 +100,23 @@ describe('Blockchain', () => {
       expect(blockchain.getLatestBlock()).toBe(newBlock);
     });
 
+    it('should successfully add a valid block with transactions and attestations', () => {
+      const newBlock = createValidBlockWithTransactions(
+        testPrivateKey, 
+        blockchain.getLatestBlock().id, 
+        [{ type: 'test', data: 'hello' }]
+      );
+
+      expect(() => blockchain.addBlock(newBlock)).not.toThrow();
+      expect(blockchain.getChain()).toHaveLength(2);
+      expect(blockchain.getLatestBlock()).toBe(newBlock);
+    });
+
     it('should throw an error if the block has an invalid signature', () => {
-      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'hello' });
       const validBlock = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction]
+        transactions: []
       });
 
       // Create an invalid block by corrupting the signature
@@ -85,14 +130,25 @@ describe('Blockchain', () => {
     });
 
     it('should throw an error if previousHash does not match the latest block hash', () => {
-      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'hello' });
       const invalidBlock = createBlock({
         privateKey: testPrivateKey,
         previousHash: 'wrong_hash',
-        transactions: [transaction]
+        transactions: []
       });
 
       expect(() => blockchain.addBlock(invalidBlock)).toThrow('Previous hash does not match');
+      expect(blockchain.getChain()).toHaveLength(1); // Should still only have genesis block
+    });
+
+    it('should throw an error if non-genesis block contains transactions but no puzzle data', () => {
+      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'hello' });
+      const invalidBlock = createBlock({
+        privateKey: testPrivateKey,
+        previousHash: blockchain.getLatestBlock().id,
+        transactions: [transaction]
+      });
+
+      expect(() => blockchain.addBlock(invalidBlock)).toThrow('Invalid block signature');
       expect(blockchain.getChain()).toHaveLength(1); // Should still only have genesis block
     });
 
@@ -104,13 +160,34 @@ describe('Blockchain', () => {
         signature: 'invalid_signature'
       };
 
-      const invalidBlock = createBlock({
+      // Create a block with the invalid transaction directly 
+      // This will create a valid block structure but with an invalid transaction
+      const puzzleId = 'test-puzzle-123';
+      const proposedAnswer = 'test-answer-123';
+      
+      // Create attestations
+      const attester1 = generateKeyPair();
+      const attester2 = generateKeyPair();
+      const attestations: Attestation[] = [
+        createAttestation({ privateKey: attester1.privateKey, puzzleId, proposedAnswer }),
+        createAttestation({ privateKey: attester2.privateKey, puzzleId, proposedAnswer })
+      ];
+      
+      // Create the block with invalid transaction but valid structure
+      const candidateBlock = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [invalidTransaction]
+        transactions: [invalidTransaction], // Include invalid transaction from the start
+        puzzleId,
+        proposedAnswer
       });
+      
+      const blockWithInvalidTx: Block = {
+        ...candidateBlock,
+        attestations
+      };
 
-      expect(() => blockchain.addBlock(invalidBlock)).toThrow('Block contains invalid transactions');
+      expect(() => blockchain.addBlock(blockWithInvalidTx)).toThrow('Block contains invalid transactions');
       expect(blockchain.getChain()).toHaveLength(1); // Should still only have genesis block
     });
   });
@@ -122,21 +199,39 @@ describe('Blockchain', () => {
     });
 
     it('should return true for a valid chain with multiple blocks', () => {
-      // Add a few valid blocks
-      const transaction1 = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
+      // Add a few valid blocks with no transactions for simplicity
       const block1 = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction1]
+        transactions: []
       });
       blockchain.addBlock(block1);
 
-      const transaction2 = createTransaction(testPrivateKey, { type: 'test', data: 'block2' });
       const block2 = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction2]
+        transactions: []
       });
+      blockchain.addBlock(block2);
+
+      const chain = blockchain.getChain();
+      expect(Blockchain.isValidChain(chain)).toBe(true);
+    });
+
+    it('should return true for a valid chain with transaction blocks', () => {
+      // Add blocks with transactions and proper attestations
+      const block1 = createValidBlockWithTransactions(
+        testPrivateKey, 
+        blockchain.getLatestBlock().id, 
+        [{ type: 'test', data: 'block1' }]
+      );
+      blockchain.addBlock(block1);
+
+      const block2 = createValidBlockWithTransactions(
+        testPrivateKey, 
+        blockchain.getLatestBlock().id, 
+        [{ type: 'test', data: 'block2' }]
+      );
       blockchain.addBlock(block2);
 
       const chain = blockchain.getChain();
@@ -161,20 +256,18 @@ describe('Blockchain', () => {
     });
 
     it('should return false for a chain where previousHash links are broken', () => {
-      // Create a valid first block
-      const transaction1 = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
+      // Create valid blocks
       const block1 = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction1]
+        transactions: []
       });
 
       // Create a second block with wrong previousHash
-      const transaction2 = createTransaction(testPrivateKey, { type: 'test', data: 'block2' });
       const block2 = createBlock({
         privateKey: testPrivateKey,
         previousHash: 'wrong_hash', // This should be block1.id
-        transactions: [transaction2]
+        transactions: []
       });
 
       const invalidChain = [blockchain.getLatestBlock(), block1, block2];
@@ -183,11 +276,10 @@ describe('Blockchain', () => {
 
     it('should return false for a chain containing blocks with invalid signatures', () => {
       // Create a valid block first
-      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
       const validBlock = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction]
+        transactions: []
       });
 
       // Corrupt the signature
@@ -206,19 +298,17 @@ describe('Blockchain', () => {
       const originalChain = blockchain.getChain();
       expect(originalChain).toHaveLength(1); // Only genesis block
 
-      // Create a longer valid chain
-      const transaction1 = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
+      // Create a longer valid chain with empty transaction blocks
       const block1 = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction1]
+        transactions: []
       });
 
-      const transaction2 = createTransaction(testPrivateKey, { type: 'test', data: 'block2' });
       const block2 = createBlock({
         privateKey: testPrivateKey,
         previousHash: block1.id,
-        transactions: [transaction2]
+        transactions: []
       });
 
       const newChain = [originalChain[0], block1, block2]; // Include genesis + 2 new blocks
@@ -232,11 +322,10 @@ describe('Blockchain', () => {
 
     it('should return false and not replace the chain when newChain is shorter', () => {
       // First add a block to make the current chain longer
-      const transaction1 = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
       const block1 = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction1]
+        transactions: []
       });
       blockchain.addBlock(block1);
 
@@ -257,11 +346,10 @@ describe('Blockchain', () => {
       const originalChain = blockchain.getChain();
       
       // Create an invalid chain with corrupted block signature
-      const transaction = createTransaction(testPrivateKey, { type: 'test', data: 'block1' });
       const validBlock = createBlock({
         privateKey: testPrivateKey,
         previousHash: blockchain.getLatestBlock().id,
-        transactions: [transaction]
+        transactions: []
       });
 
       const invalidBlock: Block = {

@@ -36,4 +36,17 @@ export interface Attestation {
   readonly puzzleId: string;
   readonly proposedAnswer: string;
   readonly signature: string;
+}
+
+// Block types  
+export interface Block {
+  readonly id: string;
+  readonly previousHash: string;
+  readonly transactions: readonly Transaction[];
+  readonly timestamp: number;
+  readonly signature: string;
+  readonly publicKey: string;
+  readonly puzzleId?: string;
+  readonly proposedAnswer?: string;
+  readonly attestations?: Attestation[];
 } 
