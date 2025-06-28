@@ -74,13 +74,16 @@ class BlockchainService {
   }
 
   private updateState(updates: Partial<BlockchainState>): void {
-    this.state = Object.assign({}, this.state, updates);
     // Update allTransactions whenever state changes
     const allTransactions: Transaction[] = [];
-    for (const block of this.state.blockchain.getChain()) {
-      allTransactions.push(...block.transactions);
+    if (updates.blockchain || this.state.blockchain) {
+      const blockchain = updates.blockchain || this.state.blockchain;
+      for (const block of blockchain.getChain()) {
+        allTransactions.push(...block.transactions);
+      }
     }
-    this.state.allTransactions = allTransactions;
+    
+    this.state = { ...this.state, ...updates, allTransactions };
     this.notify();
   }
 
