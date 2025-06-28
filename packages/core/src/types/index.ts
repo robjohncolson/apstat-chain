@@ -28,4 +28,12 @@ export interface Transaction {
   readonly signature: string;
   readonly payload: any;
   readonly timestamp?: number; // Optional timestamp for UI compatibility
+}
+
+// Attestation types
+export interface Attestation {
+  readonly attesterPublicKey: string;
+  readonly puzzleId: string;
+  readonly proposedAnswer: string;
+  readonly signature: string;
 } 

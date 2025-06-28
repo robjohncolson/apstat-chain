@@ -1,7 +1,7 @@
 # 012. Social Consensus and Proof of Knowledge
 
 - **Status:** Accepted
-- **Date:** 1/2/2025
+- **Date:** 6/27/2025
 
 ## Context
 

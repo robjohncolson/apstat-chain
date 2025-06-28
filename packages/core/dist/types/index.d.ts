@@ -22,4 +22,10 @@ export interface Transaction {
     readonly payload: any;
     readonly timestamp?: number;
 }
+export interface Attestation {
+    readonly attesterPublicKey: string;
+    readonly puzzleId: string;
+    readonly proposedAnswer: string;
+    readonly signature: string;
+}
 //# sourceMappingURL=index.d.ts.map
