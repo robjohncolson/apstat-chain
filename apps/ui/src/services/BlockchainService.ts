@@ -14,6 +14,7 @@ import {
     type Attestation
 } from '@apstat-chain/core';
 import { P2PNode, discoverPeers } from '@apstat-chain/p2p';
+import type { QuizQuestion } from '@apstat-chain/data';
 
 export interface BlockchainState {
   isInitialized: boolean;
@@ -553,6 +554,20 @@ class BlockchainService {
 
   public getPeerId(): string | null {
     return this.state.peerId;
+  }
+
+  // Mining Methods
+  public getMiningPuzzle(): QuizQuestion {
+    // Temporary mock question until module resolution is fixed
+    const mockQuestion: QuizQuestion = {
+      id: 1,
+      questionImage: 'AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 ap statistics mcq9.png',
+      year: 2017,
+      source: 'Problem from 2017 AP Statistics Multiple Choice',
+      linkedLessonIds: ['1-10']
+    };
+    
+    return mockQuestion;
   }
 
   // Utility Methods

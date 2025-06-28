@@ -1,7 +1,7 @@
 # 014. UI for Social Consensus
 
 - **Status:** Accepted
-- **Date:** 1/26/2025
+- **Date:** 4/28/2025
 
 ## Context
 
