@@ -4,7 +4,6 @@ import react from '@vitejs/plugin-react'
 import { nodePolyfills } from 'vite-plugin-node-polyfills' // <-- IMPORT THE PLUGIN
 import path from 'path' // <-- IMPORT NODE'S PATH MODULE
 
-
 // https://vite.dev/config/
 export default defineConfig({
   // We've added the new plugin here:
@@ -19,6 +18,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+    },
+  },
+
+  // Server configuration for development
+  server: {
+    fs: {
+      // Allow serving files from outside the project root (for monorepo)
+      allow: ['../..'],
     },
   },
 

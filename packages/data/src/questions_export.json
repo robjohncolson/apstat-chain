@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 ap statistics mcq9.png",
+    "questionImage": "/questions/unit1/2017_ap_statistics_mcq9.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -10,7 +10,7 @@
   },
   {
     "id": 4,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 apstats exam mcq13.png",
+    "questionImage": "/questions/unit1/2017_apstats_exam_mcq13.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -19,7 +19,7 @@
   },
   {
     "id": 5,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 apstats exam mcq14.png",
+    "questionImage": "/questions/unit1/2017_apstats_exam_mcq14.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -28,7 +28,7 @@
   },
   {
     "id": 6,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 apstats exam mcq15.png",
+    "questionImage": "/questions/unit1/2017_apstats_exam_mcq15.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -38,7 +38,7 @@
   },
   {
     "id": 7,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 apstats exam MCQ19.png",
+    "questionImage": "/questions/unit1/2017_apstats_exam_MCQ19.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -47,7 +47,7 @@
   },
   {
     "id": 8,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 apstats exam mcq6.png",
+    "questionImage": "/questions/unit1/2017_apstats_exam_mcq6.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -56,7 +56,7 @@
   },
   {
     "id": 9,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 APstatsExam MCQ29.png",
+    "questionImage": "/questions/unit1/2017_APstatsExam_MCQ29.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -66,7 +66,7 @@
   },
   {
     "id": 12,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_05.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_05.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -75,7 +75,7 @@
   },
   {
     "id": 13,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_07.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_07.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -84,7 +84,7 @@
   },
   {
     "id": 14,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_10.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_10.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -93,7 +93,7 @@
   },
   {
     "id": 15,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2018_AP_MCQ_11.png",
+    "questionImage": "/questions/unit4/2018_AP_MCQ_11.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -102,7 +102,7 @@
   },
   {
     "id": 16,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2018_AP_MCQ_12.png",
+    "questionImage": "/questions/unit5/2018_AP_MCQ_12.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -111,7 +111,7 @@
   },
   {
     "id": 17,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_13.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_13.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -120,7 +120,7 @@
   },
   {
     "id": 18,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_15.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_15.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -129,7 +129,7 @@
   },
   {
     "id": 19,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_18.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_18.png",
     "year": 2018,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -139,7 +139,7 @@
   },
   {
     "id": 24,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_01.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_01.png",
     "year": 2019,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -148,7 +148,7 @@
   },
   {
     "id": 25,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_04.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_04.png",
     "year": 2019,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -157,7 +157,7 @@
   },
   {
     "id": 26,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_05.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_05.png",
     "year": 2019,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -166,7 +166,7 @@
   },
   {
     "id": 27,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_07.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_07.png",
     "year": 2019,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -175,7 +175,7 @@
   },
   {
     "id": 28,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_09.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_09.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -184,7 +184,7 @@
   },
   {
     "id": 29,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_11.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_11.png",
     "year": 2019,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -193,7 +193,7 @@
   },
   {
     "id": 30,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_24.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_24.png",
     "year": 2019,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -203,7 +203,7 @@
   },
   {
     "id": 31,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2019_AP_MCQ_03.png",
+    "questionImage": "/questions/unit2/2019_AP_MCQ_03.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -214,7 +214,7 @@
   },
   {
     "id": 32,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_20.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_20.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -224,7 +224,7 @@
   },
   {
     "id": 33,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2019_AP_MCQ_21.png",
+    "questionImage": "/questions/unit2/2019_AP_MCQ_21.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -234,7 +234,7 @@
   },
   {
     "id": 34,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2019_AP_MCQ_35.png",
+    "questionImage": "/questions/unit2/2019_AP_MCQ_35.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -244,7 +244,7 @@
   },
   {
     "id": 36,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_01.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_01.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -254,7 +254,7 @@
   },
   {
     "id": 38,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2018_AP_MCQ_02.png",
+    "questionImage": "/questions/unit2/2018_AP_MCQ_02.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -263,7 +263,7 @@
   },
   {
     "id": 39,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2018_AP_MCQ_24.png",
+    "questionImage": "/questions/unit2/2018_AP_MCQ_24.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -273,7 +273,7 @@
   },
   {
     "id": 40,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017APExamMCQ1.png",
+    "questionImage": "/questions/unit1/2017APExamMCQ1.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -283,7 +283,7 @@
   },
   {
     "id": 41,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2017APexamMCQ3.png",
+    "questionImage": "/questions/unit4/2017APexamMCQ3.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -292,7 +292,7 @@
   },
   {
     "id": 42,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2017 apstats exam MCQ16.png",
+    "questionImage": "/questions/unit2/2017_apstats_exam_MCQ16.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -302,7 +302,7 @@
   },
   {
     "id": 43,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2017 apstats exam MCQ18.png",
+    "questionImage": "/questions/unit2/2017_apstats_exam_MCQ18.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -311,7 +311,7 @@
   },
   {
     "id": 44,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2017 APstatsExam MCQ31.png",
+    "questionImage": "/questions/unit2/2017_APstatsExam_MCQ31.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -322,7 +322,7 @@
   },
   {
     "id": 52,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2019_AP_MCQ_13.png",
+    "questionImage": "/questions/unit5/2019_AP_MCQ_13.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -331,7 +331,7 @@
   },
   {
     "id": 59,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2019_AP_MCQ_08.png",
+    "questionImage": "/questions/unit3/2019_AP_MCQ_08.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -340,7 +340,7 @@
   },
   {
     "id": 60,
-    "questionImage": "AP_Statistics_Course/Unit 2- Exploring Two-Variable Data/2018_AP_MCQ_03.png",
+    "questionImage": "/questions/unit2/2018_AP_MCQ_03.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -349,7 +349,7 @@
   },
   {
     "id": 67,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2019_AP_MCQ_12.png",
+    "questionImage": "/questions/unit3/2019_AP_MCQ_12.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -358,7 +358,7 @@
   },
   {
     "id": 68,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2019_AP_MCQ_16.png",
+    "questionImage": "/questions/unit3/2019_AP_MCQ_16.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -367,7 +367,7 @@
   },
   {
     "id": 69,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2019_AP_MCQ_19.png",
+    "questionImage": "/questions/unit3/2019_AP_MCQ_19.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -376,7 +376,7 @@
   },
   {
     "id": 70,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2019_AP_MCQ_27.png",
+    "questionImage": "/questions/unit3/2019_AP_MCQ_27.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -385,7 +385,7 @@
   },
   {
     "id": 71,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2019_AP_MCQ_02.png",
+    "questionImage": "/questions/unit4/2019_AP_MCQ_02.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -394,7 +394,7 @@
   },
   {
     "id": 72,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2019_AP_MCQ_06.png",
+    "questionImage": "/questions/unit1/2019_AP_MCQ_06.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -403,7 +403,7 @@
   },
   {
     "id": 73,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2019_AP_MCQ_10.png",
+    "questionImage": "/questions/unit4/2019_AP_MCQ_10.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -412,7 +412,7 @@
   },
   {
     "id": 74,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2019_AP_MCQ_17.png",
+    "questionImage": "/questions/unit4/2019_AP_MCQ_17.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -421,7 +421,7 @@
   },
   {
     "id": 75,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2019_AP_MCQ_26.png",
+    "questionImage": "/questions/unit4/2019_AP_MCQ_26.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -430,7 +430,7 @@
   },
   {
     "id": 76,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2019_AP_MCQ_28.png",
+    "questionImage": "/questions/unit4/2019_AP_MCQ_28.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -439,7 +439,7 @@
   },
   {
     "id": 77,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2019_AP_MCQ_37.png",
+    "questionImage": "/questions/unit4/2019_AP_MCQ_37.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -448,7 +448,7 @@
   },
   {
     "id": 78,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2019_AP_MCQ_18.png",
+    "questionImage": "/questions/unit5/2019_AP_MCQ_18.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -457,7 +457,7 @@
   },
   {
     "id": 79,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2019_AP_MCQ_22.png",
+    "questionImage": "/questions/unit5/2019_AP_MCQ_22.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -466,7 +466,7 @@
   },
   {
     "id": 80,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2019_AP_MCQ_31.png",
+    "questionImage": "/questions/unit5/2019_AP_MCQ_31.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -475,7 +475,7 @@
   },
   {
     "id": 81,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2019_AP_MCQ_14.png",
+    "questionImage": "/questions/unit6/2019_AP_MCQ_14.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -484,7 +484,7 @@
   },
   {
     "id": 82,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2019_AP_MCQ_15.png",
+    "questionImage": "/questions/unit6/2019_AP_MCQ_15.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -493,7 +493,7 @@
   },
   {
     "id": 83,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2019_AP_MCQ_29.png",
+    "questionImage": "/questions/unit6/2019_AP_MCQ_29.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -502,7 +502,7 @@
   },
   {
     "id": 84,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2019_AP_MCQ_32.png",
+    "questionImage": "/questions/unit6/2019_AP_MCQ_32.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -511,7 +511,7 @@
   },
   {
     "id": 85,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2019_AP_MCQ_38.png",
+    "questionImage": "/questions/unit6/2019_AP_MCQ_38.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -520,7 +520,7 @@
   },
   {
     "id": 86,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2019_AP_MCQ_23.png",
+    "questionImage": "/questions/unit7/2019_AP_MCQ_23.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -529,7 +529,7 @@
   },
   {
     "id": 87,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2019_AP_MCQ_25.png",
+    "questionImage": "/questions/unit7/2019_AP_MCQ_25.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -538,7 +538,7 @@
   },
   {
     "id": 88,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2019_AP_MCQ_30.png",
+    "questionImage": "/questions/unit7/2019_AP_MCQ_30.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -547,7 +547,7 @@
   },
   {
     "id": 89,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2019_AP_MCQ_34.png",
+    "questionImage": "/questions/unit6/2019_AP_MCQ_34.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -556,7 +556,7 @@
   },
   {
     "id": 90,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2019_AP_MCQ_36.png",
+    "questionImage": "/questions/unit7/2019_AP_MCQ_36.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -565,7 +565,7 @@
   },
   {
     "id": 91,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2019_AP_MCQ_40.png",
+    "questionImage": "/questions/unit7/2019_AP_MCQ_40.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -574,7 +574,7 @@
   },
   {
     "id": 92,
-    "questionImage": "AP_Statistics_Course/Unit 8- Inference for Categorical Data- Chi-Square/2019_AP_MCQ_39.png",
+    "questionImage": "/questions/unit8/2019_AP_MCQ_39.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -583,7 +583,7 @@
   },
   {
     "id": 93,
-    "questionImage": "AP_Statistics_Course/Unit 9- Inference for Quantitative Data- Slopes/2019_AP_MCQ_33.png",
+    "questionImage": "/questions/unit9/2019_AP_MCQ_33.png",
     "year": 2019,
     "source": "Problem from 2019 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -592,7 +592,7 @@
   },
   {
     "id": 95,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2018_AP_MCQ_14.png",
+    "questionImage": "/questions/unit3/2018_AP_MCQ_14.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -601,7 +601,7 @@
   },
   {
     "id": 96,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2018_AP_MCQ_16.png",
+    "questionImage": "/questions/unit3/2018_AP_MCQ_16.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -610,7 +610,7 @@
   },
   {
     "id": 97,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2018_AP_MCQ_22.png",
+    "questionImage": "/questions/unit3/2018_AP_MCQ_22.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -619,7 +619,7 @@
   },
   {
     "id": 98,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2018_AP_MCQ_28.png",
+    "questionImage": "/questions/unit3/2018_AP_MCQ_28.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -628,7 +628,7 @@
   },
   {
     "id": 99,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2018_AP_MCQ_09.png",
+    "questionImage": "/questions/unit4/2018_AP_MCQ_09.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -637,7 +637,7 @@
   },
   {
     "id": 100,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2018_AP_MCQ_19.png",
+    "questionImage": "/questions/unit4/2018_AP_MCQ_19.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -646,7 +646,7 @@
   },
   {
     "id": 101,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_25.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_25.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -655,7 +655,7 @@
   },
   {
     "id": 102,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2018_AP_MCQ_35.png",
+    "questionImage": "/questions/unit1/2018_AP_MCQ_35.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -664,7 +664,7 @@
   },
   {
     "id": 103,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2018_AP_MCQ_04.png",
+    "questionImage": "/questions/unit3/2018_AP_MCQ_04.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -673,7 +673,7 @@
   },
   {
     "id": 104,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2018_AP_MCQ_27.png",
+    "questionImage": "/questions/unit5/2018_AP_MCQ_27.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -682,7 +682,7 @@
   },
   {
     "id": 105,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2018_AP_MCQ_30.png",
+    "questionImage": "/questions/unit5/2018_AP_MCQ_30.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -691,7 +691,7 @@
   },
   {
     "id": 106,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2018_AP_MCQ_37.png",
+    "questionImage": "/questions/unit5/2018_AP_MCQ_37.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -700,7 +700,7 @@
   },
   {
     "id": 107,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2018_AP_MCQ_21.png",
+    "questionImage": "/questions/unit4/2018_AP_MCQ_21.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -709,7 +709,7 @@
   },
   {
     "id": 108,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2018_AP_MCQ_26.png",
+    "questionImage": "/questions/unit6/2018_AP_MCQ_26.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -718,7 +718,7 @@
   },
   {
     "id": 109,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2018_AP_MCQ_29.png",
+    "questionImage": "/questions/unit6/2018_AP_MCQ_29.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -727,7 +727,7 @@
   },
   {
     "id": 110,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2018_AP_MCQ_31.png",
+    "questionImage": "/questions/unit6/2018_AP_MCQ_31.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -736,7 +736,7 @@
   },
   {
     "id": 111,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2018_AP_MCQ_33.png",
+    "questionImage": "/questions/unit6/2018_AP_MCQ_33.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -745,7 +745,7 @@
   },
   {
     "id": 112,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2018_AP_MCQ_39.png",
+    "questionImage": "/questions/unit6/2018_AP_MCQ_39.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -754,7 +754,7 @@
   },
   {
     "id": 113,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2018_AP_MCQ_06.png",
+    "questionImage": "/questions/unit7/2018_AP_MCQ_06.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -763,7 +763,7 @@
   },
   {
     "id": 114,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2018_AP_MCQ_17.png",
+    "questionImage": "/questions/unit7/2018_AP_MCQ_17.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -772,7 +772,7 @@
   },
   {
     "id": 115,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2018_AP_MCQ_20.png",
+    "questionImage": "/questions/unit7/2018_AP_MCQ_20.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -781,7 +781,7 @@
   },
   {
     "id": 116,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2018_AP_MCQ_23.png",
+    "questionImage": "/questions/unit7/2018_AP_MCQ_23.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -790,7 +790,7 @@
   },
   {
     "id": 117,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2018_AP_MCQ_34.png",
+    "questionImage": "/questions/unit7/2018_AP_MCQ_34.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -799,7 +799,7 @@
   },
   {
     "id": 118,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2018_AP_MCQ_36.png",
+    "questionImage": "/questions/unit7/2018_AP_MCQ_36.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -808,7 +808,7 @@
   },
   {
     "id": 119,
-    "questionImage": "AP_Statistics_Course/Unit 8- Inference for Categorical Data- Chi-Square/2018_AP_MCQ_08.png",
+    "questionImage": "/questions/unit8/2018_AP_MCQ_08.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -817,7 +817,7 @@
   },
   {
     "id": 120,
-    "questionImage": "AP_Statistics_Course/Unit 8- Inference for Categorical Data- Chi-Square/2018_AP_MCQ_40.png",
+    "questionImage": "/questions/unit8/2018_AP_MCQ_40.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -826,7 +826,7 @@
   },
   {
     "id": 121,
-    "questionImage": "AP_Statistics_Course/Unit 9- Inference for Quantitative Data- Slopes/2018_AP_MCQ_32.png",
+    "questionImage": "/questions/unit9/2018_AP_MCQ_32.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -835,7 +835,7 @@
   },
   {
     "id": 122,
-    "questionImage": "AP_Statistics_Course/Unit 9- Inference for Quantitative Data- Slopes/2018_AP_MCQ_38.png",
+    "questionImage": "/questions/unit9/2018_AP_MCQ_38.png",
     "year": 2018,
     "source": "Problem from 2018 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -844,7 +844,7 @@
   },
   {
     "id": 123,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2017APexamMCQ4.png",
+    "questionImage": "/questions/unit7/2017APexamMCQ4.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -853,7 +853,7 @@
   },
   {
     "id": 124,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2017 APexam MCQ5.png",
+    "questionImage": "/questions/unit6/2017_APexam_MCQ5.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -862,7 +862,7 @@
   },
   {
     "id": 125,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2017 apstats exam MCQ17.png",
+    "questionImage": "/questions/unit7/2017_apstats_exam_MCQ17.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -871,7 +871,7 @@
   },
   {
     "id": 126,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2017 APstatsExam MCQ21.png",
+    "questionImage": "/questions/unit5/2017_APstatsExam_MCQ21.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -880,7 +880,7 @@
   },
   {
     "id": 127,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2017 APstatsExam MCQ22.png",
+    "questionImage": "/questions/unit7/2017 APstatsExam MCQ22.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -889,7 +889,7 @@
   },
   {
     "id": 128,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2017 APstatsExam MCQ23.png",
+    "questionImage": "/questions/unit6/2017_APstatsExam_MCQ23.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -898,7 +898,7 @@
   },
   {
     "id": 129,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2017 APstatsExam MCQ24.png",
+    "questionImage": "/questions/unit3/2017_APstatsExam_MCQ24.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -907,7 +907,7 @@
   },
   {
     "id": 130,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2017 APstatsExam MCQ25.png",
+    "questionImage": "/questions/unit3/2017 APstatsExam MCQ25.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -916,7 +916,7 @@
   },
   {
     "id": 131,
-    "questionImage": "AP_Statistics_Course/Unit 8- Inference for Categorical Data- Chi-Square/2017 APstatsExam MCQ26.png",
+    "questionImage": "/questions/unit8/2017_APstatsExam_MCQ26.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -925,7 +925,7 @@
   },
   {
     "id": 132,
-    "questionImage": "AP_Statistics_Course/Unit 9- Inference for Quantitative Data- Slopes/2017 APstatsExam MCQ27.png",
+    "questionImage": "/questions/unit9/2017_APstatsExam_MCQ27.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -934,7 +934,7 @@
   },
   {
     "id": 133,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2017 APstatsExam MCQ28.png",
+    "questionImage": "/questions/unit6/2017_APstatsExam_MCQ28.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -943,7 +943,7 @@
   },
   {
     "id": 134,
-    "questionImage": "AP_Statistics_Course/Unit 5- Sampling Distributions/2017 APstatsExam MCQ30.png",
+    "questionImage": "/questions/unit5/2017_APstatsExam_MCQ30.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -952,7 +952,7 @@
   },
   {
     "id": 135,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2017 APstatsExam MCQ32.png",
+    "questionImage": "/questions/unit4/2017_APstatsExam_MCQ32.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -961,7 +961,7 @@
   },
   {
     "id": 136,
-    "questionImage": "AP_Statistics_Course/Unit 9- Inference for Quantitative Data- Slopes/2017 APstatsExam MCQ33.png",
+    "questionImage": "/questions/unit9/2017_APstatsExam_MCQ33.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -970,7 +970,7 @@
   },
   {
     "id": 137,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2017 APstatsExam MCQ34.png",
+    "questionImage": "/questions/unit4/2017_APstatsExam_MCQ34.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -979,7 +979,7 @@
   },
   {
     "id": 138,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2017 APstatsExam MCQ35.png",
+    "questionImage": "/questions/unit4/2017 APstatsExam MCQ35.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -988,7 +988,7 @@
   },
   {
     "id": 139,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2017 APstatsExam MCQ36.png",
+    "questionImage": "/questions/unit6/2017_APstatsExam_MCQ36.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -997,7 +997,7 @@
   },
   {
     "id": 140,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2017 APstatsExam MCQ37.png",
+    "questionImage": "/questions/unit3/2017_APstatsExam_MCQ37.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -1006,7 +1006,7 @@
   },
   {
     "id": 141,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2017 APstatsExam MCQ38.png",
+    "questionImage": "/questions/unit7/2017_APstatsExam_MCQ38.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -1015,7 +1015,7 @@
   },
   {
     "id": 142,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2017 APstatsExam MCQ39.png",
+    "questionImage": "/questions/unit6/2017_APstatsExam_MCQ39.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -1024,7 +1024,7 @@
   },
   {
     "id": 143,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2017 APstatsExam MCQ40.png",
+    "questionImage": "/questions/unit6/2017_APstatsExam_MCQ40.png",
     "year": 2017,
     "source": "AP Statistics Exam",
     "linkedLessonIds": [
@@ -1033,7 +1033,7 @@
   },
   {
     "id": 144,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2017 apstats exam mcq10.png",
+    "questionImage": "/questions/unit3/2017_apstats_exam_mcq10.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -1042,7 +1042,7 @@
   },
   {
     "id": 145,
-    "questionImage": "AP_Statistics_Course/Unit 3- Collecting Data/2017 apstats exam mcq12.png",
+    "questionImage": "/questions/unit3/2017_apstats_exam_mcq12.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -1051,7 +1051,7 @@
   },
   {
     "id": 147,
-    "questionImage": "AP_Statistics_Course/Unit 4- Probability, Random Variables, and Probability Distributions/2017 apstats mcq7.png",
+    "questionImage": "/questions/unit4/2017_apstats_mcq7.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -1060,7 +1060,7 @@
   },
   {
     "id": 148,
-    "questionImage": "AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 apstats mcq8.png",
+    "questionImage": "/questions/unit1/2017 apstats mcq8.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -1069,7 +1069,7 @@
   },
   {
     "id": 149,
-    "questionImage": "AP_Statistics_Course/Unit 6- Inference for Categorical Data- Proportions/2017 apstats exam mcq20.png",
+    "questionImage": "/questions/unit6/2017_apstats_exam_mcq20.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
@@ -1078,7 +1078,7 @@
   },
   {
     "id": 151,
-    "questionImage": "AP_Statistics_Course/Unit 7- Inference for Quantitative Data- Means/2017 apstats exam mcq11.png",
+    "questionImage": "/questions/unit7/2017_apstats_exam_mcq11.png",
     "year": 2017,
     "source": "Problem from 2017 AP Statistics Multiple Choice",
     "linkedLessonIds": [
