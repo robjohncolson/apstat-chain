@@ -1,4 +1,4 @@
-import type { Transaction } from '@apstat-chain/core';
+import type { Transaction, Attestation } from '@apstat-chain/core';
 import { peerIdFromPublicKey, type KeyPair, type Block } from '@apstat-chain/core';
 import { EventEmitter } from 'eventemitter3';
 import { Peer, type DataConnection } from 'peerjs';
@@ -31,6 +31,16 @@ export interface ChainRequestMessage extends P2PMessage {
 export interface ChainResponseMessage extends P2PMessage {
   type: 'CHAIN_RESPONSE';
   data: any; // The chain data
+}
+
+export interface CandidateBlockMessage extends P2PMessage {
+  type: 'CANDIDATE_BLOCK_PROPOSAL';
+  data: Block;
+}
+
+export interface AttestationMessage extends P2PMessage {
+  type: 'ATTESTATION_BROADCAST';
+  data: Attestation;
 }
 
 export interface P2PNodeConfig {
@@ -163,6 +173,12 @@ export class P2PNode extends EventEmitter {
         case 'CHAIN_RESPONSE':
           this.handleChainResponse(message as ChainResponseMessage, fromPeer);
           break;
+        case 'CANDIDATE_BLOCK_PROPOSAL':
+          this.handleCandidateBlock(message as CandidateBlockMessage, fromPeer);
+          break;
+        case 'ATTESTATION_BROADCAST':
+          this.handleAttestation(message as AttestationMessage, fromPeer);
+          break;
         default:
           console.log(`Received unknown message type: ${message.type} from ${fromPeer}`);
           this.emit('message:received', { type: message.type, data: message.data, fromPeer });
@@ -192,6 +208,18 @@ export class P2PNode extends EventEmitter {
   private handleChainResponse(message: ChainResponseMessage, fromPeer: string): void {
     console.log(`Received chain response from ${fromPeer}`);
     this.emit('chain:received', message.data);
+  }
+
+  private handleCandidateBlock(message: CandidateBlockMessage, fromPeer: string): void {
+    console.log(`Received candidate block ${message.data.id} from ${fromPeer}`);
+    const block = this.deserializeBlock(message.data);
+    this.emit('candidate-block:received', block);
+  }
+
+  private handleAttestation(message: AttestationMessage, fromPeer: string): void {
+    console.log(`Received attestation for puzzle ${message.data.puzzleId} from ${fromPeer}`);
+    const attestation = this.deserializeAttestation(message.data);
+    this.emit('attestation:received', attestation);
   }
 
   public connectToPeer(peerId: string): void {
@@ -288,6 +316,18 @@ export class P2PNode extends EventEmitter {
     }
   }
 
+  // Helper function to serialize attestations for network transmission
+  private serializeAttestation(attestation: Attestation): any {
+    try {
+      // Attestation structure is simple, just copy it
+      const attestationCopy = { ...attestation };
+      return attestationCopy;
+    } catch (error) {
+      console.error('Error serializing attestation:', error);
+      throw new Error('Failed to serialize attestation');
+    }
+  }
+
   // Helper function to deserialize blocks from network transmission
   private deserializeBlock(data: any): Block {
     try {
@@ -302,6 +342,23 @@ export class P2PNode extends EventEmitter {
     } catch (error) {
       console.error('Error deserializing block:', error);
       throw new Error('Failed to deserialize block');
+    }
+  }
+
+  // Helper function to deserialize attestations from network transmission
+  private deserializeAttestation(data: any): Attestation {
+    try {
+      let attestation = data;
+      
+      // Parse string data if needed
+      if (typeof data === 'string') {
+        attestation = JSON.parse(data);
+      }
+      
+      return attestation;
+    } catch (error) {
+      console.error('Error deserializing attestation:', error);
+      throw new Error('Failed to deserialize attestation');
     }
   }
 
@@ -323,6 +380,52 @@ export class P2PNode extends EventEmitter {
         }
       } catch (error) {
         console.error(`Failed to send block to ${peerId}:`, error);
+        // Don't remove connection here, let the error handler deal with it
+      }
+    }
+  }
+
+  public broadcastCandidateBlock(block: Block): void {
+    const serializedBlock = this.serializeBlock(block);
+    const message: CandidateBlockMessage = {
+      type: 'CANDIDATE_BLOCK_PROPOSAL',
+      data: serializedBlock
+    };
+
+    const connectedPeers = Array.from(this.connections.keys());
+    console.log(`Broadcasting candidate block ${block.id} to ${connectedPeers.length} peers`);
+
+    for (const [peerId, conn] of this.connections) {
+      try {
+        if (conn.open) {
+          conn.send(message);
+          console.log(`Sent candidate block ${block.id} to ${peerId}`);
+        }
+      } catch (error) {
+        console.error(`Failed to send candidate block to ${peerId}:`, error);
+        // Don't remove connection here, let the error handler deal with it
+      }
+    }
+  }
+
+  public broadcastAttestation(attestation: Attestation): void {
+    const serializedAttestation = this.serializeAttestation(attestation);
+    const message: AttestationMessage = {
+      type: 'ATTESTATION_BROADCAST',
+      data: serializedAttestation
+    };
+
+    const connectedPeers = Array.from(this.connections.keys());
+    console.log(`Broadcasting attestation for puzzle ${attestation.puzzleId} to ${connectedPeers.length} peers`);
+
+    for (const [peerId, conn] of this.connections) {
+      try {
+        if (conn.open) {
+          conn.send(message);
+          console.log(`Sent attestation for puzzle ${attestation.puzzleId} to ${peerId}`);
+        }
+      } catch (error) {
+        console.error(`Failed to send attestation to ${peerId}:`, error);
         // Don't remove connection here, let the error handler deal with it
       }
     }

@@ -1,4 +1,4 @@
-import type { Transaction } from '@apstat-chain/core';
+import type { Transaction, Block, Attestation } from '@apstat-chain/core';
 import { peerIdFromPublicKey } from '@apstat-chain/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { P2PNode } from '../src/p2p-node';
@@ -206,15 +206,9 @@ describe('P2PNode', () => {
       const mockTransaction: Transaction = {
         payload: { action: 'transfer', amount: 100 },
         timestamp: Date.now(),
-        authorPublicKey: {
-          bytes: new Uint8Array([1, 2, 3]),
-          hex: '010203'
-        },
+        publicKey: '010203',
         id: 'transaction-123',
-        signature: {
-          r: BigInt('12345'),
-          s: BigInt('67890')
-        }
+        signature: 'mock-signature-string'
       };
 
       p2pNode.broadcastTransaction(mockTransaction);
@@ -224,15 +218,7 @@ describe('P2PNode', () => {
       expect(mockDataConnection2.send).toHaveBeenCalledTimes(2);
       
       // Check that transaction was sent (should be the second call, after peer list)
-      // Note: BigInt values get serialized to strings for network transmission
-      const expectedSerializedTransaction = {
-        ...mockTransaction,
-        signature: {
-          r: '12345',
-          s: '67890',
-          recovery: undefined
-        }
-      };
+      const expectedSerializedTransaction = mockTransaction;
 
       expect(mockDataConnection.send).toHaveBeenNthCalledWith(2, {
         type: 'transaction',
@@ -253,15 +239,9 @@ describe('P2PNode', () => {
       const mockTransaction: Transaction = {
         payload: { action: 'transfer', amount: 100 },
         timestamp: Date.now(),
-        authorPublicKey: {
-          bytes: new Uint8Array([1, 2, 3]),
-          hex: '010203'
-        },
+        publicKey: '010203',
         id: 'transaction-123',
-        signature: {
-          r: BigInt('12345'),
-          s: BigInt('67890')
-        }
+        signature: 'mock-signature-string'
       };
 
       p2pNodeIsolated.broadcastTransaction(mockTransaction);
@@ -279,15 +259,9 @@ describe('P2PNode', () => {
       const mockTransaction: Transaction = {
         payload: { action: 'transfer', amount: 100 },
         timestamp: Date.now(),
-        authorPublicKey: {
-          bytes: new Uint8Array([1, 2, 3]),
-          hex: '010203'
-        },
+        publicKey: '010203',
         id: 'transaction-123',
-        signature: {
-          r: BigInt('12345'),
-          s: BigInt('67890')
-        }
+        signature: 'mock-signature-string'
       };
 
       // Should not throw
@@ -304,15 +278,9 @@ describe('P2PNode', () => {
       const mockTransaction: Transaction = {
         payload: { action: 'transfer', amount: 100 },
         timestamp: Date.now(),
-        authorPublicKey: {
-          bytes: new Uint8Array([1, 2, 3]),
-          hex: '010203'
-        },
+        publicKey: '010203',
         id: 'transaction-123',
-        signature: {
-          r: BigInt('12345'),
-          s: BigInt('67890')
-        }
+        signature: 'mock-signature-string'
       };
 
       const transactionHandler = vi.fn();
@@ -449,6 +417,400 @@ describe('P2PNode', () => {
       dataCloseHandler();
       
       expect(p2pNode.getConnectedPeers()).not.toContain('test-peer-id');
+    });
+  });
+
+  describe('candidate block broadcasting', () => {
+    let mockDataConnection2: any;
+
+    beforeEach(() => {
+      p2pNode = new P2PNode(mockKeyPair);
+      
+      // Create a second mock connection for testing multiple peers
+      mockDataConnection2 = {
+        on: vi.fn(),
+        send: vi.fn(),
+        close: vi.fn(),
+        peer: 'test-peer-id-2',
+        open: true
+      };
+      
+      // Mock the connect method to return different connections
+      let connectionCount = 0;
+      mockPeer.connect = vi.fn(() => {
+        connectionCount++;
+        return connectionCount === 1 ? mockDataConnection : mockDataConnection2;
+      });
+      
+      // Set up first connection
+      p2pNode.connectToPeer('peer1');
+      
+      // Simulate the first connection opening
+      const openHandler1 = mockDataConnection.on.mock.calls.find(
+        call => call[0] === 'open'
+      )?.[1];
+      if (openHandler1) {
+        openHandler1();
+      }
+      
+      // Set up second connection
+      p2pNode.connectToPeer('peer2');
+      
+      // Simulate the second connection opening
+      const openHandler2 = mockDataConnection2.on.mock.calls.find(
+        call => call[0] === 'open'
+      )?.[1];
+      if (openHandler2) {
+        openHandler2();
+      }
+    });
+
+    it('should broadcast a candidate block to all connected peers', () => {
+      const mockBlock: Block = {
+        id: 'block-123',
+        previousHash: '0'.repeat(64),
+        transactions: [],
+        timestamp: Date.now(),
+        signature: 'block-signature',
+        publicKey: 'block-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        attestations: [] // Empty for candidate block
+      } as Block;
+
+      p2pNode.broadcastCandidateBlock(mockBlock);
+
+      // Should send to both connections: 1 call for peer list (on open) + 1 call for candidate block
+      expect(mockDataConnection.send).toHaveBeenCalledTimes(2);
+      expect(mockDataConnection2.send).toHaveBeenCalledTimes(2);
+      
+      // Check that candidate block was sent (should be the second call, after peer list)
+      expect(mockDataConnection.send).toHaveBeenNthCalledWith(2, {
+        type: 'CANDIDATE_BLOCK_PROPOSAL',
+        data: mockBlock
+      });
+      expect(mockDataConnection2.send).toHaveBeenNthCalledWith(2, {
+        type: 'CANDIDATE_BLOCK_PROPOSAL',
+        data: mockBlock
+      });
+    });
+
+    it('should not broadcast candidate block if no connections exist', () => {
+      // Clear previous mock calls 
+      vi.clearAllMocks();
+      
+      // Create a new isolated mock for this test
+      const isolatedMockPeer = {
+        id: 'isolated-peer-id',
+        on: vi.fn(),
+        connect: vi.fn(),
+        destroy: vi.fn(),
+        open: true,
+        connections: {},
+        disconnected: false,
+        destroyed: false
+      };
+      
+      MockedPeer.mockReturnValueOnce(isolatedMockPeer);
+      
+      const p2pNodeIsolated = new P2PNode(mockKeyPair);
+      
+      const mockBlock = {
+        id: 'block-123',
+        previousHash: '0'.repeat(64),
+        transactions: [],
+        timestamp: Date.now(),
+        signature: 'block-signature',
+        publicKey: 'block-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        attestations: []
+      } as Block;
+
+      p2pNodeIsolated.broadcastCandidateBlock(mockBlock);
+
+      // Since there are no connections, send should not be called at all on any mock connection
+      expect(mockDataConnection.send).not.toHaveBeenCalled();
+      expect(mockDataConnection2.send).not.toHaveBeenCalled();
+    });
+
+    it('should handle broadcast errors gracefully', () => {
+      mockDataConnection.send.mockImplementation(() => {
+        throw new Error('Connection failed');
+      });
+
+      const mockBlock = {
+        id: 'block-123',
+        previousHash: '0'.repeat(64),
+        transactions: [],
+        timestamp: Date.now(),
+        signature: 'block-signature',
+        publicKey: 'block-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        attestations: []
+      } as Block;
+
+      // Should not throw
+      expect(() => p2pNode.broadcastCandidateBlock(mockBlock)).not.toThrow();
+    });
+  });
+
+  describe('attestation broadcasting', () => {
+    let mockDataConnection2: any;
+
+    beforeEach(() => {
+      p2pNode = new P2PNode(mockKeyPair);
+      
+      // Create a second mock connection for testing multiple peers
+      mockDataConnection2 = {
+        on: vi.fn(),
+        send: vi.fn(),
+        close: vi.fn(),
+        peer: 'test-peer-id-2',
+        open: true
+      };
+      
+      // Mock the connect method to return different connections
+      let connectionCount = 0;
+      mockPeer.connect = vi.fn(() => {
+        connectionCount++;
+        return connectionCount === 1 ? mockDataConnection : mockDataConnection2;
+      });
+      
+      // Set up first connection
+      p2pNode.connectToPeer('peer1');
+      
+      // Simulate the first connection opening
+      const openHandler1 = mockDataConnection.on.mock.calls.find(
+        call => call[0] === 'open'
+      )?.[1];
+      if (openHandler1) {
+        openHandler1();
+      }
+      
+      // Set up second connection
+      p2pNode.connectToPeer('peer2');
+      
+      // Simulate the second connection opening
+      const openHandler2 = mockDataConnection2.on.mock.calls.find(
+        call => call[0] === 'open'
+      )?.[1];
+      if (openHandler2) {
+        openHandler2();
+      }
+    });
+
+    it('should broadcast an attestation to all connected peers', () => {
+      const mockAttestation: Attestation = {
+        attesterPublicKey: 'attester-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        signature: 'attestation-signature'
+      };
+
+      p2pNode.broadcastAttestation(mockAttestation);
+
+      // Should send to both connections: 1 call for peer list (on open) + 1 call for attestation
+      expect(mockDataConnection.send).toHaveBeenCalledTimes(2);
+      expect(mockDataConnection2.send).toHaveBeenCalledTimes(2);
+      
+      // Check that attestation was sent (should be the second call, after peer list)
+      expect(mockDataConnection.send).toHaveBeenNthCalledWith(2, {
+        type: 'ATTESTATION_BROADCAST',
+        data: mockAttestation
+      });
+      expect(mockDataConnection2.send).toHaveBeenNthCalledWith(2, {
+        type: 'ATTESTATION_BROADCAST',
+        data: mockAttestation
+      });
+    });
+
+    it('should not broadcast attestation if no connections exist', () => {
+      // Clear previous mock calls 
+      vi.clearAllMocks();
+      
+      // Create a new isolated mock for this test
+      const isolatedMockPeer = {
+        id: 'isolated-peer-id',
+        on: vi.fn(),
+        connect: vi.fn(),
+        destroy: vi.fn(),
+        open: true,
+        connections: {},
+        disconnected: false,
+        destroyed: false
+      };
+      
+      MockedPeer.mockReturnValueOnce(isolatedMockPeer);
+      
+      const p2pNodeIsolated = new P2PNode(mockKeyPair);
+      
+      const mockAttestation: Attestation = {
+        attesterPublicKey: 'attester-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        signature: 'attestation-signature'
+      };
+
+      p2pNodeIsolated.broadcastAttestation(mockAttestation);
+
+      // Since there are no connections, send should not be called at all on any mock connection
+      expect(mockDataConnection.send).not.toHaveBeenCalled();
+      expect(mockDataConnection2.send).not.toHaveBeenCalled();
+    });
+
+    it('should handle broadcast errors gracefully', () => {
+      mockDataConnection.send.mockImplementation(() => {
+        throw new Error('Connection failed');
+      });
+
+      const mockAttestation: Attestation = {
+        attesterPublicKey: 'attester-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        signature: 'attestation-signature'
+      };
+
+      // Should not throw
+      expect(() => p2pNode.broadcastAttestation(mockAttestation)).not.toThrow();
+    });
+  });
+
+  describe('candidate block receiving', () => {
+    beforeEach(() => {
+      p2pNode = new P2PNode(mockKeyPair);
+    });
+
+    it('should emit "candidate-block:received" event upon receiving a candidate block', () => {
+      const mockBlock = {
+        id: 'block-123',
+        previousHash: '0'.repeat(64),
+        transactions: [],
+        timestamp: Date.now(),
+        signature: 'block-signature',
+        publicKey: 'block-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        attestations: []
+      } as Block;
+
+      const candidateBlockHandler = vi.fn();
+      p2pNode.on('candidate-block:received', candidateBlockHandler);
+
+      // Simulate receiving a connection
+      const connectionHandler = mockPeer.on.mock.calls.find(
+        call => call[0] === 'connection'
+      )?.[1];
+      
+      connectionHandler(mockDataConnection);
+
+      // Get the data handler that was registered
+      const dataHandler = mockDataConnection.on.mock.calls.find(
+        call => call[0] === 'data'
+      )?.[1];
+
+      expect(dataHandler).toBeDefined();
+
+      // Simulate receiving candidate block data
+      dataHandler({
+        type: 'CANDIDATE_BLOCK_PROPOSAL',
+        data: mockBlock
+      });
+
+      expect(candidateBlockHandler).toHaveBeenCalledTimes(1);
+      expect(candidateBlockHandler).toHaveBeenCalledWith(mockBlock);
+    });
+
+    it('should ignore non-candidate-block messages', () => {
+      const candidateBlockHandler = vi.fn();
+      p2pNode.on('candidate-block:received', candidateBlockHandler);
+
+      // Simulate receiving a connection
+      const connectionHandler = mockPeer.on.mock.calls.find(
+        call => call[0] === 'connection'
+      )?.[1];
+      
+      connectionHandler(mockDataConnection);
+
+      // Get the data handler
+      const dataHandler = mockDataConnection.on.mock.calls.find(
+        call => call[0] === 'data'
+      )?.[1];
+
+      // Simulate receiving non-candidate-block data
+      dataHandler({
+        type: 'transaction',
+        data: { id: 'tx-123' }
+      });
+
+      expect(candidateBlockHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('attestation receiving', () => {
+    beforeEach(() => {
+      p2pNode = new P2PNode(mockKeyPair);
+    });
+
+    it('should emit "attestation:received" event upon receiving an attestation', () => {
+      const mockAttestation: Attestation = {
+        attesterPublicKey: 'attester-public-key',
+        puzzleId: 'puzzle-123',
+        proposedAnswer: 'answer-abc',
+        signature: 'attestation-signature'
+      };
+
+      const attestationHandler = vi.fn();
+      p2pNode.on('attestation:received', attestationHandler);
+
+      // Simulate receiving a connection
+      const connectionHandler = mockPeer.on.mock.calls.find(
+        call => call[0] === 'connection'
+      )?.[1];
+      
+      connectionHandler(mockDataConnection);
+
+      // Get the data handler that was registered
+      const dataHandler = mockDataConnection.on.mock.calls.find(
+        call => call[0] === 'data'
+      )?.[1];
+
+      expect(dataHandler).toBeDefined();
+
+      // Simulate receiving attestation data
+      dataHandler({
+        type: 'ATTESTATION_BROADCAST',
+        data: mockAttestation
+      });
+
+      expect(attestationHandler).toHaveBeenCalledTimes(1);
+      expect(attestationHandler).toHaveBeenCalledWith(mockAttestation);
+    });
+
+    it('should ignore non-attestation messages', () => {
+      const attestationHandler = vi.fn();
+      p2pNode.on('attestation:received', attestationHandler);
+
+      // Simulate receiving a connection
+      const connectionHandler = mockPeer.on.mock.calls.find(
+        call => call[0] === 'connection'
+      )?.[1];
+      
+      connectionHandler(mockDataConnection);
+
+      // Get the data handler
+      const dataHandler = mockDataConnection.on.mock.calls.find(
+        call => call[0] === 'data'
+      )?.[1];
+
+      // Simulate receiving non-attestation data
+      dataHandler({
+        type: 'transaction',
+        data: { id: 'tx-123' }
+      });
+
+      expect(attestationHandler).not.toHaveBeenCalled();
     });
   });
 }); 
