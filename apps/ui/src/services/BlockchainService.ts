@@ -645,12 +645,38 @@ class BlockchainService {
   }
 
   /**
-   * Check if a user is eligible to mine (placeholder implementation)
-   * Complex "Relevant Knowledge" logic will be added later
+   * Check if a user is eligible to mine based on the "Relevant Knowledge" rule
+   * A user can mine if they have completed a lesson that matches a pending lesson transaction
    */
   public isEligibleToMine(publicKey: string): boolean {
-    // Simple placeholder: eligible if there are pending transactions and key is provided
-    return this.state.pendingTransactions.length > 0 && !!publicKey;
+    // a. Get the array of all confirmed transactions from the blockchain
+    const confirmedTransactions = this.getConfirmedTransactions();
+    
+    // b. Create a Set of all unique lessonIds from the state.pendingTransactions array
+    const pendingLessonIds = new Set<string>();
+    for (const transaction of this.state.pendingTransactions) {
+      if (transaction.payload?.lessonId) {
+        pendingLessonIds.add(transaction.payload.lessonId);
+      }
+    }
+    
+    // c. Filter the confirmed transactions to find all LESSON_COMPLETE transactions 
+    // that were created by the provided publicKey
+    const userLessonCompletions = confirmedTransactions.filter(transaction => 
+      transaction.publicKey === publicKey && 
+      transaction.payload?.type === 'LESSON_COMPLETE'
+    );
+    
+    // d. Check if there is at least one transaction in this filtered list 
+    // whose lessonId is also present in the Set of pending lesson IDs
+    for (const completion of userLessonCompletions) {
+      if (completion.payload?.lessonId && pendingLessonIds.has(completion.payload.lessonId)) {
+        return true;
+      }
+    }
+    
+    // e. Return false if no match is found
+    return false;
   }
 
   /**
