@@ -3534,6 +3534,11 @@ const ALL_UNITS_DATA = [
   
 ]; // End of ALL_UNITS_DATA array
 
+// Export for use in other scripts
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { ALL_UNITS_DATA };
+}
+
 // Optional helper function to calculate totals (can be included in the same file)
 // This function is used by displayRemainingItemCounts and displayFlexibleQuota
 function getTotalItemCounts(allUnitsDataArray = ALL_UNITS_DATA) {
