@@ -6,9 +6,12 @@ import {
     Blockchain,
     createBlock,
     verifyBlock,
+    createAttestation,
+    verifyAttestation,
     type KeyPair,
     type Transaction,
-    type Block
+    type Block,
+    type Attestation
 } from '@apstat-chain/core';
 import { P2PNode, discoverPeers } from '@apstat-chain/p2p';
 
@@ -21,6 +24,7 @@ export interface BlockchainState {
   connectedPeers: string[];
   blockchain: Blockchain;
   pendingTransactions: Transaction[];
+  candidateBlocks: Map<string, Block>;
   isConnecting: boolean;
   error: string | null;
 }
@@ -42,6 +46,7 @@ class BlockchainService {
       connectedPeers: [],
       blockchain: new Blockchain(),
       pendingTransactions: [],
+      candidateBlocks: new Map(),
       isConnecting: false,
       error: null,
     };
@@ -155,42 +160,142 @@ class BlockchainService {
   }
 
   /**
-   * Mine all pending transactions into a new block and add it to the blockchain
+   * Check if a candidate block has enough attestations to be finalized
    */
-  public minePendingTransactions(): void {
+  private _checkForBlockFinalization(candidateBlock: Block): void {
+    const requiredAttestations = 3; // Define the quorum rule
+    const blockAttestations = (candidateBlock as any).attestations as Attestation[] | undefined;
+    
+    if (!blockAttestations || blockAttestations.length < requiredAttestations) {
+      return; // Not enough attestations yet
+    }
+
+    console.log(`Candidate block ${candidateBlock.id} has met finalization quorum with ${blockAttestations.length} attestations`);
+
+    try {
+      // Try to add the finalized block to the main blockchain
+      this.state.blockchain.addBlock(candidateBlock);
+
+      // Broadcast the final block to the network
+      if (this.state.p2pNode) {
+        this.state.p2pNode.broadcastBlock(candidateBlock);
+      }
+
+      // Remove the finalized block from candidate blocks map
+      this.state.candidateBlocks.delete(candidateBlock.id);
+
+      // Clean up confirmed transactions from pending pool
+      const blockTransactionIds = new Set(candidateBlock.transactions.map(tx => tx.id));
+      const updatedPendingTransactions = this.state.pendingTransactions.filter(
+        tx => !blockTransactionIds.has(tx.id)
+      );
+
+      this.updateState({
+        pendingTransactions: updatedPendingTransactions,
+        error: null,
+      });
+
+      console.log(`Successfully finalized block ${candidateBlock.id} and added to blockchain`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to finalize block';
+      console.error('Error finalizing block:', errorMessage);
+      this.updateState({ error: errorMessage });
+    }
+  }
+
+  /**
+   * Propose a candidate block with a puzzle solution for social consensus
+   */
+  public proposeBlock(params: { puzzleId: string; proposedAnswer: string }): void {
     if (!this.state.currentKeyPair) {
       throw new Error('No wallet initialized. Please generate or restore a wallet first.');
     }
 
+    if (!this.state.p2pNode) {
+      throw new Error('P2P node not initialized. Cannot propose block without network connection.');
+    }
+
     if (this.state.pendingTransactions.length === 0) {
-      throw new Error('No pending transactions to mine');
+      throw new Error('No pending transactions to include in block');
     }
 
     try {
+      const { puzzleId, proposedAnswer } = params;
       const latestBlock = this.state.blockchain.getLatestBlock();
-      const newBlock = createBlock({
+      
+      // Create a candidate block with puzzle data but empty attestations
+      const candidateBlock = createBlock({
         privateKey: this.state.currentKeyPair.privateKey,
         previousHash: latestBlock.id,
-        transactions: [...this.state.pendingTransactions]
-      });
+        transactions: [...this.state.pendingTransactions],
+        puzzleId,
+        proposedAnswer
+      } as any);
 
-      this.state.blockchain.addBlock(newBlock);
+      // Add attestations property for candidate block
+      (candidateBlock as any).attestations = [];
 
-      // Broadcast the new block to connected peers if P2P is available
-      if (this.state.p2pNode) {
-        this.state.p2pNode.broadcastBlock(newBlock);
-      }
+      // Add to our local candidate blocks map
+      this.state.candidateBlocks.set(candidateBlock.id, candidateBlock);
 
-      // Clear pending transactions after successful mining
-      this.updateState({
-        pendingTransactions: [],
-        error: null,
-      });
+      // Broadcast the candidate block to the network
+      (this.state.p2pNode as any).broadcastCandidateBlock(candidateBlock);
+
+      this.updateState({ error: null });
+
+      console.log(`Proposed candidate block ${candidateBlock.id} for puzzle ${puzzleId} with answer ${proposedAnswer}`);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to mine pending transactions';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to propose block';
       this.updateState({ error: errorMessage });
       throw error;
     }
+  }
+
+  /**
+   * Submit an attestation for a candidate block
+   */
+  public submitAttestation(candidateBlock: Block): void {
+    if (!this.state.currentKeyPair) {
+      throw new Error('No wallet initialized. Please generate or restore a wallet first.');
+    }
+
+    if (!this.state.p2pNode) {
+      throw new Error('P2P node not initialized. Cannot submit attestation without network connection.');
+    }
+
+    const blockPuzzleId = (candidateBlock as any).puzzleId as string | undefined;
+    const blockProposedAnswer = (candidateBlock as any).proposedAnswer as string | undefined;
+    
+    if (!blockPuzzleId || !blockProposedAnswer) {
+      throw new Error('Candidate block must have puzzle data to attest to');
+    }
+
+    try {
+      // Create an attestation for the candidate block's puzzle and answer
+      const attestation = createAttestation({
+        privateKey: this.state.currentKeyPair.privateKey,
+        puzzleId: blockPuzzleId,
+        proposedAnswer: blockProposedAnswer
+      });
+
+      // Broadcast the attestation to the network
+      (this.state.p2pNode as any).broadcastAttestation(attestation);
+
+      this.updateState({ error: null });
+
+      console.log(`Submitted attestation for puzzle ${blockPuzzleId} in block ${candidateBlock.id}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit attestation';
+      this.updateState({ error: errorMessage });
+      throw error;
+    }
+  }
+
+  /**
+   * Get all candidate blocks awaiting finalization
+   */
+  public getCandidateBlocks(): Block[] {
+    return Array.from(this.state.candidateBlocks.values());
   }
 
   // P2P Networking
@@ -277,7 +382,7 @@ class BlockchainService {
           // Check if this is a chain synchronization issue (e.g., previous hash doesn't match)
           if (error instanceof Error && error.message.includes('Previous hash does not match')) {
             console.log('Chain synchronization issue detected, requesting full chain from sender');
-            this.state.p2pNode?.requestChain(senderPeerId);
+            (this.state.p2pNode as any)?.requestChain(senderPeerId);
           }
           // Gracefully handle errors - don't crash the application
         }
@@ -286,7 +391,7 @@ class BlockchainService {
       p2pNode.on('chain-request:received', (requesterId: string) => {
         console.log(`Received chain request from peer ${requesterId}`);
         // Send our current chain to the requesting peer
-        this.state.p2pNode?.sendChain(requesterId, this.state.blockchain.getChain());
+        (this.state.p2pNode as any)?.sendChain(requesterId, this.state.blockchain.getChain());
       });
 
       p2pNode.on('chain:received', (receivedChain: Block[]) => {
@@ -313,6 +418,71 @@ class BlockchainService {
           }
         } catch (error) {
           console.error('Error replacing chain:', error);
+        }
+      });
+
+      p2pNode.on('candidate-block:received', (candidateBlock: Block) => {
+        const blockPuzzleId = (candidateBlock as any).puzzleId as string | undefined;
+        console.log(`Received candidate block ${candidateBlock.id} for puzzle ${blockPuzzleId}`);
+        
+        // Verify the candidate block
+        if (verifyBlock(candidateBlock)) {
+          // Add to candidate blocks map
+          this.state.candidateBlocks.set(candidateBlock.id, candidateBlock);
+          
+          // Notify state update
+          this.notify();
+          
+          console.log(`Added candidate block ${candidateBlock.id} to pending map`);
+        } else {
+          console.warn('Received and discarded invalid candidate block:', candidateBlock.id);
+        }
+      });
+
+      p2pNode.on('attestation:received', (attestation: Attestation) => {
+        console.log(`Received attestation for puzzle ${attestation.puzzleId} from ${attestation.attesterPublicKey}`);
+        
+        // Verify the attestation
+        if (verifyAttestation(attestation)) {
+          // Find the corresponding candidate block
+          const candidateBlock = Array.from(this.state.candidateBlocks.values()).find(
+            block => {
+              const blockPuzzleId = (block as any).puzzleId as string | undefined;
+              const blockProposedAnswer = (block as any).proposedAnswer as string | undefined;
+              return blockPuzzleId === attestation.puzzleId && blockProposedAnswer === attestation.proposedAnswer;
+            }
+          );
+          
+          if (candidateBlock) {
+            // Check if we already have this attestation
+            const blockAttestations = (candidateBlock as any).attestations as Attestation[] | undefined;
+            const existingAttestation = blockAttestations?.find(
+              (att: Attestation) => att.attesterPublicKey === attestation.attesterPublicKey
+            );
+            
+            if (!existingAttestation) {
+              // Add attestation to the candidate block
+              const updatedBlock: Block = {
+                ...candidateBlock
+              };
+              (updatedBlock as any).attestations = [...(blockAttestations || []), attestation];
+              
+              // Update the candidate block in the map
+              this.state.candidateBlocks.set(candidateBlock.id, updatedBlock);
+              
+              // Check if block can now be finalized
+              this._checkForBlockFinalization(updatedBlock);
+              
+              const updatedAttestations = (updatedBlock as any).attestations as Attestation[];
+              console.log(`Added attestation to candidate block ${candidateBlock.id}, now has ${updatedAttestations.length} attestations`);
+            } else {
+              console.log(`Already have attestation from ${attestation.attesterPublicKey} for candidate block ${candidateBlock.id}`);
+            }
+          } else {
+            console.log(`No matching candidate block found for attestation of puzzle ${attestation.puzzleId}`);
+          }
+        } else {
+          console.warn('Received and discarded invalid attestation:', attestation);
         }
       });
 
@@ -409,6 +579,7 @@ class BlockchainService {
       connectedPeers: [],
       blockchain: new Blockchain(),
       pendingTransactions: [],
+      candidateBlocks: new Map(),
       isConnecting: false,
       error: null,
     };
