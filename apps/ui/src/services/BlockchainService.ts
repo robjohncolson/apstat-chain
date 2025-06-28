@@ -14,7 +14,7 @@ import {
     type Attestation
 } from '@apstat-chain/core';
 import { P2PNode, discoverPeers } from '@apstat-chain/p2p';
-import type { QuizQuestion } from '@apstat-chain/data';
+import { ALL_QUESTIONS, type QuizQuestion } from '@apstat-chain/data';
 
 export interface BlockchainState {
   isInitialized: boolean;
@@ -28,6 +28,7 @@ export interface BlockchainState {
   candidateBlocks: Map<string, Block>;
   isConnecting: boolean;
   error: string | null;
+  allTransactions: Transaction[];
 }
 
 export type BlockchainStateListener = (state: BlockchainState) => void;
@@ -50,6 +51,7 @@ class BlockchainService {
       candidateBlocks: new Map(),
       isConnecting: false,
       error: null,
+      allTransactions: [],
     };
   }
 
@@ -73,6 +75,12 @@ class BlockchainService {
 
   private updateState(updates: Partial<BlockchainState>): void {
     this.state = Object.assign({}, this.state, updates);
+    // Update allTransactions whenever state changes
+    const allTransactions: Transaction[] = [];
+    for (const block of this.state.blockchain.getChain()) {
+      allTransactions.push(...block.transactions);
+    }
+    this.state.allTransactions = allTransactions;
     this.notify();
   }
 
@@ -558,16 +566,9 @@ class BlockchainService {
 
   // Mining Methods
   public getMiningPuzzle(): QuizQuestion {
-    // Temporary mock question until module resolution is fixed
-    const mockQuestion: QuizQuestion = {
-      id: 1,
-      questionImage: 'AP_Statistics_Course/Unit 1- Exploring One-Variable Data/2017 ap statistics mcq9.png',
-      year: 2017,
-      source: 'Problem from 2017 AP Statistics Multiple Choice',
-      linkedLessonIds: ['1-10']
-    };
-    
-    return mockQuestion;
+    // Get a random question from the imported data
+    const randomIndex = Math.floor(Math.random() * ALL_QUESTIONS.length);
+    return ALL_QUESTIONS[randomIndex];
   }
 
   // Utility Methods
@@ -597,6 +598,7 @@ class BlockchainService {
       candidateBlocks: new Map(),
       isConnecting: false,
       error: null,
+      allTransactions: [],
     };
     
     this.notify();

@@ -1,5 +1,6 @@
 import * as secp256k1 from '@noble/secp256k1';
 import { hash256 } from '../crypto/hashing.js';
+import { verifyAttestation } from '../attestation/index.js';
 /**
  * Create deterministic JSON string with sorted keys
  */
@@ -21,7 +22,7 @@ function deterministicStringify(obj) {
 /**
  * Create and sign a new block
  */
-export function createBlock({ privateKey, previousHash, transactions }) {
+export function createBlock({ privateKey, previousHash, transactions, puzzleId, proposedAnswer }) {
     // Derive the public key from the private key
     const publicKey = secp256k1.getPublicKey(privateKey.bytes);
     const publicKeyHex = secp256k1.etc.bytesToHex(publicKey);
@@ -34,6 +35,13 @@ export function createBlock({ privateKey, previousHash, transactions }) {
         timestamp,
         publicKey: publicKeyHex
     };
+    // Add puzzle data if provided (for candidate blocks)
+    if (puzzleId !== undefined) {
+        blockData.puzzleId = puzzleId;
+    }
+    if (proposedAnswer !== undefined) {
+        blockData.proposedAnswer = proposedAnswer;
+    }
     const signingString = deterministicStringify(blockData);
     const signingBytes = new TextEncoder().encode(signingString);
     const hash = hash256(signingBytes);
@@ -41,7 +49,7 @@ export function createBlock({ privateKey, previousHash, transactions }) {
     const signature = secp256k1.sign(hash, privateKey.bytes);
     // Create block ID from the hash
     const id = secp256k1.etc.bytesToHex(hash);
-    return {
+    const block = {
         id,
         previousHash,
         transactions,
@@ -49,13 +57,39 @@ export function createBlock({ privateKey, previousHash, transactions }) {
         signature: signature.toCompactHex(),
         publicKey: publicKeyHex
     };
+    // Add optional properties if provided
+    if (puzzleId !== undefined) {
+        block.puzzleId = puzzleId;
+    }
+    if (proposedAnswer !== undefined) {
+        block.proposedAnswer = proposedAnswer;
+    }
+    return block;
 }
 /**
  * Verify a block's signature and integrity
  */
 export function verifyBlock(block) {
     try {
-        const { id, signature, previousHash, transactions, timestamp, publicKey } = block;
+        const { id, signature, previousHash, transactions, timestamp, publicKey, puzzleId, proposedAnswer, attestations } = block;
+        // Check if this is a Genesis block (no previous hash or has the genesis previous hash pattern)
+        const isGenesisBlock = previousHash === '0'.repeat(64);
+        // Social Consensus validation: blocks with transactions must have PoK puzzle data (except Genesis)
+        if (!isGenesisBlock && transactions.length > 0) {
+            if (!puzzleId || !proposedAnswer || !attestations) {
+                return false;
+            }
+            // Verify all attestations are valid
+            for (const attestation of attestations) {
+                if (!verifyAttestation(attestation)) {
+                    return false;
+                }
+                // Verify attestation matches block's puzzle data
+                if (attestation.puzzleId !== puzzleId || attestation.proposedAnswer !== proposedAnswer) {
+                    return false;
+                }
+            }
+        }
         // Recreate the data that should have been signed
         const blockData = {
             previousHash,
@@ -63,6 +97,13 @@ export function verifyBlock(block) {
             timestamp,
             publicKey
         };
+        // Add puzzle data to signing data if present
+        if (puzzleId !== undefined) {
+            blockData.puzzleId = puzzleId;
+        }
+        if (proposedAnswer !== undefined) {
+            blockData.proposedAnswer = proposedAnswer;
+        }
         const signingString = deterministicStringify(blockData);
         const signingBytes = new TextEncoder().encode(signingString);
         const hash = hash256(signingBytes);

@@ -1,6 +1,7 @@
 {
   "name": "@apstat-chain/data",
   "version": "1.0.0",
+  "type": "module",
   "description": "Curriculum data package for AP Statistics Chain",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

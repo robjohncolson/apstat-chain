@@ -28,4 +28,15 @@ export interface Attestation {
     readonly proposedAnswer: string;
     readonly signature: string;
 }
+export interface Block {
+    readonly id: string;
+    readonly previousHash: string;
+    readonly transactions: readonly Transaction[];
+    readonly timestamp: number;
+    readonly signature: string;
+    readonly publicKey: string;
+    readonly puzzleId?: string;
+    readonly proposedAnswer?: string;
+    readonly attestations?: Attestation[];
+}
 //# sourceMappingURL=index.d.ts.map

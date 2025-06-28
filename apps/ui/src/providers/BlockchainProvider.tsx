@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import BlockchainService, { type BlockchainState } from '../services/BlockchainService';
+import BlockchainService from '../services/BlockchainService';
 
 // The context will now hold the STABLE service instance itself.
 const BlockchainContext = createContext<BlockchainService | null>(null);

@@ -1,7 +1,7 @@
 import * as secp256k1 from '@noble/secp256k1';
 import { hash256 } from '../crypto/hashing.js';
 import { verifyAttestation } from '../attestation/index.js';
-import type { PrivateKey, Transaction, Block, Attestation } from '../types/index.js';
+import type { PrivateKey, Transaction, Block } from '../types/index.js';
 
 // Re-export Block type for backward compatibility
 export type { Block } from '../types/index.js';

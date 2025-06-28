@@ -3,6 +3,7 @@ import { OnboardingFlow } from './components/OnboardingFlow';
 import { Dashboard } from './components/Dashboard';
 import { Ledger } from './components/Ledger';
 import { Leaderboard } from './components/Leaderboard';
+import { MiningView } from './components/MiningView';
 import { useBlockchain } from './providers/BlockchainProvider';
 
 // Dashboard wrapper component that handles P2P initialization
@@ -68,14 +69,6 @@ function DashboardWithP2P() {
     });
   };
 
-  const handleMinePendingTransactions = () => {
-    try {
-      service.minePendingTransactions();
-    } catch (error) {
-      console.error('Failed to mine pending transactions:', error);
-    }
-  };
-
   return (
     <div className="space-y-6">
       <Dashboard
@@ -85,14 +78,15 @@ function DashboardWithP2P() {
         isConnecting={state.isConnecting}
         error={state.error}
         onCompleteLesson={handleCompleteLesson}
-        onMinePendingTransactions={handleMinePendingTransactions}
-        pendingTransactionsCount={state.pendingTransactions.length}
       />
       <div className="max-w-4xl mx-auto px-4">
-        <Ledger transactions={service.getTransactions()} />
+        <MiningView service={service} />
       </div>
       <div className="max-w-4xl mx-auto px-4">
-        <Leaderboard transactions={service.getTransactions()} />
+        <Ledger transactions={state.allTransactions} />
+      </div>
+      <div className="max-w-4xl mx-auto px-4">
+        <Leaderboard transactions={state.allTransactions} />
       </div>
     </div>
   );
