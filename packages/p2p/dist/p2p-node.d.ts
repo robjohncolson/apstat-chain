@@ -33,6 +33,14 @@ export interface AttestationMessage extends P2PMessage {
     type: 'ATTESTATION_BROADCAST';
     data: Attestation;
 }
+export interface MempoolRequestMessage extends P2PMessage {
+    type: 'MEMPOOL_REQUEST';
+    data: null;
+}
+export interface MempoolResponseMessage extends P2PMessage {
+    type: 'MEMPOOL_RESPONSE';
+    data: Transaction[];
+}
 export interface P2PNodeConfig {
     host?: string;
     port?: number;
@@ -52,6 +60,8 @@ export declare class P2PNode extends EventEmitter {
     private handleChainResponse;
     private handleCandidateBlock;
     private handleAttestation;
+    private handleMempoolRequest;
+    private handleMempoolResponse;
     connectToPeer(peerId: string): void;
     private serializeTransaction;
     private deserializeTransaction;
@@ -70,5 +80,7 @@ export declare class P2PNode extends EventEmitter {
     destroy(): void;
     requestChain(peerId: string): void;
     sendChain(peerId: string, chain: any): void;
+    requestMempool(peerId: string): void;
+    sendMempool(peerId: string, transactions: Transaction[]): void;
 }
 //# sourceMappingURL=p2p-node.d.ts.map

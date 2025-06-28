@@ -114,6 +114,12 @@ export class P2PNode extends EventEmitter {
                 case 'ATTESTATION_BROADCAST':
                     this.handleAttestation(message, fromPeer);
                     break;
+                case 'MEMPOOL_REQUEST':
+                    this.handleMempoolRequest(message, fromPeer);
+                    break;
+                case 'MEMPOOL_RESPONSE':
+                    this.handleMempoolResponse(message, fromPeer);
+                    break;
                 default:
                     console.log(`Received unknown message type: ${message.type} from ${fromPeer}`);
                     this.emit('message:received', { type: message.type, data: message.data, fromPeer });
@@ -150,6 +156,14 @@ export class P2PNode extends EventEmitter {
         console.log(`Received attestation for puzzle ${message.data.puzzleId} from ${fromPeer}`);
         const attestation = this.deserializeAttestation(message.data);
         this.emit('attestation:received', attestation);
+    }
+    handleMempoolRequest(_message, fromPeer) {
+        console.log(`Received mempool request from ${fromPeer}`);
+        this.emit('mempool-request:received', fromPeer);
+    }
+    handleMempoolResponse(message, fromPeer) {
+        console.log(`Received mempool response from ${fromPeer}`);
+        this.emit('mempool:received', message.data);
     }
     connectToPeer(peerId) {
         if (this.connections.has(peerId)) {
@@ -414,6 +428,44 @@ export class P2PNode extends EventEmitter {
         }
         catch (error) {
             console.error(`Failed to send chain response to ${peerId}:`, error);
+        }
+    }
+    requestMempool(peerId) {
+        const conn = this.connections.get(peerId);
+        if (!conn || !conn.open) {
+            console.error(`Cannot request mempool from ${peerId}: Not connected`);
+            return;
+        }
+        const message = {
+            type: 'MEMPOOL_REQUEST',
+            data: null
+        };
+        try {
+            conn.send(message);
+            console.log(`Sent mempool request to ${peerId}`);
+        }
+        catch (error) {
+            console.error(`Failed to send mempool request to ${peerId}:`, error);
+        }
+    }
+    sendMempool(peerId, transactions) {
+        const conn = this.connections.get(peerId);
+        if (!conn || !conn.open) {
+            console.error(`Cannot send mempool to ${peerId}: Not connected`);
+            return;
+        }
+        // Serialize all transactions before sending
+        const serializedTransactions = transactions.map(tx => this.serializeTransaction(tx));
+        const message = {
+            type: 'MEMPOOL_RESPONSE',
+            data: serializedTransactions
+        };
+        try {
+            conn.send(message);
+            console.log(`Sent mempool with ${transactions.length} transactions to ${peerId}`);
+        }
+        catch (error) {
+            console.error(`Failed to send mempool to ${peerId}:`, error);
         }
     }
 }

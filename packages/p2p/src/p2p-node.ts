@@ -43,6 +43,16 @@ export interface AttestationMessage extends P2PMessage {
   data: Attestation;
 }
 
+export interface MempoolRequestMessage extends P2PMessage {
+  type: 'MEMPOOL_REQUEST';
+  data: null;
+}
+
+export interface MempoolResponseMessage extends P2PMessage {
+  type: 'MEMPOOL_RESPONSE';
+  data: Transaction[];
+}
+
 export interface P2PNodeConfig {
   host?: string;
   port?: number;
@@ -179,6 +189,12 @@ export class P2PNode extends EventEmitter {
         case 'ATTESTATION_BROADCAST':
           this.handleAttestation(message as AttestationMessage, fromPeer);
           break;
+        case 'MEMPOOL_REQUEST':
+          this.handleMempoolRequest(message as MempoolRequestMessage, fromPeer);
+          break;
+        case 'MEMPOOL_RESPONSE':
+          this.handleMempoolResponse(message as MempoolResponseMessage, fromPeer);
+          break;
         default:
           console.log(`Received unknown message type: ${message.type} from ${fromPeer}`);
           this.emit('message:received', { type: message.type, data: message.data, fromPeer });
@@ -220,6 +236,16 @@ export class P2PNode extends EventEmitter {
     console.log(`Received attestation for puzzle ${message.data.puzzleId} from ${fromPeer}`);
     const attestation = this.deserializeAttestation(message.data);
     this.emit('attestation:received', attestation);
+  }
+
+  private handleMempoolRequest(_message: MempoolRequestMessage, fromPeer: string): void {
+    console.log(`Received mempool request from ${fromPeer}`);
+    this.emit('mempool-request:received', fromPeer);
+  }
+
+  private handleMempoolResponse(message: MempoolResponseMessage, fromPeer: string): void {
+    console.log(`Received mempool response from ${fromPeer}`);
+    this.emit('mempool:received', message.data);
   }
 
   public connectToPeer(peerId: string): void {
@@ -514,6 +540,49 @@ export class P2PNode extends EventEmitter {
       console.log(`Sent chain response to ${peerId}`);
     } catch (error) {
       console.error(`Failed to send chain response to ${peerId}:`, error);
+    }
+  }
+
+  public requestMempool(peerId: string): void {
+    const conn = this.connections.get(peerId);
+    if (!conn || !conn.open) {
+      console.error(`Cannot request mempool from ${peerId}: Not connected`);
+      return;
+    }
+
+    const message: MempoolRequestMessage = {
+      type: 'MEMPOOL_REQUEST',
+      data: null
+    };
+
+    try {
+      conn.send(message);
+      console.log(`Sent mempool request to ${peerId}`);
+    } catch (error) {
+      console.error(`Failed to send mempool request to ${peerId}:`, error);
+    }
+  }
+
+  public sendMempool(peerId: string, transactions: Transaction[]): void {
+    const conn = this.connections.get(peerId);
+    if (!conn || !conn.open) {
+      console.error(`Cannot send mempool to ${peerId}: Not connected`);
+      return;
+    }
+
+    // Serialize all transactions before sending
+    const serializedTransactions = transactions.map(tx => this.serializeTransaction(tx));
+
+    const message: MempoolResponseMessage = {
+      type: 'MEMPOOL_RESPONSE',
+      data: serializedTransactions
+    };
+
+    try {
+      conn.send(message);
+      console.log(`Sent mempool with ${transactions.length} transactions to ${peerId}`);
+    } catch (error) {
+      console.error(`Failed to send mempool to ${peerId}:`, error);
     }
   }
 } 

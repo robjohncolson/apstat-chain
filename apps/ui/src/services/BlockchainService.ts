@@ -335,6 +335,11 @@ class BlockchainService {
         this.updateState({
           connectedPeers: [...new Set([...this.state.connectedPeers, peer])],
         });
+        
+        // Request mempool from the newly connected peer
+        if (this.state.p2pNode) {
+          this.state.p2pNode.requestMempool(peer);
+        }
       });
 
       p2pNode.on('peer:disconnected', (peer: string) => {
@@ -503,6 +508,66 @@ class BlockchainService {
           error: error.message,
           isConnecting: false,
         });
+      });
+      
+      // Handle mempool request from other peers
+      p2pNode.on('mempool-request:received', (requesterId: string) => {
+        console.log(`Received mempool request from peer ${requesterId}`);
+        // Send our current pending transactions to the requester
+        const pendingTxs = this.getPendingTransactions();
+        if (this.state.p2pNode) {
+          this.state.p2pNode.sendMempool(requesterId, pendingTxs);
+        }
+      });
+
+      // Handle incoming mempool from other peers
+      p2pNode.on('mempool:received', (receivedTransactions: Transaction[]) => {
+        console.log(`Received mempool with ${receivedTransactions.length} transactions`);
+        
+        // Deserialize and validate received transactions
+        const validTransactions: Transaction[] = [];
+        for (const txData of receivedTransactions) {
+          try {
+            // The transaction should already be properly formatted with signature as string
+            const transaction = txData as Transaction;
+            
+            // Verify the transaction
+            if (this.verifyTransaction(transaction)) {
+              validTransactions.push(transaction);
+            }
+          } catch (error) {
+            console.warn('Failed to deserialize or verify received transaction:', error);
+          }
+        }
+        
+        // Get current blockchain transaction IDs for deduplication
+        const existingTxIds = new Set();
+        
+        // Add IDs from confirmed transactions (in blocks)
+        for (const tx of this.getTransactions()) {
+          existingTxIds.add(tx.id);
+        }
+        
+        // Add IDs from current pending transactions
+        for (const tx of this.state.pendingTransactions) {
+          existingTxIds.add(tx.id);
+        }
+        
+        // Filter out duplicates from received transactions
+        const newTransactions = validTransactions.filter(tx => !existingTxIds.has(tx.id));
+        
+        if (newTransactions.length > 0) {
+          // Merge new transactions with existing pending transactions
+          const updatedPendingTransactions = [...this.state.pendingTransactions, ...newTransactions];
+          
+          this.updateState({
+            pendingTransactions: updatedPendingTransactions,
+          });
+          
+          console.log(`Added ${newTransactions.length} new transactions to mempool (${validTransactions.length - newTransactions.length} were duplicates)`);
+        } else {
+          console.log('No new transactions to add to mempool (all were duplicates)');
+        }
       });
 
       return new Promise((resolve, reject) => {
