@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'; // <-- Import useState
 import { OnboardingFlow } from './components/OnboardingFlow';
 import { Dashboard } from './components/Dashboard';
-import { Ledger } from './components/Ledger';
-import { Leaderboard } from './components/Leaderboard';
 import { useBlockchain } from './providers/BlockchainProvider';
 import { ALL_LESSONS } from '@apstat-chain/data';
 
@@ -87,25 +85,18 @@ function DashboardWithP2P() {
   };
 
   return (
-    <div className="space-y-6">
-      <Dashboard
-        publicKey={state.currentKeyPair?.publicKey || null}
-        peerId={state.peerId}
-        connectedPeers={state.connectedPeers}
-        isConnecting={state.isConnecting}
-        error={state.error}
-        onCompleteLesson={handleCompleteLesson}
-        service={service}
-      />
-      <div className="max-w-4xl mx-auto px-4">
-        <Ledger transactions={service.getConfirmedTransactions()} />
-      </div>
-      <div className="max-w-4xl mx-auto px-4">
-        <Leaderboard transactions={service.getConfirmedTransactions()} />
-      </div>
-    </div>
+    <Dashboard
+      publicKey={state.currentKeyPair?.publicKey || null}
+      peerId={state.peerId}
+      connectedPeers={state.connectedPeers}
+      isConnecting={state.isConnecting}
+      error={state.error}
+      onCompleteLesson={handleCompleteLesson}
+      service={service}
+    />
   );
 }
+
 function App() {
   const { service, state } = useBlockchain();
   // ADD A LOADING STATE: This will help us manage the initial startup check.

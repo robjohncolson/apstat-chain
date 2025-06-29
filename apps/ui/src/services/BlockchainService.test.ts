@@ -11,6 +11,7 @@ import {
   type Attestation,
   type PrivateKey
 } from '@apstat-chain/core';
+import { type Lesson } from '@apstat-chain/data';
 import BlockchainService from './BlockchainService';
 
 describe('BlockchainService - Mining Eligibility', () => {
@@ -349,5 +350,106 @@ describe('BlockchainService - Attestation Eligibility', () => {
     // ACT & ASSERT
     const isEligible = service.isEligibleToAttest(candidateBlock);
     expect(isEligible).toBe(false);
+  });
+}); 
+
+describe('BlockchainService - Personal Progress', () => {
+  let service: BlockchainService;
+  let userA: KeyPair;
+
+  beforeEach(() => {
+    // Reset the singleton instance for each test
+    (BlockchainService as any).instance = undefined;
+    service = BlockchainService.getInstance();
+    
+    // Generate test keypair
+    userA = generateKeyPair();
+  });
+
+  // Helper function to create a valid block with transactions and attestations
+  function createValidBlockWithTransactions(privateKey: PrivateKey, previousHash: string, transactions: Transaction[]): Block {
+    const puzzleId = 'test-puzzle-123';
+    const attesterAnswer = 'test-answer-123';
+    
+    // Create attestations from different peers
+    const attester1 = generateKeyPair();
+    const attester2 = generateKeyPair();
+    const attestations: Attestation[] = [
+      createAttestation({ privateKey: attester1.privateKey, puzzleId, attesterAnswer }),
+      createAttestation({ privateKey: attester2.privateKey, puzzleId, attesterAnswer })
+    ];
+    
+    // Create candidate block
+    const candidateBlock = createBlock({
+      privateKey,
+      previousHash,
+      transactions,
+      puzzleId,
+      proposedAnswer: attesterAnswer
+    });
+    
+    // Return final block with attestations
+    return {
+      ...candidateBlock,
+      attestations
+    };
+  }
+
+  describe('getPersonalProgress', () => {
+    it('should correctly merge curriculum data with a user\'s on-chain transaction history', () => {
+      // ARRANGE: Instantiate the service and create a userA
+      // Add a confirmed block containing an ACTIVITY_COMPLETE transaction for activityId: '1-2_q1' signed by userA
+      
+      const activityCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
+        type: 'ACTIVITY_COMPLETE',
+        lessonId: '1-2',
+        activityId: '1-2_q1',
+        contribution: 0.5
+      });
+
+      const blockchain = service.getBlockchain();
+      const previousHash = blockchain.getLatestBlock().id;
+      
+      const blockWithActivityComplete: Block = createValidBlockWithTransactions(
+        userA.privateKey,
+        previousHash,
+        [activityCompleteTransaction]
+      );
+
+      blockchain.addBlock(blockWithActivityComplete);
+
+      // ACT: Call the new service.getPersonalProgress(userA.publicKey.hex) method
+      const personalProgress = service.getPersonalProgress(userA.publicKey.hex);
+
+      // ASSERT: Verify that the method returns a data structure representing the full curriculum
+      expect(personalProgress).toBeDefined();
+      expect(Array.isArray(personalProgress)).toBe(true);
+      expect(personalProgress.length).toBeGreaterThan(0);
+
+      // Find the lesson corresponding to lessonId: '1-2'
+      const lesson1_2 = personalProgress.find((lesson: Lesson) => lesson.id === '1-2');
+      expect(lesson1_2).toBeDefined();
+      expect(lesson1_2?.activities).toBeDefined();
+
+      // Within that lesson, find the activity corresponding to activityId: '1-2_q1'
+      // Assert that this activity object now has a property completed: true
+      const activity1_2_q1 = lesson1_2?.activities.find((activity: any) => activity.id === '1-2_q1');
+      expect(activity1_2_q1).toBeDefined();
+      expect(activity1_2_q1).toHaveProperty('completed', true);
+
+      // Find a different activity that the user has not completed
+      // Assert that its completed property is false
+      const otherActivity = lesson1_2?.activities.find((activity: any) => activity.id !== '1-2_q1');
+      if (otherActivity) {
+        expect(otherActivity).toHaveProperty('completed', false);
+      }
+
+      // Test an activity from a different lesson to ensure it's also marked as not completed
+      const lesson1_1 = personalProgress.find((lesson: Lesson) => lesson.id === '1-1');
+      if (lesson1_1 && lesson1_1.activities.length > 0) {
+        const activity1_1_video_1 = lesson1_1.activities[0]; // Get first activity from lesson 1-1
+        expect(activity1_1_video_1).toHaveProperty('completed', false);
+      }
+    });
   });
 }); 

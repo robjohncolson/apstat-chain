@@ -14,7 +14,7 @@ import {
     type Attestation
 } from '@apstat-chain/core';
 import { P2PNode, discoverPeers } from '@apstat-chain/p2p';
-import { ALL_QUESTIONS, type QuizQuestion } from '@apstat-chain/data';
+import { ALL_QUESTIONS, ALL_LESSONS, type QuizQuestion, type Lesson, type Activity } from '@apstat-chain/data';
 
 export interface BlockchainState {
   isInitialized: boolean;
@@ -929,6 +929,35 @@ class BlockchainService {
     };
     
     this.notify();
+  }
+
+  /**
+   * Get personalized progress report for a given user by merging static curriculum data 
+   * with the user's confirmed transaction history
+   */
+  public getPersonalProgress(publicKey: string): Lesson[] {
+    // Get all of the user's confirmed transactions from the blockchain
+    const confirmedTransactions = this.getConfirmedTransactions();
+    
+    // Filter to only include ACTIVITY_COMPLETE transactions signed by the given publicKey
+    const userActivityCompleteTransactions = confirmedTransactions.filter(transaction => 
+      transaction.publicKey === publicKey && 
+      transaction.payload?.type === 'ACTIVITY_COMPLETE'
+    );
+
+    // Create a Set containing all the activityIds from the user's completed transactions
+    const completedActivityIds = new Set(
+      userActivityCompleteTransactions.map(transaction => transaction.payload.activityId)
+    );
+
+    // Get the static ALL_LESSONS data and create enriched lessons
+    return ALL_LESSONS.map(lesson => ({
+      ...lesson,
+      activities: lesson.activities.map(activity => ({
+        ...activity,
+        completed: completedActivityIds.has(activity.id)
+      }))
+    }));
   }
 }
 
