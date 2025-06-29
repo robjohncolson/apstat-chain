@@ -29,15 +29,21 @@ describe('AttestationView', () => {
       }
     ];
 
+    const mockCandidates = [
+      {
+        block: mockCandidateBlock,
+        isEligible: true
+      }
+    ];
+
     const mockService = {
-      submitAttestation: vi.fn() as any,
-      isEligibleToAttest: vi.fn().mockReturnValue(true)
+      submitAttestation: vi.fn() as any
     };
 
     const user = userEvent.setup();
 
     // Act
-    render(<AttestationView candidateBlocks={[mockCandidateBlock]} questions={mockQuestions} service={mockService} />);
+    render(<AttestationView candidates={mockCandidates} questions={mockQuestions} service={mockService} />);
 
     // The component should display the candidate block
     // Find the multiple-choice button for the same answer as the proposedAnswer (i.e., the "C" button)
@@ -79,15 +85,21 @@ describe('AttestationView', () => {
       }
     ];
 
+    const mockCandidates = [
+      {
+        block: mockCandidateBlock,
+        isEligible: false
+      }
+    ];
+
     const mockService = {
-      submitAttestation: vi.fn() as any,
-      isEligibleToAttest: vi.fn().mockReturnValue(false)
+      submitAttestation: vi.fn() as any
     };
 
     const user = userEvent.setup();
 
     // Act
-    render(<AttestationView candidateBlocks={[mockCandidateBlock]} questions={mockQuestions} service={mockService} />);
+    render(<AttestationView candidates={mockCandidates} questions={mockQuestions} service={mockService} />);
 
     // Select an answer
     const cButton = screen.getByRole('button', { name: 'C' });
@@ -102,8 +114,5 @@ describe('AttestationView', () => {
     
     // Verify it shows the correct text
     expect(attestButton).toHaveTextContent('You cannot attest to your own block');
-    
-    // Verify that isEligibleToAttest was called
-    expect(mockService.isEligibleToAttest).toHaveBeenCalledWith(mockCandidateBlock);
   });
 }); 

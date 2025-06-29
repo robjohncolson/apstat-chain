@@ -3,15 +3,14 @@ import type { Block } from '@apstat-chain/core';
 import type { QuizQuestion } from '@apstat-chain/data';
 
 interface AttestationViewProps {
-  candidateBlocks: Block[];
+  candidates: { block: Block; isEligible: boolean; }[];
   questions: QuizQuestion[];
   service: {
     submitAttestation(block: Block, attesterAnswer: string): void;
-    isEligibleToAttest(block: Block): boolean;
   };
 }
 
-export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlocks, questions, service }) => {
+export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, questions, service }) => {
   const [selectedAnswers, setSelectedAnswers] = useState<Map<string, string>>(new Map());
 
   const handleAnswerSelect = (blockId: string, answer: string) => {
@@ -31,14 +30,13 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Block Attestation</h1>
       
-      {candidateBlocks.map((block) => {
+      {candidates.map((candidate) => {
         // Find the matching question using the block's puzzleId
-        const questionObject = questions.find(q => q.id.toString() === block.puzzleId);
-        const userSelectedAnswer = selectedAnswers.get(block.id);
-        const isEligible = service.isEligibleToAttest(block);
+        const questionObject = questions.find(q => q.id.toString() === candidate.block.puzzleId);
+        const userSelectedAnswer = selectedAnswers.get(candidate.block.id);
         
         return (
-          <div key={block.id} className="border border-gray-300 rounded-lg p-6 mb-6 bg-white shadow-sm">
+          <div key={candidate.block.id} className="border border-gray-300 rounded-lg p-6 mb-6 bg-white shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Candidate Block</h2>
             
             {/* Question Image */}
@@ -46,14 +44,14 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
               <div className="mb-4">
                 <img 
                   src={questionObject.questionImage} 
-                  alt={`Question ${block.puzzleId}`}
+                  alt={`Question ${candidate.block.puzzleId}`}
                   className="max-w-full h-auto border border-gray-200 rounded"
                 />
               </div>
-            ) : block.puzzleId ? (
+            ) : candidate.block.puzzleId ? (
               <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded">
                 <p className="text-red-700 text-sm">
-                  Question not found for puzzle ID: {block.puzzleId}
+                  Question not found for puzzle ID: {candidate.block.puzzleId}
                 </p>
               </div>
             ) : null}
@@ -61,7 +59,7 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
           {/* Miner's Proposed Answer */}
           <div className="mb-4 p-3 bg-blue-50 rounded">
             <p className="text-sm font-medium text-blue-800">
-              Miner's Proposed Answer: <span className="font-bold">{block.proposedAnswer}</span>
+              Miner's Proposed Answer: <span className="font-bold">{candidate.block.proposedAnswer}</span>
             </p>
           </div>
           
@@ -72,9 +70,9 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
               {answerChoices.map((choice) => (
                 <button
                   key={choice}
-                  onClick={() => handleAnswerSelect(block.id, choice)}
+                  onClick={() => handleAnswerSelect(candidate.block.id, choice)}
                   className={`px-4 py-2 border rounded font-medium transition-colors ${
-                    selectedAnswers.get(block.id) === choice
+                    selectedAnswers.get(candidate.block.id) === choice
                       ? 'bg-blue-500 text-white border-blue-500'
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                   }`}
@@ -87,21 +85,21 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
           
             {/* Attest Button */}
             <button
-              onClick={() => handleAttest(block)}
-              disabled={!userSelectedAnswer || !isEligible}
+              onClick={() => handleAttest(candidate.block)}
+              disabled={!userSelectedAnswer || !candidate.isEligible}
               className={`px-6 py-2 rounded font-medium transition-colors ${
-                userSelectedAnswer && isEligible
+                userSelectedAnswer && candidate.isEligible
                   ? 'bg-green-500 text-white hover:bg-green-600'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {!isEligible ? 'You cannot attest to your own block' : 'Attest to This Block'}
+              {!candidate.isEligible ? 'You cannot attest to your own block' : 'Attest to This Block'}
             </button>
           </div>
         );
       })}
       
-      {candidateBlocks.length === 0 && (
+      {candidates.length === 0 && (
         <div className="text-center py-8 text-gray-500">
           No candidate blocks available for attestation.
         </div>

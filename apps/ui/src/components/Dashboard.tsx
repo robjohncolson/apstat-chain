@@ -77,8 +77,11 @@ export function Dashboard({
   const pendingTotal = service.getPendingContributionTotal();
   const isEligible = publicKey ? service.isEligibleToMine(publicKey.hex) : false;
   
-  // Convert candidateBlocks Map to array for AttestationView
-  const candidateBlocksArray = Array.from(state.candidateBlocks.values());
+  // Convert candidateBlocks Map to array with eligibility for AttestationView
+  const candidatesWithEligibility = Array.from(state.candidateBlocks.values()).map(block => ({
+    block: block,
+    isEligible: service.isEligibleToAttest(block)
+  }));
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
@@ -203,7 +206,7 @@ export function Dashboard({
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
             Review Candidate Blocks
           </h2>
-          <AttestationView candidateBlocks={candidateBlocksArray} service={service} questions={ALL_QUESTIONS} />
+          <AttestationView candidates={candidatesWithEligibility} service={service} questions={ALL_QUESTIONS} />
         </div>
 
         {/* Mempool Section */}
