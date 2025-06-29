@@ -37,6 +37,7 @@ class BlockchainService {
   private static instance: BlockchainService;
   private state: BlockchainState;
   private listeners: Set<BlockchainStateListener> = new Set();
+  private static readonly MEMPOOL_STORAGE_KEY = 'apstat-mempool';
 
   private constructor() {
     this.state = {
@@ -53,6 +54,30 @@ class BlockchainService {
       error: null,
       allTransactions: [],
     };
+
+    // Part 2: Hydrate mempool from localStorage on startup
+    try {
+      const storedMempool = localStorage.getItem(BlockchainService.MEMPOOL_STORAGE_KEY);
+      if (storedMempool) {
+        const parsedTransactions = JSON.parse(storedMempool) as Transaction[];
+        const validTransactions: Transaction[] = [];
+        
+        // Validate every transaction from storage
+        for (const transaction of parsedTransactions) {
+          try {
+            if (this.verifyTransaction(transaction)) {
+              validTransactions.push(transaction);
+            }
+          } catch (error) {
+            console.warn('Invalid transaction found in localStorage, skipping:', error);
+          }
+        }
+        
+        this.state.pendingTransactions = validTransactions;
+      }
+    } catch (error) {
+      console.warn('Failed to hydrate mempool from localStorage:', error);
+    }
   }
 
   public static getInstance(): BlockchainService {
@@ -85,6 +110,18 @@ class BlockchainService {
     
     this.state = { ...this.state, ...updates, allTransactions };
     this.notify();
+
+    // Part 1: Save mempool to localStorage when pendingTransactions change
+    if (updates.pendingTransactions) {
+      try {
+        localStorage.setItem(
+          BlockchainService.MEMPOOL_STORAGE_KEY,
+          JSON.stringify(this.state.pendingTransactions)
+        );
+      } catch (error) {
+        console.warn('Failed to save mempool to localStorage:', error);
+      }
+    }
   }
 
   // Key Management
@@ -793,6 +830,13 @@ class BlockchainService {
     // Clean up P2P node if it exists
     if (this.state.p2pNode) {
       this.state.p2pNode.destroy();
+    }
+
+    // Part 3: Clear mempool from localStorage
+    try {
+      localStorage.removeItem(BlockchainService.MEMPOOL_STORAGE_KEY);
+    } catch (error) {
+      console.warn('Failed to clear mempool from localStorage:', error);
     }
 
     this.state = {
