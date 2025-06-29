@@ -31,14 +31,14 @@ describe('BlockchainService - Mining Eligibility', () => {
   // Helper function to create a valid block with transactions and attestations
   function createValidBlockWithTransactions(privateKey: PrivateKey, previousHash: string, transactions: Transaction[]): Block {
     const puzzleId = 'test-puzzle-123';
-    const proposedAnswer = 'test-answer-123';
+    const attesterAnswer = 'test-answer-123';
     
     // Create attestations from different peers
     const attester1 = generateKeyPair();
     const attester2 = generateKeyPair();
     const attestations: Attestation[] = [
-      createAttestation({ privateKey: attester1.privateKey, puzzleId, proposedAnswer }),
-      createAttestation({ privateKey: attester2.privateKey, puzzleId, proposedAnswer })
+      createAttestation({ privateKey: attester1.privateKey, puzzleId, attesterAnswer }),
+      createAttestation({ privateKey: attester2.privateKey, puzzleId, attesterAnswer })
     ];
     
     // Create candidate block
@@ -47,7 +47,7 @@ describe('BlockchainService - Mining Eligibility', () => {
       previousHash,
       transactions,
       puzzleId,
-      proposedAnswer
+      proposedAnswer: attesterAnswer
     });
     
     // Return final block with attestations
@@ -216,5 +216,138 @@ describe('BlockchainService - Mining Eligibility', () => {
     // ACT & ASSERT
     const userAEligible = service.isEligibleToMine(userA.publicKey.hex);
     expect(userAEligible).toBe(true); // Has ACTIVITY_COMPLETE for '1-1' which matches pending transaction
+  });
+}); 
+
+describe('BlockchainService - Attestation Eligibility', () => {
+  let service: BlockchainService;
+  let userA: KeyPair;
+  let userB: KeyPair;
+
+  beforeEach(() => {
+    // Reset the singleton instance for each test
+    (BlockchainService as any).instance = undefined;
+    service = BlockchainService.getInstance();
+    
+    // Generate test keypairs
+    userA = generateKeyPair();
+    userB = generateKeyPair();
+    
+    // Initialize the service with userA as the current user
+    (service as any).updateState({
+      currentKeyPair: userA,
+      isInitialized: true
+    });
+  });
+
+  // Helper function to create a valid block with transactions and attestations
+  function createValidBlockWithTransactions(privateKey: PrivateKey, previousHash: string, transactions: Transaction[]): Block {
+    const puzzleId = 'test-puzzle-123';
+    const attesterAnswer = 'test-answer-123';
+    
+    // Create attestations from different peers
+    const attester1 = generateKeyPair();
+    const attester2 = generateKeyPair();
+    const attestations: Attestation[] = [
+      createAttestation({ privateKey: attester1.privateKey, puzzleId, attesterAnswer }),
+      createAttestation({ privateKey: attester2.privateKey, puzzleId, attesterAnswer })
+    ];
+    
+    // Create candidate block
+    const candidateBlock = createBlock({
+      privateKey,
+      previousHash,
+      transactions,
+      puzzleId,
+      proposedAnswer: attesterAnswer
+    });
+    
+    // Return final block with attestations
+    return {
+      ...candidateBlock,
+      attestations
+    };
+  }
+
+  // Helper function to create a candidate block for testing
+  function createCandidateBlockWithPuzzle(miner: KeyPair, lessonId: string): Block & { lessonId: string } {
+    const blockchain = service.getBlockchain();
+    const previousHash = blockchain.getLatestBlock().id;
+    
+    const candidateBlock = createBlock({
+      privateKey: miner.privateKey,
+      previousHash,
+      transactions: [],
+      puzzleId: 'test-puzzle-for-lesson-' + lessonId,
+      proposedAnswer: 'test-answer'
+    });
+    
+    // Add lessonId to the block for testing purposes
+    return {
+      ...candidateBlock,
+      lessonId
+    };
+  }
+
+  it('should return true if the user is not the creator AND has completed the relevant lesson', () => {
+    // ARRANGE: UserA has completed lesson '3-1', userB proposes a block for lesson '3-1'
+    
+    // Create an ACTIVITY_COMPLETE transaction for lessonId '3-1' signed by userA
+    const activityCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
+      type: 'ACTIVITY_COMPLETE',
+      lessonId: '3-1',
+      activityId: '3-1_quiz',
+      contribution: 0.5
+    });
+
+    // Add the transaction to a block in the chain using the helper function
+    const blockchain = service.getBlockchain();
+    const previousHash = blockchain.getLatestBlock().id;
+    
+    const blockWithActivityComplete: Block = createValidBlockWithTransactions(
+      userA.privateKey,
+      previousHash,
+      [activityCompleteTransaction]
+    );
+
+    blockchain.addBlock(blockWithActivityComplete);
+
+    // Create a candidate block proposed by userB for a puzzle related to lessonId '3-1'
+    const candidateBlock = createCandidateBlockWithPuzzle(userB, '3-1');
+
+    // ACT & ASSERT
+    const isEligible = service.isEligibleToAttest(candidateBlock);
+    expect(isEligible).toBe(true);
+  });
+
+  it('should return false if the user has NOT completed the relevant lesson', () => {
+    // ARRANGE: UserA has completed lesson '2-1', but the candidate block is for lesson '3-1'
+    
+    // Create an ACTIVITY_COMPLETE transaction for lessonId '2-1' signed by userA
+    const activityCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
+      type: 'ACTIVITY_COMPLETE',
+      lessonId: '2-1',
+      activityId: '2-1_quiz',
+      contribution: 0.5
+    });
+
+    // Add the transaction to a block in the chain using the helper function
+    const blockchain = service.getBlockchain();
+    const previousHash = blockchain.getLatestBlock().id;
+    
+    const blockWithActivityComplete: Block = createValidBlockWithTransactions(
+      userA.privateKey,
+      previousHash,
+      [activityCompleteTransaction]
+    );
+
+    blockchain.addBlock(blockWithActivityComplete);
+
+    // Create a candidate block proposed by userB for a puzzle related to lessonId '3-1'
+    const candidateBlock = createCandidateBlockWithPuzzle(userB, '3-1');
+
+    // ACT & ASSERT
+    const isEligible = service.isEligibleToAttest(candidateBlock);
+    expect(isEligible).toBe(false);
   });
 }); 

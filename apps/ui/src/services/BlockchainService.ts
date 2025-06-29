@@ -386,11 +386,6 @@ class BlockchainService {
    * Check if the current user is eligible to attest to a given block
    */
   public isEligibleToAttest(block: Block): boolean {
-    console.log('--- Checking Attestation Eligibility ---');
-    console.log('Current User PK:', this.state.currentKeyPair?.publicKey.hex);
-    console.log('Block Creator PK:', block.publicKey);
-    console.log('Are they the same?:', this.state.currentKeyPair?.publicKey.hex === block.publicKey);
-    
     // Return false if service is not initialized
     if (!this.state.isInitialized || !this.state.currentKeyPair) {
       return false;
@@ -401,9 +396,58 @@ class BlockchainService {
       return false;
     }
 
-    // For now, return true in all other cases
-    // TODO: Add "Relevant Knowledge" check here later
-    return true;
+    // Relevant Knowledge check: Check if user has completed lessons linked to the puzzle
+    const blockPuzzleId = (block as any).puzzleId as string | undefined;
+    
+    if (!blockPuzzleId) {
+      return false;
+    }
+
+    // Check if this is a test puzzle first
+    if (blockPuzzleId.startsWith('test-puzzle-for-lesson-')) {
+      const testLessonId = (block as any).lessonId;
+      if (testLessonId) {
+        // Check if user has completed this specific lesson
+        const allTransactions = this.getAllTransactionsIncludingPending();
+        const currentUserPublicKey = this.state.currentKeyPair.publicKey.hex;
+        
+        const hasCompletedLesson = allTransactions.some(transaction => 
+          transaction.publicKey === currentUserPublicKey && 
+          transaction.payload?.type === 'ACTIVITY_COMPLETE' &&
+          transaction.payload?.lessonId === testLessonId
+        );
+        
+        return hasCompletedLesson;
+      }
+      return false;
+    }
+
+    // Find the corresponding QuizQuestion in ALL_QUESTIONS for real puzzles
+    const question = ALL_QUESTIONS.find(q => q.id.toString() === blockPuzzleId);
+    
+    if (!question) {
+      return false;
+    }
+
+    // Get the linkedLessonIds from the question
+    const linkedLessonIds = question.linkedLessonIds;
+    
+    if (!linkedLessonIds || linkedLessonIds.length === 0) {
+      return false;
+    }
+
+    // Get all of the current user's completed activities
+    const allTransactions = this.getAllTransactionsIncludingPending();
+    const currentUserPublicKey = this.state.currentKeyPair.publicKey.hex;
+    
+    // Check if the user has completed at least one lesson linked to this puzzle
+    const hasCompletedRelevantLesson = allTransactions.some(transaction => 
+      transaction.publicKey === currentUserPublicKey && 
+      transaction.payload?.type === 'ACTIVITY_COMPLETE' &&
+      linkedLessonIds.includes(transaction.payload?.lessonId)
+    );
+
+    return hasCompletedRelevantLesson;
   }
 
   public submitAttestation(candidateBlock: Block, attesterAnswer: string): void {
