@@ -37,7 +37,8 @@ describe('AttestationView', () => {
     ];
 
     const mockService = {
-      submitAttestation: vi.fn() as any
+      submitAttestation: vi.fn() as any,
+      isEligibleToAttest: vi.fn().mockReturnValue(true)
     };
 
     const user = userEvent.setup();
@@ -93,7 +94,8 @@ describe('AttestationView', () => {
     ];
 
     const mockService = {
-      submitAttestation: vi.fn() as any
+      submitAttestation: vi.fn() as any,
+      isEligibleToAttest: vi.fn().mockReturnValue(false)
     };
 
     const user = userEvent.setup();
@@ -114,5 +116,8 @@ describe('AttestationView', () => {
     
     // Verify it shows the correct text
     expect(attestButton).toHaveTextContent('You cannot attest to your own block');
+    
+    // Verify that isEligibleToAttest was called
+    expect(mockService.isEligibleToAttest).toHaveBeenCalledWith(mockCandidateBlock);
   });
 }); 

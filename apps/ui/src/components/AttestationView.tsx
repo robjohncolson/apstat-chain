@@ -7,6 +7,7 @@ interface AttestationViewProps {
   questions: QuizQuestion[];
   service: {
     submitAttestation(block: Block, attesterAnswer: string): void;
+    isEligibleToAttest(block: Block): boolean;
   };
 }
 
@@ -86,14 +87,14 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
             {/* Attest Button */}
             <button
               onClick={() => handleAttest(candidate.block)}
-              disabled={!userSelectedAnswer || !candidate.isEligible}
+              disabled={!userSelectedAnswer || !service.isEligibleToAttest(candidate.block)}
               className={`px-6 py-2 rounded font-medium transition-colors ${
-                userSelectedAnswer && candidate.isEligible
+                userSelectedAnswer && service.isEligibleToAttest(candidate.block)
                   ? 'bg-green-500 text-white hover:bg-green-600'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {!candidate.isEligible ? 'You cannot attest to your own block' : 'Attest to This Block'}
+              {!service.isEligibleToAttest(candidate.block) ? 'You cannot attest to your own block' : 'Attest to This Block'}
             </button>
           </div>
         );
