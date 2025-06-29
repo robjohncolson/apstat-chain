@@ -5,6 +5,7 @@ import { MiningView } from './MiningView'
 import { AttestationView } from './AttestationView'
 import { Ledger } from './Ledger'
 import { Leaderboard } from './Leaderboard'
+import { UnitAccordion } from './UnitAccordion'
 import type BlockchainService from '../services/BlockchainService'
 import { useBlockchain } from '../providers/BlockchainProvider'
 
@@ -301,7 +302,7 @@ export function Dashboard({
 
         {activeTab === 'progress' && (
           <div>
-            <Ledger transactions={service.getConfirmedTransactions()} />
+            <UnitAccordion service={service} state={state} />
           </div>
         )}
 
