@@ -123,7 +123,24 @@ class BlockchainService {
   }
 
   // Transaction Management
-  public createTransaction(payload: any): Transaction {
+  public createTransaction(payload: any): Transaction | null {
+    // Check for duplicate ACTIVITY_COMPLETE transactions
+    if (payload.type === 'ACTIVITY_COMPLETE') {
+      const allTransactions = this.getAllTransactionsIncludingPending();
+      const currentPublicKey = this.state.currentKeyPair?.publicKey.hex;
+      
+      const isDuplicate = allTransactions.some(transaction => 
+        transaction.publicKey === currentPublicKey && 
+        transaction.payload?.type === 'ACTIVITY_COMPLETE' &&
+        transaction.payload?.activityId === payload.activityId
+      );
+      
+      if (isDuplicate) {
+        console.warn('User has already completed this activity. Transaction not created.');
+        return null;
+      }
+    }
+
     if (!this.state.currentKeyPair) {
       throw new Error('No wallet initialized. Please generate or restore a wallet first.');
     }
