@@ -104,6 +104,15 @@ describe('Transaction', () => {
 
       expect(transaction.publicKey).toBe(keyPair1.publicKey.hex);
     });
+
+    it('should include an isPriority flag in the payload when provided', () => {
+      const payload = { action: 'test', value: 123, isPriority: true };
+      const transaction = createTransaction(keyPair1.privateKey, payload);
+
+      expect(transaction.payload).toEqual(payload);
+      expect(transaction.payload.isPriority).toBe(true);
+      expect(verifyTransaction(transaction)).toBe(true);
+    });
   });
 
   describe('verifyTransaction', () => {
