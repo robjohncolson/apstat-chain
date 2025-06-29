@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import type { Block } from '@apstat-chain/core';
+import type { QuizQuestion } from '@apstat-chain/data';
 
 interface AttestationViewProps {
   candidateBlocks: Block[];
+  questions: QuizQuestion[];
   service: {
     submitAttestation(block: Block): void;
   };
 }
 
-export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlocks, service }) => {
+export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlocks, questions, service }) => {
   const [selectedAnswers, setSelectedAnswers] = useState<Map<string, string>>(new Map());
 
   const handleAnswerSelect = (blockId: string, answer: string) => {
@@ -19,34 +21,36 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
     service.submitAttestation(block);
   };
 
-  const getImagePath = (puzzleId: string) => {
-    // Extract unit number from puzzleId to determine the correct path
-    // Default to unit1 if no unit can be determined
-    const unitMatch = puzzleId.match(/unit(\d+)/i);
-    const unit = unitMatch ? `unit${unitMatch[1]}` : 'unit1';
-    return `/questions/${unit}/${puzzleId}`;
-  };
-
   const answerChoices = ['A', 'B', 'C', 'D', 'E'];
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Block Attestation</h1>
       
-      {candidateBlocks.map((block) => (
-        <div key={block.id} className="border border-gray-300 rounded-lg p-6 mb-6 bg-white shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Candidate Block</h2>
-          
-          {/* Question Image */}
-          {block.puzzleId && (
-            <div className="mb-4">
-              <img 
-                src={getImagePath(block.puzzleId)} 
-                alt={`Question ${block.puzzleId}`}
-                className="max-w-full h-auto border border-gray-200 rounded"
-              />
-            </div>
-          )}
+      {candidateBlocks.map((block) => {
+        // Find the matching question using the block's puzzleId
+        const questionObject = questions.find(q => q.id.toString() === block.puzzleId);
+        
+        return (
+          <div key={block.id} className="border border-gray-300 rounded-lg p-6 mb-6 bg-white shadow-sm">
+            <h2 className="text-xl font-semibold mb-4">Candidate Block</h2>
+            
+            {/* Question Image */}
+            {questionObject ? (
+              <div className="mb-4">
+                <img 
+                  src={questionObject.questionImage} 
+                  alt={`Question ${block.puzzleId}`}
+                  className="max-w-full h-auto border border-gray-200 rounded"
+                />
+              </div>
+            ) : block.puzzleId ? (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded">
+                <p className="text-red-700 text-sm">
+                  Question not found for puzzle ID: {block.puzzleId}
+                </p>
+              </div>
+            ) : null}
           
           {/* Miner's Proposed Answer */}
           <div className="mb-4 p-3 bg-blue-50 rounded">
@@ -75,20 +79,21 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
             </div>
           </div>
           
-          {/* Attest Button */}
-          <button
-            onClick={() => handleAttest(block)}
-            disabled={selectedAnswers.get(block.id) !== block.proposedAnswer}
-            className={`px-6 py-2 rounded font-medium transition-colors ${
-              selectedAnswers.get(block.id) === block.proposedAnswer
-                ? 'bg-green-500 text-white hover:bg-green-600'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            Attest to This Block
-          </button>
-        </div>
-      ))}
+            {/* Attest Button */}
+            <button
+              onClick={() => handleAttest(block)}
+              disabled={selectedAnswers.get(block.id) !== block.proposedAnswer}
+              className={`px-6 py-2 rounded font-medium transition-colors ${
+                selectedAnswers.get(block.id) === block.proposedAnswer
+                  ? 'bg-green-500 text-white hover:bg-green-600'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Attest to This Block
+            </button>
+          </div>
+        );
+      })}
       
       {candidateBlocks.length === 0 && (
         <div className="text-center py-8 text-gray-500">

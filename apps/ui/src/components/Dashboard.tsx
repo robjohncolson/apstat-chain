@@ -1,4 +1,5 @@
 import type { KeyPair, Transaction } from '@apstat-chain/core'
+import { ALL_QUESTIONS } from '@apstat-chain/data'
 import { MiningView } from './MiningView'
 import { AttestationView } from './AttestationView'
 import type BlockchainService from '../services/BlockchainService'
@@ -21,7 +22,7 @@ function MempoolView({ transactions }: MempoolViewProps) {
         </p>
       ) : (
         <div className="space-y-3">
-          {transactions.map((tx, index) => (
+          {transactions.map((tx) => (
             <div
               key={tx.id}
               className="bg-white dark:bg-gray-800 p-4 rounded border"
@@ -202,7 +203,7 @@ export function Dashboard({
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
             Review Candidate Blocks
           </h2>
-          <AttestationView candidateBlocks={candidateBlocksArray} service={service} />
+          <AttestationView candidateBlocks={candidateBlocksArray} service={service} questions={ALL_QUESTIONS} />
         </div>
 
         {/* Mempool Section */}
