@@ -58,70 +58,66 @@ describe('BlockchainService - Mining Eligibility', () => {
   }
 
   it('isEligibleToMine should return true only for users who have completed a relevant lesson', () => {
-    // ARRANGE: Set up the test scenario
+    // ARRANGE: Set up the test scenario with empty blockchain (just Genesis block)
     
-    // Create a LESSON_COMPLETE transaction for lessonId '1-2' signed by userA
-    const lessonCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
-      type: 'LESSON_COMPLETE',
-      lessonId: '1-2'
-    });
-
-    // Add this transaction to a block on the service's blockchain
-    const blockchain = service.getBlockchain();
-    const previousHash = blockchain.getLatestBlock().id;
-    
-    const blockWithLessonComplete: Block = createValidBlockWithTransactions(
-      userA.privateKey,
-      previousHash,
-      [lessonCompleteTransaction]
-    );
-
-    // Add the block to the blockchain
-    blockchain.addBlock(blockWithLessonComplete);
-
-    // Create a pending transaction for lessonId '1-2' (simulating a student's quiz completion)
-    const pendingTransaction: Transaction = createTransaction(userA.privateKey, {
+    // Create an ACTIVITY_COMPLETE transaction for lessonId '1-2' signed by userA
+    const activityCompleteTransactionA: Transaction = createTransaction(userA.privateKey, {
       type: 'ACTIVITY_COMPLETE',
       lessonId: '1-2',
       activityId: '1-2_quiz',
       contribution: 0.5
     });
 
-    // Add this to the service's pending transactions
+    // Create another ACTIVITY_COMPLETE transaction for lessonId '1-2' signed by userB
+    const activityCompleteTransactionB: Transaction = createTransaction(userB.privateKey, {
+      type: 'ACTIVITY_COMPLETE',
+      lessonId: '1-2',
+      activityId: '1-2_homework',
+      contribution: 0.3
+    });
+
+    // Add both transactions to the service's pending transactions
     const currentPendingTransactions = service.getPendingTransactions();
     (service as any).updateState({
-      pendingTransactions: [...currentPendingTransactions, pendingTransaction]
+      pendingTransactions: [...currentPendingTransactions, activityCompleteTransactionA, activityCompleteTransactionB]
     });
 
     // ACT & ASSERT: Test the eligibility
     
-    // UserA should be eligible because they have completed lesson '1-2' and there's a pending transaction for '1-2'
+    // UserA should be eligible because they have an ACTIVITY_COMPLETE transaction for lesson '1-2' in the mempool
     const userAEligible = service.isEligibleToMine(userA.publicKey.hex);
     expect(userAEligible).toBe(true);
 
-    // UserB should NOT be eligible because they have no on-chain history of completing lesson '1-2'
+    // UserB should be eligible because they have an ACTIVITY_COMPLETE transaction for lesson '1-2' in the mempool
     const userBEligible = service.isEligibleToMine(userB.publicKey.hex);
-    expect(userBEligible).toBe(false);
+    expect(userBEligible).toBe(true);
+
+    // UserC should NOT be eligible because they have no activity for lesson '1-2' in the mempool
+    const userC = generateKeyPair();
+    const userCEligible = service.isEligibleToMine(userC.publicKey.hex);
+    expect(userCEligible).toBe(false);
   });
 
   it('isEligibleToMine should return false when user has completed lessons but none match pending transactions', () => {
-    // ARRANGE: UserA completes lesson '1-1' but pending transaction is for '1-2'
+    // ARRANGE: UserA has ACTIVITY_COMPLETE for lesson '1-1' but pending transaction is for '1-2'
     
-    const lessonCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
-      type: 'LESSON_COMPLETE',
-      lessonId: '1-1'  // Different lesson
+    const activityCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
+      type: 'ACTIVITY_COMPLETE',
+      lessonId: '1-1',  // Different lesson
+      activityId: '1-1_quiz',
+      contribution: 0.3
     });
 
     const blockchain = service.getBlockchain();
     const previousHash = blockchain.getLatestBlock().id;
     
-    const blockWithLessonComplete: Block = createValidBlockWithTransactions(
+    const blockWithActivityComplete: Block = createValidBlockWithTransactions(
       userA.privateKey,
       previousHash,
-      [lessonCompleteTransaction]
+      [activityCompleteTransaction]
     );
 
-    blockchain.addBlock(blockWithLessonComplete);
+    blockchain.addBlock(blockWithActivityComplete);
 
     // Create pending transaction for different lesson
     const pendingTransaction: Transaction = createTransaction(userB.privateKey, {
@@ -142,23 +138,25 @@ describe('BlockchainService - Mining Eligibility', () => {
   });
 
   it('isEligibleToMine should return false when no pending transactions exist', () => {
-    // ARRANGE: UserA completes a lesson but no pending transactions
+    // ARRANGE: UserA has ACTIVITY_COMPLETE for a lesson but no pending transactions
     
-    const lessonCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
-      type: 'LESSON_COMPLETE',
-      lessonId: '1-2'
+    const activityCompleteTransaction: Transaction = createTransaction(userA.privateKey, {
+      type: 'ACTIVITY_COMPLETE',
+      lessonId: '1-2',
+      activityId: '1-2_homework',
+      contribution: 0.4
     });
 
     const blockchain = service.getBlockchain();
     const previousHash = blockchain.getLatestBlock().id;
     
-    const blockWithLessonComplete: Block = createValidBlockWithTransactions(
+    const blockWithActivityComplete: Block = createValidBlockWithTransactions(
       userA.privateKey,
       previousHash,
-      [lessonCompleteTransaction]
+      [activityCompleteTransaction]
     );
 
-    blockchain.addBlock(blockWithLessonComplete);
+    blockchain.addBlock(blockWithActivityComplete);
 
     // No pending transactions added
 
@@ -168,28 +166,32 @@ describe('BlockchainService - Mining Eligibility', () => {
   });
 
   it('isEligibleToMine should handle multiple lesson completions and pending transactions correctly', () => {
-    // ARRANGE: UserA completes multiple lessons, multiple pending transactions exist
+    // ARRANGE: UserA has ACTIVITY_COMPLETE transactions in confirmed blocks, multiple pending transactions exist
     
-    const lessonComplete1: Transaction = createTransaction(userA.privateKey, {
-      type: 'LESSON_COMPLETE',
-      lessonId: '1-1'
+    const activityComplete1: Transaction = createTransaction(userA.privateKey, {
+      type: 'ACTIVITY_COMPLETE',
+      lessonId: '1-1',
+      activityId: '1-1_homework',
+      contribution: 0.4
     });
     
-    const lessonComplete2: Transaction = createTransaction(userA.privateKey, {
-      type: 'LESSON_COMPLETE',
-      lessonId: '1-3'
+    const activityComplete2: Transaction = createTransaction(userA.privateKey, {
+      type: 'ACTIVITY_COMPLETE',
+      lessonId: '1-3',
+      activityId: '1-3_quiz',
+      contribution: 0.6
     });
 
     const blockchain = service.getBlockchain();
     const previousHash = blockchain.getLatestBlock().id;
     
-    const blockWithLessonCompletes: Block = createValidBlockWithTransactions(
+    const blockWithActivityCompletes: Block = createValidBlockWithTransactions(
       userA.privateKey,
       previousHash,
-      [lessonComplete1, lessonComplete2]
+      [activityComplete1, activityComplete2]
     );
 
-    blockchain.addBlock(blockWithLessonCompletes);
+    blockchain.addBlock(blockWithActivityCompletes);
 
     // Add multiple pending transactions
     const pendingTransaction1: Transaction = createTransaction(userB.privateKey, {
@@ -213,6 +215,6 @@ describe('BlockchainService - Mining Eligibility', () => {
 
     // ACT & ASSERT
     const userAEligible = service.isEligibleToMine(userA.publicKey.hex);
-    expect(userAEligible).toBe(true); // Has completed '1-1' which matches pending transaction
+    expect(userAEligible).toBe(true); // Has ACTIVITY_COMPLETE for '1-1' which matches pending transaction
   });
 }); 

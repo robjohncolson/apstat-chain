@@ -542,49 +542,44 @@ class BlockchainService {
       p2pNode.on('mempool:received', (receivedTransactions: Transaction[]) => {
         console.log(`Received mempool with ${receivedTransactions.length} transactions`);
         
-        // Deserialize and validate received transactions
-        const validTransactions: Transaction[] = [];
-        for (const txData of receivedTransactions) {
+        // Create a comprehensive "seen" set of all known transaction IDs
+        const confirmedTransactions = this.getConfirmedTransactions();
+        const pendingTransactions = this.state.pendingTransactions;
+        const allKnownTransactions = [...confirmedTransactions, ...pendingTransactions];
+        const existingTxIds = new Set<string>(allKnownTransactions.map(tx => tx.id));
+        
+        // Filter incoming transactions to only include those we don't already know about
+        const newUniqueTransactions = receivedTransactions.filter(tx => !existingTxIds.has(tx.id));
+        
+        // If no new transactions, log and return early
+        if (newUniqueTransactions.length === 0) {
+          console.log('No new transactions to add to mempool (all were duplicates)');
+          return;
+        }
+        
+        // Validate each new unique transaction
+        const validNewTransactions: Transaction[] = [];
+        for (const transaction of newUniqueTransactions) {
           try {
-            // The transaction should already be properly formatted with signature as string
-            const transaction = txData as Transaction;
-            
-            // Verify the transaction
             if (this.verifyTransaction(transaction)) {
-              validTransactions.push(transaction);
+              validNewTransactions.push(transaction);
+            } else {
+              console.warn('Received transaction failed verification:', transaction.id);
             }
           } catch (error) {
-            console.warn('Failed to deserialize or verify received transaction:', error);
+            console.warn('Failed to verify received transaction:', error);
           }
         }
         
-        // Get current blockchain transaction IDs for deduplication
-        const existingTxIds = new Set();
-        
-        // Add IDs from confirmed transactions (in blocks)
-        for (const tx of this.getTransactions()) {
-          existingTxIds.add(tx.id);
-        }
-        
-        // Add IDs from current pending transactions
-        for (const tx of this.state.pendingTransactions) {
-          existingTxIds.add(tx.id);
-        }
-        
-        // Filter out duplicates from received transactions
-        const newTransactions = validTransactions.filter(tx => !existingTxIds.has(tx.id));
-        
-        if (newTransactions.length > 0) {
-          // Merge new transactions with existing pending transactions
-          const updatedPendingTransactions = [...this.state.pendingTransactions, ...newTransactions];
-          
+        // Update state with valid new transactions
+        if (validNewTransactions.length > 0) {
           this.updateState({
-            pendingTransactions: updatedPendingTransactions,
+            pendingTransactions: [...this.state.pendingTransactions, ...validNewTransactions],
           });
           
-          console.log(`Added ${newTransactions.length} new transactions to mempool (${validTransactions.length - newTransactions.length} were duplicates)`);
+          console.log(`Added ${validNewTransactions.length} new transactions to mempool (${newUniqueTransactions.length - validNewTransactions.length} failed verification)`);
         } else {
-          console.log('No new transactions to add to mempool (all were duplicates)');
+          console.log('No valid new transactions to add to mempool');
         }
       });
 
@@ -674,11 +669,12 @@ class BlockchainService {
 
   /**
    * Check if a user is eligible to mine based on the "Relevant Knowledge" rule
-   * A user can mine if they have completed a lesson that matches a pending lesson transaction
+   * A user can mine if they have an ACTIVITY_COMPLETE transaction for a relevant lesson,
+   * and that transaction exists either in a confirmed block OR in the current mempool
    */
   public isEligibleToMine(publicKey: string): boolean {
-    // a. Get the array of all confirmed transactions from the blockchain
-    const confirmedTransactions = this.getConfirmedTransactions();
+    // a. Get a list of all relevant transactions using getAllTransactionsIncludingPending()
+    const allTransactions = this.getAllTransactionsIncludingPending();
     
     // b. Create a Set of all unique lessonIds from the state.pendingTransactions array
     const pendingLessonIds = new Set<string>();
@@ -688,16 +684,15 @@ class BlockchainService {
       }
     }
     
-    // c. Filter the confirmed transactions to find all LESSON_COMPLETE transactions 
-    // that were created by the provided publicKey
-    const userLessonCompletions = confirmedTransactions.filter(transaction => 
+    // c. Filter the allTransactions list to find all transactions that were created by the provided publicKey 
+    // and have a type of ACTIVITY_COMPLETE
+    const userActivityCompletions = allTransactions.filter(transaction => 
       transaction.publicKey === publicKey && 
-      transaction.payload?.type === 'LESSON_COMPLETE'
+      transaction.payload?.type === 'ACTIVITY_COMPLETE'
     );
     
-    // d. Check if there is at least one transaction in this filtered list 
-    // whose lessonId is also present in the Set of pending lesson IDs
-    for (const completion of userLessonCompletions) {
+    // d. Check if any of these user-specific transactions has a lessonId that is present in the Set of pending lesson IDs
+    for (const completion of userActivityCompletions) {
       if (completion.payload?.lessonId && pendingLessonIds.has(completion.payload.lessonId)) {
         return true;
       }
