@@ -29,6 +29,7 @@ export interface BlockchainState {
   isConnecting: boolean;
   error: string | null;
   allTransactions: Transaction[];
+  lastBlockMiner?: string | null;
 }
 
 export type BlockchainStateListener = (state: BlockchainState) => void;
@@ -53,6 +54,7 @@ class BlockchainService {
       isConnecting: false,
       error: null,
       allTransactions: [],
+      lastBlockMiner: null,
     };
 
     // Part 2: Hydrate mempool from localStorage on startup
@@ -182,14 +184,29 @@ class BlockchainService {
       throw new Error('No wallet initialized. Please generate or restore a wallet first.');
     }
 
+    // Check if current user should receive priority transaction reward
+    let finalPayload = payload;
+    let shouldClearMinerReward = false;
+    
+    if (this.state.currentKeyPair.publicKey.hex === this.state.lastBlockMiner) {
+      finalPayload = { ...payload, isPriority: true };
+      shouldClearMinerReward = true;
+    }
+
     try {
-      const transaction = createTransaction(this.state.currentKeyPair.privateKey, payload);
+      const transaction = createTransaction(this.state.currentKeyPair.privateKey, finalPayload);
       
-      // Add to pending transactions instead of directly to blockchain
-      this.updateState({
+      // Add to pending transactions and clear miner reward if applicable
+      const stateUpdates: Partial<BlockchainState> = {
         pendingTransactions: [...this.state.pendingTransactions, transaction],
         error: null,
-      });
+      };
+      
+      if (shouldClearMinerReward) {
+        stateUpdates.lastBlockMiner = null;
+      }
+      
+      this.updateState(stateUpdates);
 
       // Broadcast to connected peers if P2P is available
       if (this.state.p2pNode) {
@@ -287,6 +304,7 @@ class BlockchainService {
       this.updateState({
         candidateBlocks: newCandidateBlocks,
         pendingTransactions: updatedPendingTransactions,
+        lastBlockMiner: candidateBlock.publicKey,
         error: null,
       });
 
@@ -318,11 +336,16 @@ class BlockchainService {
       const { puzzleId, proposedAnswer } = params;
       const latestBlock = this.state.blockchain.getLatestBlock();
       
+      // Sort transactions to prioritize those with isPriority flag
+      const priorityTransactions = this.state.pendingTransactions.filter(tx => tx.payload?.isPriority === true);
+      const regularTransactions = this.state.pendingTransactions.filter(tx => tx.payload?.isPriority !== true);
+      const orderedTransactions = [...priorityTransactions, ...regularTransactions];
+      
       // Create a candidate block with puzzle data but empty attestations
       const candidateBlock = createBlock({
         privateKey: this.state.currentKeyPair.privateKey,
         previousHash: latestBlock.id,
-        transactions: [...this.state.pendingTransactions],
+        transactions: orderedTransactions,
         puzzleId,
         proposedAnswer
       } as any);
@@ -852,6 +875,7 @@ class BlockchainService {
       isConnecting: false,
       error: null,
       allTransactions: [],
+      lastBlockMiner: null,
     };
     
     this.notify();
