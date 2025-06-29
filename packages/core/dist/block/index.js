@@ -84,8 +84,8 @@ export function verifyBlock(block) {
                 if (!verifyAttestation(attestation)) {
                     return false;
                 }
-                // Verify attestation matches block's puzzle data
-                if (attestation.puzzleId !== puzzleId || attestation.proposedAnswer !== proposedAnswer) {
+                // Verify attestation is for the same puzzle (but answer can be different - it's a vote)
+                if (attestation.puzzleId !== puzzleId) {
                     return false;
                 }
             }

@@ -32,8 +32,8 @@ describe('Blockchain', () => {
     const attester1 = generateKeyPair();
     const attester2 = generateKeyPair();
     const attestations: Attestation[] = [
-      createAttestation({ privateKey: attester1.privateKey, puzzleId, proposedAnswer }),
-      createAttestation({ privateKey: attester2.privateKey, puzzleId, proposedAnswer })
+      createAttestation({ privateKey: attester1.privateKey, puzzleId, attesterAnswer: proposedAnswer }),
+      createAttestation({ privateKey: attester2.privateKey, puzzleId, attesterAnswer: proposedAnswer })
     ];
     
     // Create candidate block
@@ -169,8 +169,8 @@ describe('Blockchain', () => {
       const attester1 = generateKeyPair();
       const attester2 = generateKeyPair();
       const attestations: Attestation[] = [
-        createAttestation({ privateKey: attester1.privateKey, puzzleId, proposedAnswer }),
-        createAttestation({ privateKey: attester2.privateKey, puzzleId, proposedAnswer })
+        createAttestation({ privateKey: attester1.privateKey, puzzleId, attesterAnswer: proposedAnswer }),
+        createAttestation({ privateKey: attester2.privateKey, puzzleId, attesterAnswer: proposedAnswer })
       ];
       
       // Create the block with invalid transaction but valid structure

@@ -25,7 +25,7 @@ export interface Transaction {
 export interface Attestation {
     readonly attesterPublicKey: string;
     readonly puzzleId: string;
-    readonly proposedAnswer: string;
+    readonly attesterAnswer: string;
     readonly signature: string;
 }
 export interface Block {

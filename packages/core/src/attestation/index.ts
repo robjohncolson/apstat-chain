@@ -10,21 +10,21 @@ import type { Attestation } from '../types/index.js';
 export interface CreateAttestationParams {
   privateKey: PrivateKey;
   puzzleId: string;
-  proposedAnswer: string;
+  attesterAnswer: string;
 }
 
 /**
  * Create a cryptographically signed attestation for a puzzle answer
  */
 export function createAttestation(params: CreateAttestationParams): Attestation {
-  const { privateKey, puzzleId, proposedAnswer } = params;
+  const { privateKey, puzzleId, attesterAnswer } = params;
 
   // Derive the public key from the private key (in hex format)
   const publicKeyBytes = secp256k1.getPublicKey(privateKey.bytes);
   const attesterPublicKey = secp256k1.etc.bytesToHex(publicKeyBytes);
 
-  // Create a message to sign by concatenating puzzleId and proposedAnswer
-  const message = `${puzzleId}:${proposedAnswer}`;
+  // Create a message to sign by concatenating puzzleId and attesterAnswer
+  const message = `${puzzleId}:${attesterAnswer}`;
   const messageBytes = new TextEncoder().encode(message);
   const messageHash = hash256(messageBytes);
 
@@ -41,7 +41,7 @@ export function createAttestation(params: CreateAttestationParams): Attestation 
   return {
     attesterPublicKey,
     puzzleId,
-    proposedAnswer,
+    attesterAnswer,
     signature: signatureHex
   };
 }
@@ -51,7 +51,7 @@ export function createAttestation(params: CreateAttestationParams): Attestation 
  */
 export function verifyAttestation(attestation: Attestation): boolean {
   try {
-    const { attesterPublicKey, puzzleId, proposedAnswer, signature } = attestation;
+    const { attesterPublicKey, puzzleId, attesterAnswer, signature } = attestation;
 
     // Parse the signature from hex string
     const signatureObj = JSON.parse(signature);
@@ -62,7 +62,7 @@ export function verifyAttestation(attestation: Attestation): boolean {
     };
 
     // Recreate the message that was signed
-    const message = `${puzzleId}:${proposedAnswer}`;
+    const message = `${puzzleId}:${attesterAnswer}`;
     const messageBytes = new TextEncoder().encode(message);
     const messageHash = hash256(messageBytes);
 

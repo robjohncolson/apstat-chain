@@ -5,12 +5,12 @@ import { sign, verify } from '../crypto/secp256k1.js';
  * Create a cryptographically signed attestation for a puzzle answer
  */
 export function createAttestation(params) {
-    const { privateKey, puzzleId, proposedAnswer } = params;
+    const { privateKey, puzzleId, attesterAnswer } = params;
     // Derive the public key from the private key (in hex format)
     const publicKeyBytes = secp256k1.getPublicKey(privateKey.bytes);
     const attesterPublicKey = secp256k1.etc.bytesToHex(publicKeyBytes);
-    // Create a message to sign by concatenating puzzleId and proposedAnswer
-    const message = `${puzzleId}:${proposedAnswer}`;
+    // Create a message to sign by concatenating puzzleId and attesterAnswer
+    const message = `${puzzleId}:${attesterAnswer}`;
     const messageBytes = new TextEncoder().encode(message);
     const messageHash = hash256(messageBytes);
     // Sign the message hash
@@ -24,7 +24,7 @@ export function createAttestation(params) {
     return {
         attesterPublicKey,
         puzzleId,
-        proposedAnswer,
+        attesterAnswer,
         signature: signatureHex
     };
 }
@@ -33,7 +33,7 @@ export function createAttestation(params) {
  */
 export function verifyAttestation(attestation) {
     try {
-        const { attesterPublicKey, puzzleId, proposedAnswer, signature } = attestation;
+        const { attesterPublicKey, puzzleId, attesterAnswer, signature } = attestation;
         // Parse the signature from hex string
         const signatureObj = JSON.parse(signature);
         const parsedSignature = {
@@ -42,7 +42,7 @@ export function verifyAttestation(attestation) {
             recovery: signatureObj.recovery
         };
         // Recreate the message that was signed
-        const message = `${puzzleId}:${proposedAnswer}`;
+        const message = `${puzzleId}:${attesterAnswer}`;
         const messageBytes = new TextEncoder().encode(message);
         const messageHash = hash256(messageBytes);
         // Convert public key hex to PublicKey object

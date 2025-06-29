@@ -8,22 +8,22 @@ describe('Attestation Functions', () => {
     it('should create a valid attestation with correct structure', () => {
       const keyPair = generateKeyPair();
       const puzzleId = 'puzzle-123';
-      const proposedAnswer = 'answer-abc';
+      const attesterAnswer = 'answer-abc';
 
       const attestation = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId,
-        proposedAnswer
+        attesterAnswer
       });
 
       expect(attestation).toHaveProperty('attesterPublicKey');
       expect(attestation).toHaveProperty('puzzleId');
-      expect(attestation).toHaveProperty('proposedAnswer');
+      expect(attestation).toHaveProperty('attesterAnswer');
       expect(attestation).toHaveProperty('signature');
 
       expect(attestation.attesterPublicKey).toBe(keyPair.publicKey.hex);
       expect(attestation.puzzleId).toBe(puzzleId);
-      expect(attestation.proposedAnswer).toBe(proposedAnswer);
+      expect(attestation.attesterAnswer).toBe(attesterAnswer);
       expect(typeof attestation.signature).toBe('string');
     });
 
@@ -31,18 +31,18 @@ describe('Attestation Functions', () => {
       const keyPair = generateKeyPair();
       const puzzleId1 = 'puzzle-123';
       const puzzleId2 = 'puzzle-456';
-      const proposedAnswer = 'answer-abc';
+      const attesterAnswer = 'answer-abc';
 
       const attestation1 = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId: puzzleId1,
-        proposedAnswer
+        attesterAnswer
       });
 
       const attestation2 = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId: puzzleId2,
-        proposedAnswer
+        attesterAnswer
       });
 
       expect(attestation1.signature).not.toBe(attestation2.signature);
@@ -51,19 +51,19 @@ describe('Attestation Functions', () => {
     it('should create different signatures for different answers', () => {
       const keyPair = generateKeyPair();
       const puzzleId = 'puzzle-123';
-      const proposedAnswer1 = 'answer-abc';
-      const proposedAnswer2 = 'answer-def';
+      const attesterAnswer1 = 'answer-abc';
+      const attesterAnswer2 = 'answer-def';
 
       const attestation1 = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId,
-        proposedAnswer: proposedAnswer1
+        attesterAnswer: attesterAnswer1
       });
 
       const attestation2 = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId,
-        proposedAnswer: proposedAnswer2
+        attesterAnswer: attesterAnswer2
       });
 
       expect(attestation1.signature).not.toBe(attestation2.signature);
@@ -74,12 +74,12 @@ describe('Attestation Functions', () => {
     it('should return true for a valid attestation', () => {
       const keyPair = generateKeyPair();
       const puzzleId = 'puzzle-123';
-      const proposedAnswer = 'answer-abc';
+      const attesterAnswer = 'answer-abc';
 
       const attestation = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId,
-        proposedAnswer
+        attesterAnswer
       });
 
       const isValid = verifyAttestation(attestation);
@@ -89,12 +89,12 @@ describe('Attestation Functions', () => {
     it('should return false for an attestation with tampered puzzleId', () => {
       const keyPair = generateKeyPair();
       const puzzleId = 'puzzle-123';
-      const proposedAnswer = 'answer-abc';
+      const attesterAnswer = 'answer-abc';
 
       const attestation = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId,
-        proposedAnswer
+        attesterAnswer
       });
 
       // Tamper with the puzzleId
@@ -107,21 +107,21 @@ describe('Attestation Functions', () => {
       expect(isValid).toBe(false);
     });
 
-    it('should return false for an attestation with tampered proposedAnswer', () => {
+    it('should return false for an attestation with tampered attesterAnswer', () => {
       const keyPair = generateKeyPair();
       const puzzleId = 'puzzle-123';
-      const proposedAnswer = 'answer-abc';
+      const attesterAnswer = 'answer-abc';
 
       const attestation = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId,
-        proposedAnswer
+        attesterAnswer
       });
 
-      // Tamper with the proposedAnswer
+      // Tamper with the attesterAnswer
       const tamperedAttestation: Attestation = {
         ...attestation,
-        proposedAnswer: 'tampered-answer'
+        attesterAnswer: 'tampered-answer'
       };
 
       const isValid = verifyAttestation(tamperedAttestation);
@@ -131,12 +131,12 @@ describe('Attestation Functions', () => {
     it('should return false for an attestation with tampered signature', () => {
       const keyPair = generateKeyPair();
       const puzzleId = 'puzzle-123';
-      const proposedAnswer = 'answer-abc';
+      const attesterAnswer = 'answer-abc';
 
       const attestation = createAttestation({
         privateKey: keyPair.privateKey,
         puzzleId,
-        proposedAnswer
+        attesterAnswer
       });
 
       // Tamper with the signature
@@ -153,12 +153,12 @@ describe('Attestation Functions', () => {
       const keyPair1 = generateKeyPair();
       const keyPair2 = generateKeyPair();
       const puzzleId = 'puzzle-123';
-      const proposedAnswer = 'answer-abc';
+      const attesterAnswer = 'answer-abc';
 
       const attestation = createAttestation({
         privateKey: keyPair1.privateKey,
         puzzleId,
-        proposedAnswer
+        attesterAnswer
       });
 
       // Change the public key to a different one

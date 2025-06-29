@@ -6,7 +6,7 @@ interface AttestationViewProps {
   candidateBlocks: Block[];
   questions: QuizQuestion[];
   service: {
-    submitAttestation(block: Block): void;
+    submitAttestation(block: Block, attesterAnswer: string): void;
   };
 }
 
@@ -18,7 +18,10 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
   };
 
   const handleAttest = (block: Block) => {
-    service.submitAttestation(block);
+    const userSelectedAnswer = selectedAnswers.get(block.id);
+    if (userSelectedAnswer) {
+      service.submitAttestation(block, userSelectedAnswer);
+    }
   };
 
   const answerChoices = ['A', 'B', 'C', 'D', 'E'];
@@ -30,6 +33,7 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
       {candidateBlocks.map((block) => {
         // Find the matching question using the block's puzzleId
         const questionObject = questions.find(q => q.id.toString() === block.puzzleId);
+        const userSelectedAnswer = selectedAnswers.get(block.id);
         
         return (
           <div key={block.id} className="border border-gray-300 rounded-lg p-6 mb-6 bg-white shadow-sm">
@@ -82,9 +86,9 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlock
             {/* Attest Button */}
             <button
               onClick={() => handleAttest(block)}
-              disabled={selectedAnswers.get(block.id) !== block.proposedAnswer}
+              disabled={!userSelectedAnswer}
               className={`px-6 py-2 rounded font-medium transition-colors ${
-                selectedAnswers.get(block.id) === block.proposedAnswer
+                userSelectedAnswer
                   ? 'bg-green-500 text-white hover:bg-green-600'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}

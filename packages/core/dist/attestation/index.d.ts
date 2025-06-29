@@ -6,7 +6,7 @@ import type { Attestation } from '../types/index.js';
 export interface CreateAttestationParams {
     privateKey: PrivateKey;
     puzzleId: string;
-    proposedAnswer: string;
+    attesterAnswer: string;
 }
 /**
  * Create a cryptographically signed attestation for a puzzle answer

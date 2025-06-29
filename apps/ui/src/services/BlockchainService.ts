@@ -189,7 +189,7 @@ class BlockchainService {
   }
 
   /**
-   * Check if a candidate block has enough attestations to be finalized
+   * Check if a candidate block has enough attestations to be finalized using vote counting
    */
   private _checkForBlockFinalization(candidateBlock: Block): void {
     const requiredAttestations = 3; // Define the quorum rule
@@ -199,15 +199,42 @@ class BlockchainService {
       return; // Not enough attestations yet
     }
 
-    console.log(`Candidate block ${candidateBlock.id} has met finalization quorum with ${blockAttestations.length} attestations`);
+    // Count votes for each answer
+    const voteTally = new Map<string, number>();
+    for (const attestation of blockAttestations) {
+      const currentCount = voteTally.get(attestation.attesterAnswer) || 0;
+      voteTally.set(attestation.attesterAnswer, currentCount + 1);
+    }
+
+    // Check if any answer has reached the quorum
+    let winningAnswer: string | null = null;
+    for (const [answer, voteCount] of voteTally.entries()) {
+      if (voteCount >= requiredAttestations) {
+        winningAnswer = answer;
+        break;
+      }
+    }
+
+    if (!winningAnswer) {
+      console.log(`Candidate block ${candidateBlock.id} has ${blockAttestations.length} attestations but no answer has reached quorum of ${requiredAttestations}`);
+      return; // No answer has reached the quorum yet
+    }
+
+    console.log(`Candidate block ${candidateBlock.id} has consensus! Answer '${winningAnswer}' won with ${voteTally.get(winningAnswer)} votes`);
 
     try {
+      // Create a new final version of the block with the winning answer
+      const finalBlock: Block = {
+        ...candidateBlock,
+        proposedAnswer: winningAnswer
+      };
+
       // Try to add the finalized block to the main blockchain
-      this.state.blockchain.addBlock(candidateBlock);
+      this.state.blockchain.addBlock(finalBlock);
 
       // Broadcast the final block to the network
       if (this.state.p2pNode) {
-        this.state.p2pNode.broadcastBlock(candidateBlock);
+        this.state.p2pNode.broadcastBlock(finalBlock);
       }
 
       // Remove the finalized block from candidate blocks map
@@ -215,7 +242,7 @@ class BlockchainService {
       newCandidateBlocks.delete(candidateBlock.id);
 
       // Clean up confirmed transactions from pending pool
-      const blockTransactionIds = new Set(candidateBlock.transactions.map(tx => tx.id));
+      const blockTransactionIds = new Set(finalBlock.transactions.map(tx => tx.id));
       const updatedPendingTransactions = this.state.pendingTransactions.filter(
         tx => !blockTransactionIds.has(tx.id)
       );
@@ -226,7 +253,7 @@ class BlockchainService {
         error: null,
       });
 
-      console.log(`Successfully finalized block ${candidateBlock.id} and added to blockchain`);
+      console.log(`Successfully finalized block ${finalBlock.id} with winning answer '${winningAnswer}' and added to blockchain`);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to finalize block';
       console.error('Error finalizing block:', errorMessage);
@@ -287,9 +314,9 @@ class BlockchainService {
   }
 
   /**
-   * Submit an attestation for a candidate block
+   * Submit an attestation for a candidate block with the attester's chosen answer
    */
-  public submitAttestation(candidateBlock: Block): void {
+  public submitAttestation(candidateBlock: Block, attesterAnswer: string): void {
     if (!this.state.currentKeyPair) {
       throw new Error('No wallet initialized. Please generate or restore a wallet first.');
     }
@@ -299,18 +326,17 @@ class BlockchainService {
     }
 
     const blockPuzzleId = (candidateBlock as any).puzzleId as string | undefined;
-    const blockProposedAnswer = (candidateBlock as any).proposedAnswer as string | undefined;
     
-    if (!blockPuzzleId || !blockProposedAnswer) {
+    if (!blockPuzzleId) {
       throw new Error('Candidate block must have puzzle data to attest to');
     }
 
     try {
-      // Create an attestation for the candidate block's puzzle and answer
+      // Create an attestation with the attester's chosen answer
       const attestation = createAttestation({
         privateKey: this.state.currentKeyPair.privateKey,
         puzzleId: blockPuzzleId,
-        proposedAnswer: blockProposedAnswer
+        attesterAnswer: attesterAnswer
       });
 
       // Broadcast the attestation to the network
@@ -318,7 +344,7 @@ class BlockchainService {
 
       this.updateState({ error: null });
 
-      console.log(`Submitted attestation for puzzle ${blockPuzzleId} in block ${candidateBlock.id}`);
+      console.log(`Submitted attestation for puzzle ${blockPuzzleId} in block ${candidateBlock.id} with answer ${attesterAnswer}`);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit attestation';
       this.updateState({ error: errorMessage });
@@ -483,12 +509,11 @@ class BlockchainService {
         
         // Verify the attestation
         if (verifyAttestation(attestation)) {
-          // Find the corresponding candidate block
+          // Find the corresponding candidate block (only match by puzzleId, not by answer)
           const candidateBlock = Array.from(this.state.candidateBlocks.values()).find(
             block => {
               const blockPuzzleId = (block as any).puzzleId as string | undefined;
-              const blockProposedAnswer = (block as any).proposedAnswer as string | undefined;
-              return blockPuzzleId === attestation.puzzleId && blockProposedAnswer === attestation.proposedAnswer;
+              return blockPuzzleId === attestation.puzzleId;
             }
           );
           

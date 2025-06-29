@@ -30,7 +30,7 @@ describe('AttestationView', () => {
     ];
 
     const mockService = {
-      submitAttestation: vi.fn()
+      submitAttestation: vi.fn() as any
     };
 
     const user = userEvent.setup();
@@ -51,7 +51,7 @@ describe('AttestationView', () => {
     // Verify that mockService.submitAttestation was called exactly one time
     expect(mockService.submitAttestation).toHaveBeenCalledTimes(1);
     
-    // Verify that it was called with the correct argument: the mockCandidateBlock object
-    expect(mockService.submitAttestation).toHaveBeenCalledWith(mockCandidateBlock);
+    // Verify that it was called with the correct arguments: the block and the attester answer
+    expect(mockService.submitAttestation).toHaveBeenCalledWith(mockCandidateBlock, 'C');
   });
 }); 

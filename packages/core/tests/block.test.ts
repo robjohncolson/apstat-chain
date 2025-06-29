@@ -198,8 +198,8 @@ describe('Block', () => {
       const attester1 = generateKeyPair();
       const attester2 = generateKeyPair();
       const attestations: Attestation[] = [
-        createAttestation({ privateKey: attester1.privateKey, puzzleId, proposedAnswer }),
-        createAttestation({ privateKey: attester2.privateKey, puzzleId, proposedAnswer })
+        createAttestation({ privateKey: attester1.privateKey, puzzleId, attesterAnswer: proposedAnswer }),
+        createAttestation({ privateKey: attester2.privateKey, puzzleId, attesterAnswer: proposedAnswer })
       ];
       
       // Create the block with puzzle data
@@ -227,7 +227,7 @@ describe('Block', () => {
       
       // Create one valid and one invalid attestation
       const attester1 = generateKeyPair();
-      const validAttestation = createAttestation({ privateKey: attester1.privateKey, puzzleId, proposedAnswer });
+      const validAttestation = createAttestation({ privateKey: attester1.privateKey, puzzleId, attesterAnswer: proposedAnswer });
       const invalidAttestation: Attestation = {
         ...validAttestation,
         signature: 'invalid_signature'
@@ -259,7 +259,7 @@ describe('Block', () => {
       const mismatchedAttestation = createAttestation({ 
         privateKey: attester1.privateKey, 
         puzzleId: 'different_puzzle', 
-        proposedAnswer: 'different_answer' 
+        attesterAnswer: 'different_answer' 
       });
       
       const candidateBlock = createBlock({ 
