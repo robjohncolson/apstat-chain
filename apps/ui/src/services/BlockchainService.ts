@@ -316,7 +316,31 @@ class BlockchainService {
   /**
    * Submit an attestation for a candidate block with the attester's chosen answer
    */
+  /**
+   * Check if the current user is eligible to attest to a given block
+   */
+  public isEligibleToAttest(block: Block): boolean {
+    // Return false if service is not initialized
+    if (!this.state.isInitialized || !this.state.currentKeyPair) {
+      return false;
+    }
+
+    // Return false if the current user's public key matches the block's creator public key
+    if (this.state.currentKeyPair.publicKey.hex === block.publicKey) {
+      return false;
+    }
+
+    // For now, return true in all other cases
+    // TODO: Add "Relevant Knowledge" check here later
+    return true;
+  }
+
   public submitAttestation(candidateBlock: Block, attesterAnswer: string): void {
+    // Guard clause: Check if user is eligible to attest to this block
+    if (!this.isEligibleToAttest(candidateBlock)) {
+      throw new Error('User is not eligible to attest to this block.');
+    }
+
     if (!this.state.currentKeyPair) {
       throw new Error('No wallet initialized. Please generate or restore a wallet first.');
     }
