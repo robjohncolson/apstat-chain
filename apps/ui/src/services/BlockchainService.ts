@@ -246,7 +246,13 @@ class BlockchainService {
    * Check if a candidate block has enough attestations to be finalized using vote counting
    */
   private _checkForBlockFinalization(candidateBlock: Block): void {
-    const requiredAttestations = 3; // Define the quorum rule
+    // Calculate dynamic quorum based on online peers
+    const onlinePeers = this.state.connectedPeers.length + 1;
+    const quorum = Math.ceil(onlinePeers * 0.3);
+    const requiredAttestations = Math.max(3, Math.min(quorum, 7));
+    
+    console.log(`Dynamic quorum calculated: ${requiredAttestations} required from ${onlinePeers} online peers.`);
+    
     const blockAttestations = (candidateBlock as any).attestations as Attestation[] | undefined;
     
     if (!blockAttestations || blockAttestations.length < requiredAttestations) {
