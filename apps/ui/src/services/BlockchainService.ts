@@ -320,6 +320,11 @@ class BlockchainService {
    * Check if the current user is eligible to attest to a given block
    */
   public isEligibleToAttest(block: Block): boolean {
+    console.log('--- Checking Attestation Eligibility ---');
+    console.log('Current User PK:', this.state.currentKeyPair?.publicKey.hex);
+    console.log('Block Creator PK:', block.publicKey);
+    console.log('Are they the same?:', this.state.currentKeyPair?.publicKey.hex === block.publicKey);
+    
     // Return false if service is not initialized
     if (!this.state.isInitialized || !this.state.currentKeyPair) {
       return false;
