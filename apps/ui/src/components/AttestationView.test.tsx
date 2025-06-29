@@ -19,14 +19,13 @@ describe('AttestationView', () => {
     };
 
     const mockService = {
-      getCandidateBlocks: vi.fn().mockReturnValue([mockCandidateBlock]),
       submitAttestation: vi.fn()
     };
 
     const user = userEvent.setup();
 
     // Act
-    render(<AttestationView service={mockService} />);
+    render(<AttestationView candidateBlocks={[mockCandidateBlock]} service={mockService} />);
 
     // The component should display the candidate block
     // Find the multiple-choice button for the same answer as the proposedAnswer (i.e., the "C" button)

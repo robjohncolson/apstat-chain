@@ -2,6 +2,7 @@ import type { KeyPair, Transaction } from '@apstat-chain/core'
 import { MiningView } from './MiningView'
 import { AttestationView } from './AttestationView'
 import type BlockchainService from '../services/BlockchainService'
+import { useBlockchain } from '../providers/BlockchainProvider'
 
 interface MempoolViewProps {
   transactions: Transaction[]
@@ -70,9 +71,13 @@ export function Dashboard({
   onCompleteLesson,
   service,
 }: DashboardProps) {
-  // Get current network state
+  // Get current network state and reactive blockchain state
+  const { state } = useBlockchain();
   const pendingTotal = service.getPendingContributionTotal();
   const isEligible = publicKey ? service.isEligibleToMine(publicKey.hex) : false;
+  
+  // Convert candidateBlocks Map to array for AttestationView
+  const candidateBlocksArray = Array.from(state.candidateBlocks.values());
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
@@ -197,7 +202,7 @@ export function Dashboard({
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
             Review Candidate Blocks
           </h2>
-          <AttestationView service={service} />
+          <AttestationView candidateBlocks={candidateBlocksArray} service={service} />
         </div>
 
         {/* Mempool Section */}

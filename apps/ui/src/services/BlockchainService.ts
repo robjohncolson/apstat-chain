@@ -194,7 +194,8 @@ class BlockchainService {
       }
 
       // Remove the finalized block from candidate blocks map
-      this.state.candidateBlocks.delete(candidateBlock.id);
+      const newCandidateBlocks = new Map(this.state.candidateBlocks);
+      newCandidateBlocks.delete(candidateBlock.id);
 
       // Clean up confirmed transactions from pending pool
       const blockTransactionIds = new Set(candidateBlock.transactions.map(tx => tx.id));
@@ -203,6 +204,7 @@ class BlockchainService {
       );
 
       this.updateState({
+        candidateBlocks: newCandidateBlocks,
         pendingTransactions: updatedPendingTransactions,
         error: null,
       });
@@ -248,12 +250,16 @@ class BlockchainService {
       (candidateBlock as any).attestations = [];
 
       // Add to our local candidate blocks map
-      this.state.candidateBlocks.set(candidateBlock.id, candidateBlock);
+      const newCandidateBlocks = new Map(this.state.candidateBlocks);
+      newCandidateBlocks.set(candidateBlock.id, candidateBlock);
 
       // Broadcast the candidate block to the network
       (this.state.p2pNode as any).broadcastCandidateBlock(candidateBlock);
 
-      this.updateState({ error: null });
+      this.updateState({ 
+        candidateBlocks: newCandidateBlocks,
+        error: null 
+      });
 
       console.log(`Proposed candidate block ${candidateBlock.id} for puzzle ${puzzleId} with answer ${proposedAnswer}`);
     } catch (error) {
@@ -443,10 +449,11 @@ class BlockchainService {
         // Verify the candidate block
         if (verifyBlock(candidateBlock)) {
           // Add to candidate blocks map
-          this.state.candidateBlocks.set(candidateBlock.id, candidateBlock);
+          const newCandidateBlocks = new Map(this.state.candidateBlocks);
+          newCandidateBlocks.set(candidateBlock.id, candidateBlock);
           
-          // Notify state update
-          this.notify();
+          // Update state with new map
+          this.updateState({ candidateBlocks: newCandidateBlocks });
           
           console.log(`Added candidate block ${candidateBlock.id} to pending map`);
         } else {
@@ -483,7 +490,11 @@ class BlockchainService {
               (updatedBlock as any).attestations = [...(blockAttestations || []), attestation];
               
               // Update the candidate block in the map
-              this.state.candidateBlocks.set(candidateBlock.id, updatedBlock);
+              const newCandidateBlocks = new Map(this.state.candidateBlocks);
+              newCandidateBlocks.set(candidateBlock.id, updatedBlock);
+              
+              // Update state with new map
+              this.updateState({ candidateBlocks: newCandidateBlocks });
               
               // Check if block can now be finalized
               this._checkForBlockFinalization(updatedBlock);

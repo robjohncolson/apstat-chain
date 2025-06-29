@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { Block } from '@apstat-chain/core';
 
 interface AttestationViewProps {
+  candidateBlocks: Block[];
   service: {
-    getCandidateBlocks(): Block[];
     submitAttestation(block: Block): void;
   };
 }
 
-export const AttestationView: React.FC<AttestationViewProps> = ({ service }) => {
-  const [candidateBlocks, setCandidateBlocks] = useState<Block[]>([]);
+export const AttestationView: React.FC<AttestationViewProps> = ({ candidateBlocks, service }) => {
   const [selectedAnswers, setSelectedAnswers] = useState<Map<string, string>>(new Map());
-
-  useEffect(() => {
-    const blocks = service.getCandidateBlocks();
-    setCandidateBlocks(blocks);
-  }, [service]);
 
   const handleAnswerSelect = (blockId: string, answer: string) => {
     setSelectedAnswers(prev => new Map(prev).set(blockId, answer));

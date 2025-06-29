@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { Dashboard } from './Dashboard';
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
+import { BlockchainProvider } from '../providers/BlockchainProvider';
 
 describe('Dashboard', () => {
   it('should render wallet and network data correctly', () => {
@@ -10,6 +11,7 @@ describe('Dashboard', () => {
       getPendingContributionTotal: vi.fn().mockReturnValue(0.5),
       isEligibleToMine: vi.fn().mockReturnValue(false),
       getCandidateBlocks: vi.fn().mockReturnValue([]),
+      getPendingTransactions: vi.fn().mockReturnValue([]),
       submitAttestation: vi.fn(),
       getMiningPuzzle: vi.fn(),
       proposeBlock: vi.fn(),
@@ -26,8 +28,12 @@ describe('Dashboard', () => {
       service: mockService as any,
     };
 
-    // 3. Render the component with mock data
-    render(<Dashboard {...mockData} />);
+    // 3. Render the component with mock data wrapped in BlockchainProvider
+    render(
+      <BlockchainProvider>
+        <Dashboard {...mockData} />
+      </BlockchainProvider>
+    );
 
     // 3. Assert that the data is visible
     expect(screen.getByText(mockData.publicKey.hex)).toBeInTheDocument();
