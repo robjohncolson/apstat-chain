@@ -53,7 +53,13 @@ describe('BlockchainProvider', () => {
       p2pNode: null,
       peerId: null,
       connectedPeers: [],
-      transactions: [], // Initially empty
+      blockchain: {} as any,
+      pendingTransactions: [],
+      candidateBlocks: new Map(),
+      allTransactions: [],
+      lastBlockMiner: null,
+      lastEvent: null,
+      pendingActions: new Set(),
       isConnecting: false,
       error: null,
     } as BlockchainState);
@@ -65,7 +71,7 @@ describe('BlockchainProvider', () => {
 
   it('should re-render component when service state changes', async () => {
     // Render the test component inside the BlockchainProvider
-    const { getByText, rerender } = render(
+    const { getByText } = render(
       <BlockchainProvider>
         <TestComponent />
       </BlockchainProvider>
@@ -87,7 +93,13 @@ describe('BlockchainProvider', () => {
       p2pNode: null,
       peerId: null,
       connectedPeers: [],
-      transactions: [{ id: 'test-tx-1' } as any], // One transaction
+      blockchain: {} as any,
+      pendingTransactions: [],
+      candidateBlocks: new Map(),
+      allTransactions: [{ id: 'test-tx-1' } as any], // One transaction
+      lastBlockMiner: null,
+      lastEvent: null,
+      pendingActions: new Set(),
       isConnecting: false,
       error: null,
     };

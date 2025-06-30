@@ -33,6 +33,8 @@ describe('UnitAccordion', () => {
       error: null,
       allTransactions: [],
       lastBlockMiner: null,
+      lastEvent: null,
+      pendingActions: new Set(),
     }
 
     const mockLessons = [

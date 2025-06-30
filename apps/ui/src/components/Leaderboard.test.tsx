@@ -10,63 +10,63 @@ describe('Leaderboard', () => {
       // User 1 completes 3 unique lessons
       {
         id: 'tx1',
-        authorPublicKey: { hex: 'USER_1_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_1_PUBLIC_KEY',
         timestamp: 1234567890000,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-1-quiz' },
-        signature: { r: 123n, s: 456n }
+        signature: 'test-signature-1'
       },
       {
         id: 'tx2',
-        authorPublicKey: { hex: 'USER_1_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_1_PUBLIC_KEY',
         timestamp: 1234567890001,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-2-quiz' },
-        signature: { r: 123n, s: 456n }
+        signature: 'test-signature-2'
       },
       {
         id: 'tx3',
-        authorPublicKey: { hex: 'USER_1_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_1_PUBLIC_KEY',
         timestamp: 1234567890002,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-3-quiz' },
-        signature: { r: 123n, s: 456n }
+        signature: 'test-signature-3'
       },
       // User 2 completes 2 unique lessons
       {
         id: 'tx4',
-        authorPublicKey: { hex: 'USER_2_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_2_PUBLIC_KEY',
         timestamp: 1234567890003,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-1-quiz' },
-        signature: { r: 789n, s: 101112n }
+        signature: 'test-signature-4'
       },
       {
         id: 'tx5',
-        authorPublicKey: { hex: 'USER_2_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_2_PUBLIC_KEY',
         timestamp: 1234567890004,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-2-quiz' },
-        signature: { r: 789n, s: 101112n }
+        signature: 'test-signature-5'
       },
       // User 2 repeats a lesson (should not count)
       {
         id: 'tx6',
-        authorPublicKey: { hex: 'USER_2_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_2_PUBLIC_KEY',
         timestamp: 1234567890005,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-1-quiz' },
-        signature: { r: 789n, s: 101112n }
+        signature: 'test-signature-6'
       },
       // User 3 completes 1 lesson
       {
         id: 'tx7',
-        authorPublicKey: { hex: 'USER_3_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_3_PUBLIC_KEY',
         timestamp: 1234567890006,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-1-quiz' },
-        signature: { r: 131415n, s: 161718n }
+        signature: 'test-signature-7'
       },
       // Non-lesson transaction (should be ignored)
       {
         id: 'tx8',
-        authorPublicKey: { hex: 'USER_1_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_1_PUBLIC_KEY',
         timestamp: 1234567890007,
         payload: { type: 'OTHER_ACTION', data: 'some data' },
-        signature: { r: 123n, s: 456n }
+        signature: 'test-signature-8'
       }
     ];
 
@@ -97,10 +97,10 @@ describe('Leaderboard', () => {
     const mockTransactions: Transaction[] = [
       {
         id: 'tx1',
-        authorPublicKey: { hex: 'USER_1_PUBLIC_KEY', bytes: new Uint8Array() },
+        publicKey: 'USER_1_PUBLIC_KEY',
         timestamp: 1234567890000,
         payload: { type: 'OTHER_ACTION', data: 'some data' },
-        signature: { r: 123n, s: 456n }
+        signature: 'test-signature-9'
       }
     ];
 

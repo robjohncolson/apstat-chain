@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { useBlockchain } from '../providers/BlockchainProvider';
-import type { NotificationEvent } from '../services/BlockchainService';
+// import type { NotificationEvent } from '../services/BlockchainService'; // Unused import
 
 export function NotificationManager() {
   const { state } = useBlockchain();

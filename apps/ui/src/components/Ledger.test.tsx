@@ -9,17 +9,17 @@ describe('Ledger', () => {
     const mockTransactions: Transaction[] = [
       {
         id: 'tx123456789012345678901234567890',
-        authorPublicKey: { hex: 'ALICE_PUBLIC_KEY_123456789', bytes: new Uint8Array() },
+        publicKey: 'ALICE_PUBLIC_KEY_123456789',
         timestamp: 1234567890000,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-1-quiz' },
         signature: "1234567890abcdef"
       },
       {
         id: 'tx789012345678901234567890123456',
-        authorPublicKey: { hex: 'BOB_PUBLIC_KEY_ABCDEFGHIJK', bytes: new Uint8Array() },
+        publicKey: 'BOB_PUBLIC_KEY_ABCDEFGHIJK',
         timestamp: 1234567895000,
         payload: { type: 'LESSON_COMPLETE', lessonId: 'unit-2-quiz' },
-        signature: { r: 789n, s: 101112n }
+        signature: "test-signature-789"
       }
     ];
 
@@ -58,15 +58,13 @@ describe('Ledger', () => {
       id: 'tx_12345678901234567890123456789012',
       publicKey: '02a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890',
       signature: '304402201234567890123456789012345678901234567890123456789012345678901234022012345678901234567890123456789012345678901234567890123456789012',
+      timestamp: 1234567890000,
       payload: {
         type: 'lesson-completion',
         data: { lessonId: 'lesson-1', score: 85 }
       }
     };
 
-    // This test will fail because the Ledger component expects 
-    // transaction.authorPublicKey.hex but the new structure has 
-    // transaction.publicKey (flat string)
     render(<Ledger transactions={[mockTransaction]} />);
   });
 }); 

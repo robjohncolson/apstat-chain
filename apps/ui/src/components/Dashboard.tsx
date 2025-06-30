@@ -3,7 +3,7 @@ import type { KeyPair, Transaction } from '@apstat-chain/core'
 import { ALL_QUESTIONS } from '@apstat-chain/data'
 import { MiningView } from './MiningView'
 import { AttestationView } from './AttestationView'
-import { Ledger } from './Ledger'
+// import { Ledger } from './Ledger' // Unused import
 import { Leaderboard } from './Leaderboard'
 import { UnitAccordion } from './UnitAccordion'
 import { LoadingSpinner } from './LoadingSpinner'

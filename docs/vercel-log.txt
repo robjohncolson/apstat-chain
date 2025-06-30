@@ -1,0 +1,62 @@
+[12:18:10.822] Running build in Washington, D.C., USA (East) – iad1
+[12:18:10.822] Build machine configuration: 2 cores, 8 GB
+[12:18:10.836] Cloning github.com/robjohncolson/apstat-chain (Branch: main, Commit: cbd4285)
+[12:18:11.026] Previous build caches not available
+[12:18:13.280] Cloning completed: 2.443s
+[12:18:13.861] Running "vercel build"
+[12:18:14.348] Vercel CLI 43.3.0
+[12:18:15.485] Installing dependencies...
+[12:18:18.405] npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+[12:18:18.872] npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+[12:18:18.994] npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+[12:18:19.940] npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+[12:18:19.942] npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+[12:18:21.339] npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+[12:18:23.020] 
+[12:18:23.022] added 499 packages in 7s
+[12:18:23.022] 
+[12:18:23.023] 124 packages are looking for funding
+[12:18:23.023]   run `npm fund` for details
+[12:18:23.062] Running "npm run build"
+[12:18:23.193] 
+[12:18:23.194] > ui@0.0.0 build
+[12:18:23.194] > tsc -b && vite build
+[12:18:23.194] 
+[12:18:27.108] src/components/AttestationView.test.tsx(134,11): error TS6133: 'user' is declared but its value is never read.
+[12:18:27.109] src/components/AttestationView.tsx(2,28): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.109] src/components/Dashboard.tsx(2,43): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.109] src/components/Dashboard.tsx(6,1): error TS6133: 'Ledger' is declared but its value is never read.
+[12:18:27.110] src/components/Leaderboard.test.tsx(3,34): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.110] src/components/Leaderboard.tsx(1,34): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.110] src/components/Ledger.test.tsx(3,34): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.110] src/components/Ledger.tsx(1,34): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.111] src/components/NotificationManager.tsx(4,1): error TS6133: 'NotificationEvent' is declared but its value is never read.
+[12:18:27.111] src/components/UnitAccordion.test.tsx(6,30): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.111] src/components/UnitAccordion.test.tsx(22,11): error TS2739: Type '{ isInitialized: true; currentKeyPair: KeyPair; mnemonic: string; p2pNode: null; peerId: null; connectedPeers: never[]; blockchain: any; pendingTransactions: never[]; candidateBlocks: Map<any, any>; isConnecting: false; error: null; allTransactions: never[]; lastBlockMiner: null; }' is missing the following properties from type 'BlockchainState': lastEvent, pendingActions
+[12:18:27.112] src/components/UnitAccordion.tsx(109,51): error TS6133: 'index' is declared but its value is never read.
+[12:18:27.113] src/providers/BlockchainProvider.test.tsx(49,50): error TS2352: Conversion of type '{ isInitialized: false; currentKeyPair: null; mnemonic: null; p2pNode: null; peerId: null; connectedPeers: never[]; transactions: never[]; isConnecting: false; error: null; }' to type 'BlockchainState' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+[12:18:27.113]   Type '{ isInitialized: false; currentKeyPair: null; mnemonic: null; p2pNode: null; peerId: null; connectedPeers: never[]; transactions: never[]; isConnecting: false; error: null; }' is missing the following properties from type 'BlockchainState': blockchain, pendingTransactions, candidateBlocks, allTransactions, and 2 more.
+[12:18:27.116] src/providers/BlockchainProvider.test.tsx(68,24): error TS6133: 'rerender' is declared but its value is never read.
+[12:18:27.116] src/providers/BlockchainProvider.test.tsx(90,7): error TS2561: Object literal may only specify known properties, but 'transactions' does not exist in type 'BlockchainState'. Did you mean to write 'allTransactions'?
+[12:18:27.116] src/providers/BlockchainProvider.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+[12:18:27.116] src/services/BlockchainService.test.ts(7,3): error TS6133: 'Blockchain' is declared but its value is never read.
+[12:18:27.117] src/services/BlockchainService.test.ts(13,8): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.117] src/services/BlockchainService.ts(15,8): error TS2307: Cannot find module '@apstat-chain/core' or its corresponding type declarations.
+[12:18:27.117] src/services/BlockchainService.ts(16,40): error TS2307: Cannot find module '@apstat-chain/p2p' or its corresponding type declarations.
+[12:18:27.117] src/services/BlockchainService.ts(17,75): error TS6133: 'Activity' is declared but its value is never read.
+[12:18:27.117] src/services/BlockchainService.ts(376,71): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+[12:18:27.118] src/services/BlockchainService.ts(384,9): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+[12:18:27.118] src/services/BlockchainService.ts(399,53): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+[12:18:27.118] src/services/BlockchainService.ts(676,51): error TS7006: Parameter 'existingBlock' implicitly has an 'any' type.
+[12:18:27.118] src/services/BlockchainService.ts(683,74): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+[12:18:27.118] src/services/BlockchainService.ts(727,42): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+[12:18:27.587] npm error Lifecycle script `build` failed with error:
+[12:18:27.587] npm error code 2
+[12:18:27.588] npm error path /vercel/path0/apps/ui
+[12:18:27.588] npm error workspace ui@0.0.0
+[12:18:27.588] npm error location /vercel/path0/apps/ui
+[12:18:27.588] npm error command failed
+[12:18:27.588] npm error command sh -c tsc -b && vite build
+[12:18:27.595] Error: Command "npm run build" exited with 2
+[12:18:27.772] 
+[12:18:30.757] Exiting build container

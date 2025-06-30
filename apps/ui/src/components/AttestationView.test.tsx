@@ -131,8 +131,6 @@ describe('AttestationView', () => {
       state: mockState
     });
 
-    const user = userEvent.setup();
-
     // Act
     render(<AttestationView candidates={mockCandidates} questions={mockQuestions} />);
 

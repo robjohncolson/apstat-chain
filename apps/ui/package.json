@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "cd ../../packages/core && npm run build && cd ../p2p && npm run build",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -12,7 +13,9 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@apstat-chain/core": "file:../../packages/core",
     "@apstat-chain/data": "file:../../packages/data",
+    "@apstat-chain/p2p": "file:../../packages/p2p",
     "buffer": "^6.0.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

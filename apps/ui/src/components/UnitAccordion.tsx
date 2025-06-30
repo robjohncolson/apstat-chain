@@ -106,7 +106,7 @@ export function UnitAccordion({ service, state }: UnitAccordionProps) {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {sortedUnitIds.slice(0, 3).map((unitId, index) => {
+          {sortedUnitIds.slice(0, 3).map((unitId) => {
             const stats = getUnitStats(unitGroups[unitId]);
             const progress = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
             const unitNumber = unitId.replace('unit-', '');

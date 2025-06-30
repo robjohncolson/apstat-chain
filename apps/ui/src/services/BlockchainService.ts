@@ -14,7 +14,7 @@ import {
     type Attestation
 } from '@apstat-chain/core';
 import { P2PNode, discoverPeers } from '@apstat-chain/p2p';
-import { ALL_QUESTIONS, ALL_LESSONS, type QuizQuestion, type Lesson, type Activity } from '@apstat-chain/data';
+import { ALL_QUESTIONS, ALL_LESSONS, type QuizQuestion, type Lesson } from '@apstat-chain/data';
 
 export interface NotificationEvent {
   id: string;

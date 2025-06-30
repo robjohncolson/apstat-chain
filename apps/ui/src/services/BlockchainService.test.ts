@@ -4,7 +4,7 @@ import {
   createTransaction, 
   createBlock, 
   createAttestation,
-  Blockchain,
+  // Blockchain, // Unused import
   type KeyPair,
   type Transaction,
   type Block,
