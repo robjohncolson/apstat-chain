@@ -38,6 +38,7 @@ export interface BlockchainState {
   allTransactions: Transaction[];
   lastBlockMiner?: string | null;
   lastEvent: NotificationEvent | null;
+  pendingActions: Set<string>;
 }
 
 export type BlockchainStateListener = (state: BlockchainState) => void;
@@ -64,6 +65,7 @@ class BlockchainService {
       allTransactions: [],
       lastBlockMiner: null,
       lastEvent: null,
+      pendingActions: new Set(),
     };
 
     // Part 2: Hydrate mempool from localStorage on startup
@@ -164,6 +166,23 @@ class BlockchainService {
     this.updateState({ lastEvent: event });
   }
 
+  // Loading State Management
+  private setActionPending(actionId: string): void {
+    const newPendingActions = new Set(this.state.pendingActions);
+    newPendingActions.add(actionId);
+    this.updateState({ pendingActions: newPendingActions });
+  }
+
+  private clearActionPending(actionId: string): void {
+    const newPendingActions = new Set(this.state.pendingActions);
+    newPendingActions.delete(actionId);
+    this.updateState({ pendingActions: newPendingActions });
+  }
+
+  public isActionPending(actionId: string): boolean {
+    return this.state.pendingActions.has(actionId);
+  }
+
   // Key Management
   public async generateNewWallet(): Promise<{ mnemonic: string; keyPair: KeyPair }> {
     const mnemonic = generateMnemonic();
@@ -222,6 +241,11 @@ class BlockchainService {
       throw new Error('No wallet initialized. Please generate or restore a wallet first.');
     }
 
+    // Create action ID for transaction
+    const actionId = payload.activityId 
+      ? `CREATE_TRANSACTION_${payload.activityId}` 
+      : `CREATE_TRANSACTION_${Date.now()}`;
+
     // Check if current user should receive priority transaction reward
     let finalPayload = payload;
     let shouldClearMinerReward = false;
@@ -232,6 +256,9 @@ class BlockchainService {
     }
 
     try {
+      // Set loading state
+      this.setActionPending(actionId);
+
       const transaction = createTransaction(this.state.currentKeyPair.privateKey, finalPayload);
       
       // Add to pending transactions and clear miner reward if applicable
@@ -251,8 +278,14 @@ class BlockchainService {
         this.state.p2pNode.broadcastTransaction(transaction);
       }
 
+      // Clear loading state on success
+      this.clearActionPending(actionId);
+
       return transaction;
     } catch (error) {
+      // Clear loading state on error
+      this.clearActionPending(actionId);
+      
       const errorMessage = error instanceof Error ? error.message : 'Failed to create transaction';
       this.updateState({ error: errorMessage });
       throw error;
@@ -396,7 +429,12 @@ class BlockchainService {
       throw new Error('No pending transactions to include in block');
     }
 
+    const actionId = `PROPOSE_BLOCK_${params.puzzleId}`;
+
     try {
+      // Set loading state
+      this.setActionPending(actionId);
+
       const { puzzleId, proposedAnswer } = params;
       const latestBlock = this.state.blockchain.getLatestBlock();
       
@@ -430,7 +468,13 @@ class BlockchainService {
       });
 
       console.log(`Proposed candidate block ${candidateBlock.id} for puzzle ${puzzleId} with answer ${proposedAnswer}`);
+      
+      // Clear loading state on success
+      this.clearActionPending(actionId);
     } catch (error) {
+      // Clear loading state on error
+      this.clearActionPending(actionId);
+      
       const errorMessage = error instanceof Error ? error.message : 'Failed to propose block';
       this.updateState({ error: errorMessage });
       throw error;
@@ -528,7 +572,12 @@ class BlockchainService {
       throw new Error('Candidate block must have puzzle data to attest to');
     }
 
+    const actionId = `SUBMIT_ATTESTATION_${candidateBlock.id}`;
+    
     try {
+      // Set loading state
+      this.setActionPending(actionId);
+
       // Create an attestation with the attester's chosen answer
       const attestation = createAttestation({
         privateKey: this.state.currentKeyPair.privateKey,
@@ -542,7 +591,13 @@ class BlockchainService {
       this.updateState({ error: null });
 
       console.log(`Submitted attestation for puzzle ${blockPuzzleId} in block ${candidateBlock.id} with answer ${attesterAnswer}`);
+      
+      // Clear loading state on success
+      this.clearActionPending(actionId);
     } catch (error) {
+      // Clear loading state on error
+      this.clearActionPending(actionId);
+      
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit attestation';
       this.updateState({ error: errorMessage });
       throw error;
@@ -996,6 +1051,7 @@ class BlockchainService {
       allTransactions: [],
       lastBlockMiner: null,
       lastEvent: null,
+      pendingActions: new Set(),
     };
     
     this.notify();

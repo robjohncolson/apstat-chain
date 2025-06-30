@@ -6,6 +6,7 @@ import { AttestationView } from './AttestationView'
 import { Ledger } from './Ledger'
 import { Leaderboard } from './Leaderboard'
 import { UnitAccordion } from './UnitAccordion'
+import { LoadingSpinner } from './LoadingSpinner'
 import type BlockchainService from '../services/BlockchainService'
 import { useBlockchain } from '../providers/BlockchainProvider'
 
@@ -220,9 +221,20 @@ export function Dashboard({
               <div className="flex flex-col space-y-4">
                 <button
                   onClick={() => onCompleteLesson('1-2', '1-2_q1')}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+                  disabled={service.isActionPending('CREATE_TRANSACTION_1-2_q1')}
+                  className={`font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                    service.isActionPending('CREATE_TRANSACTION_1-2_q1')
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-yellow-600 hover:bg-yellow-700'
+                  } text-white`}
                 >
-                  Complete Unit 1 Quiz
+                  {service.isActionPending('CREATE_TRANSACTION_1-2_q1') && (
+                    <LoadingSpinner size="sm" />
+                  )}
+                  {service.isActionPending('CREATE_TRANSACTION_1-2_q1') 
+                    ? 'Submitting...' 
+                    : 'Complete Unit 1 Quiz'
+                  }
                 </button>
               </div>
             </div>

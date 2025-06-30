@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Block } from '@apstat-chain/core';
 import type { QuizQuestion } from '@apstat-chain/data';
 import { useBlockchain } from '../providers/BlockchainProvider';
+import { LoadingSpinner } from './LoadingSpinner';
 
 interface AttestationViewProps {
   candidates: { block: Block; isEligible: boolean; }[];
@@ -44,7 +45,13 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
 
   // Helper function to determine if button should be disabled
   const isButtonDisabled = (block: Block, userSelectedAnswer: string | undefined): boolean => {
-    return !userSelectedAnswer || !service.isEligibleToAttest(block) || isCurrentUserMiner(block);
+    const isLoading = service.isActionPending(`SUBMIT_ATTESTATION_${block.id}`);
+    return !userSelectedAnswer || !service.isEligibleToAttest(block) || isCurrentUserMiner(block) || isLoading;
+  };
+
+  // Helper function to check if attestation is loading
+  const isAttestationLoading = (block: Block): boolean => {
+    return service.isActionPending(`SUBMIT_ATTESTATION_${block.id}`);
   };
 
   const answerChoices = ['A', 'B', 'C', 'D', 'E'];
@@ -119,13 +126,16 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
             <button
               onClick={() => handleAttest(candidate.block)}
               disabled={isButtonDisabled(candidate.block, userSelectedAnswer)}
-              className={`px-6 py-2 rounded font-medium transition-colors ${
+              className={`px-6 py-2 rounded font-medium transition-colors flex items-center gap-2 ${
                 !isButtonDisabled(candidate.block, userSelectedAnswer)
                   ? 'bg-green-500 text-white hover:bg-green-600'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {getButtonText(candidate.block)}
+              {isAttestationLoading(candidate.block) && (
+                <LoadingSpinner size="sm" />
+              )}
+              {isAttestationLoading(candidate.block) ? 'Submitting Vote...' : getButtonText(candidate.block)}
             </button>
           </div>
         );

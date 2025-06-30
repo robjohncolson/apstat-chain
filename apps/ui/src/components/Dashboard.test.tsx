@@ -18,6 +18,7 @@ describe('Dashboard', () => {
       submitAttestation: vi.fn(),
       getMiningPuzzle: vi.fn(),
       proposeBlock: vi.fn(),
+      isActionPending: vi.fn().mockReturnValue(false),
     };
 
     // 2. Define mock data
@@ -61,6 +62,7 @@ describe('Dashboard', () => {
       submitAttestation: vi.fn(),
       getMiningPuzzle: vi.fn(),
       proposeBlock: vi.fn(),
+      isActionPending: vi.fn().mockReturnValue(false),
     };
 
     // 2. Define mock data

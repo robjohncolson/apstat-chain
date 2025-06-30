@@ -45,7 +45,8 @@ describe('AttestationView', () => {
 
     const mockService = {
       submitAttestation: vi.fn() as any,
-      isEligibleToAttest: vi.fn().mockReturnValue(true)
+      isEligibleToAttest: vi.fn().mockReturnValue(true),
+      isActionPending: vi.fn().mockReturnValue(false)
     };
 
     const mockState = {
@@ -114,7 +115,8 @@ describe('AttestationView', () => {
 
     const mockService = {
       submitAttestation: vi.fn() as any,
-      isEligibleToAttest: vi.fn().mockReturnValue(false)
+      isEligibleToAttest: vi.fn().mockReturnValue(false),
+      isActionPending: vi.fn().mockReturnValue(false)
     };
 
     const mockState = {
@@ -186,7 +188,8 @@ describe('AttestationView', () => {
 
     const mockService = {
       submitAttestation: vi.fn() as any,
-      isEligibleToAttest: vi.fn().mockReturnValue(false)
+      isEligibleToAttest: vi.fn().mockReturnValue(false),
+      isActionPending: vi.fn().mockReturnValue(false)
     };
 
     const mockState = {

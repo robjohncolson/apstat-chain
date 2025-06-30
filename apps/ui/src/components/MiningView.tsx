@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { QuizQuestion } from '@apstat-chain/data';
+import { LoadingSpinner } from './LoadingSpinner';
 
 interface MiningViewProps {
   service: {
     getMiningPuzzle(): QuizQuestion;
     proposeBlock(params: { puzzleId: string; proposedAnswer: string }): void;
+    isActionPending(actionId: string): boolean;
   };
 }
 
@@ -29,6 +31,11 @@ export function MiningView({ service }: MiningViewProps) {
         proposedAnswer: selectedAnswer
       });
     }
+  };
+
+  // Helper function to check if block proposal is loading
+  const isProposeBlockLoading = (): boolean => {
+    return currentPuzzle ? service.isActionPending(`PROPOSE_BLOCK_${currentPuzzle.id}`) : false;
   };
 
   return (
@@ -79,14 +86,17 @@ export function MiningView({ service }: MiningViewProps) {
           <div className="text-center">
             <button
               onClick={handleProposeBlock}
-              disabled={!selectedAnswer}
-              className={`py-3 px-8 rounded-lg font-semibold transition-colors ${
-                selectedAnswer
+              disabled={!selectedAnswer || isProposeBlockLoading()}
+              className={`py-3 px-8 rounded-lg font-semibold transition-colors flex items-center gap-2 mx-auto ${
+                selectedAnswer && !isProposeBlockLoading()
                   ? 'bg-green-600 hover:bg-green-700 text-white'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              Propose Block
+              {isProposeBlockLoading() && (
+                <LoadingSpinner size="sm" />
+              )}
+              {isProposeBlockLoading() ? 'Proposing Block...' : 'Propose Block'}
             </button>
           </div>
 

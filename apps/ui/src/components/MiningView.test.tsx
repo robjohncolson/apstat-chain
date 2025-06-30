@@ -17,7 +17,8 @@ describe('MiningView', () => {
 
     const mockService = {
       getMiningPuzzle: vi.fn().mockReturnValue(mockQuestion),
-      proposeBlock: vi.fn()
+      proposeBlock: vi.fn(),
+      isActionPending: vi.fn().mockReturnValue(false)
     };
 
     // Act
