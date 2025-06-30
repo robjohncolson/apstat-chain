@@ -4,7 +4,8 @@
   "description": "P2P server for apstat-chain",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'No build step required for p2p-server'"
   },
   "dependencies": {
     "peer": "^1.0.2"
