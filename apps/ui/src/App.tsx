@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'; // <-- Import useState
+import { Toaster } from 'sonner';
 import { OnboardingFlow } from './components/OnboardingFlow';
 import { Dashboard } from './components/Dashboard';
+import { NotificationManager } from './components/NotificationManager';
 import { useBlockchain } from './providers/BlockchainProvider';
 import { ALL_LESSONS } from '@apstat-chain/data';
 
@@ -138,13 +140,22 @@ function App() {
   // After loading, check the initialized state to decide what to render.
   if (!state.isInitialized) {
     return (
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-        <OnboardingFlow onLogin={handleLogin} />
-      </div>
+      <>
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+          <OnboardingFlow onLogin={handleLogin} />
+        </div>
+        <Toaster position="top-right" richColors closeButton />
+      </>
     );
   }
 
-  return <DashboardWithP2P />;
+  return (
+    <>
+      <DashboardWithP2P />
+      <NotificationManager />
+      <Toaster position="top-right" richColors closeButton />
+    </>
+  );
 }
 
 export default App;

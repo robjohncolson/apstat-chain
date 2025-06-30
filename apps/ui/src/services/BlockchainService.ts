@@ -16,6 +16,13 @@ import {
 import { P2PNode, discoverPeers } from '@apstat-chain/p2p';
 import { ALL_QUESTIONS, ALL_LESSONS, type QuizQuestion, type Lesson, type Activity } from '@apstat-chain/data';
 
+export interface NotificationEvent {
+  id: string;
+  type: 'CANDIDATE_BLOCK_RECEIVED' | 'TRANSACTION_MINED' | 'ELIGIBLE_TO_MINE' | 'PEER_CONNECTED';
+  timestamp: number;
+  data: any;
+}
+
 export interface BlockchainState {
   isInitialized: boolean;
   currentKeyPair: KeyPair | null;
@@ -30,6 +37,7 @@ export interface BlockchainState {
   error: string | null;
   allTransactions: Transaction[];
   lastBlockMiner?: string | null;
+  lastEvent: NotificationEvent | null;
 }
 
 export type BlockchainStateListener = (state: BlockchainState) => void;
@@ -55,6 +63,7 @@ class BlockchainService {
       error: null,
       allTransactions: [],
       lastBlockMiner: null,
+      lastEvent: null,
     };
 
     // Part 2: Hydrate mempool from localStorage on startup
@@ -101,6 +110,10 @@ class BlockchainService {
   }
 
   private updateState(updates: Partial<BlockchainState>): void {
+    // Check mining eligibility before state update
+    const wasEligibleToMine = this.state.currentKeyPair ? 
+      this.isEligibleToMine(this.state.currentKeyPair.publicKey.hex) : false;
+    
     // Update allTransactions whenever state changes
     const allTransactions: Transaction[] = [];
     if (updates.blockchain || this.state.blockchain) {
@@ -111,6 +124,20 @@ class BlockchainService {
     }
     
     this.state = { ...this.state, ...updates, allTransactions };
+    
+    // Check if mining eligibility changed after state update
+    if (this.state.currentKeyPair && updates.pendingTransactions) {
+      const isNowEligibleToMine = this.isEligibleToMine(this.state.currentKeyPair.publicKey.hex);
+      
+      // If user became eligible to mine, emit event
+      if (!wasEligibleToMine && isNowEligibleToMine) {
+        this.emitEvent('ELIGIBLE_TO_MINE', { 
+          mempoolSize: this.state.pendingTransactions.length,
+          contributionTotal: this.getPendingContributionTotal()
+        });
+      }
+    }
+    
     this.notify();
 
     // Part 1: Save mempool to localStorage when pendingTransactions change
@@ -124,6 +151,17 @@ class BlockchainService {
         console.warn('Failed to save mempool to localStorage:', error);
       }
     }
+  }
+
+  private emitEvent(type: NotificationEvent['type'], data: any): void {
+    const event: NotificationEvent = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      type,
+      timestamp: Date.now(),
+      data
+    };
+    
+    this.updateState({ lastEvent: event });
   }
 
   // Key Management
@@ -307,12 +345,32 @@ class BlockchainService {
         tx => !blockTransactionIds.has(tx.id)
       );
 
+      // Check if current user has transactions in this block
+      const currentUserPublicKey = this.state.currentKeyPair?.publicKey.hex;
+      const userTransactionsInBlock = finalBlock.transactions.filter(
+        tx => tx.publicKey === currentUserPublicKey
+      );
+
       this.updateState({
         candidateBlocks: newCandidateBlocks,
         pendingTransactions: updatedPendingTransactions,
         lastBlockMiner: candidateBlock.publicKey,
         error: null,
       });
+
+      // Emit transaction mined event if user has transactions in this block
+      if (userTransactionsInBlock.length > 0) {
+        this.emitEvent('TRANSACTION_MINED', { 
+          blockId: finalBlock.id,
+          transactionCount: userTransactionsInBlock.length,
+          transactions: userTransactionsInBlock.map(tx => ({
+            id: tx.id,
+            type: tx.payload?.type,
+            lessonId: tx.payload?.lessonId,
+            activityId: tx.payload?.activityId
+          }))
+        });
+      }
 
       console.log(`Successfully finalized block ${finalBlock.id} with winning answer '${winningAnswer}' and added to blockchain`);
     } catch (error) {
@@ -526,6 +584,9 @@ class BlockchainService {
         this.updateState({
           connectedPeers: [...new Set([...this.state.connectedPeers, peer])],
         });
+        
+        // Emit peer connection event
+        this.emitEvent('PEER_CONNECTED', { peerId: peer });
       });
 
       p2pNode.on('peer:disconnected', (peer: string) => {
@@ -636,6 +697,14 @@ class BlockchainService {
           
           // Update state with new map
           this.updateState({ candidateBlocks: newCandidateBlocks });
+          
+          // Emit candidate block received event if user is eligible to attest
+          if (this.isEligibleToAttest(candidateBlock)) {
+            this.emitEvent('CANDIDATE_BLOCK_RECEIVED', { 
+              blockId: candidateBlock.id, 
+              puzzleId: blockPuzzleId 
+            });
+          }
           
           console.log(`Added candidate block ${candidateBlock.id} to pending map`);
         } else {
@@ -926,6 +995,7 @@ class BlockchainService {
       error: null,
       allTransactions: [],
       lastBlockMiner: null,
+      lastEvent: null,
     };
     
     this.notify();

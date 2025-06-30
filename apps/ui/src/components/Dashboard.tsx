@@ -228,7 +228,7 @@ export function Dashboard({
             </div>
 
             {/* Propose a New Block Section */}
-            <div>
+            <div data-mining-section>
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 Propose a New Block
               </h2>
