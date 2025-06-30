@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import type { Block } from '@apstat-chain/core';
 import type { QuizQuestion } from '@apstat-chain/data';
+import { useBlockchain } from '../providers/BlockchainProvider';
 
 interface AttestationViewProps {
   candidates: { block: Block; isEligible: boolean; }[];
   questions: QuizQuestion[];
-  service: {
-    submitAttestation(block: Block, attesterAnswer: string): void;
-    isEligibleToAttest(block: Block): boolean;
-  };
 }
 
-export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, questions, service }) => {
+export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, questions }) => {
+  const { service, state } = useBlockchain();
   const [selectedAnswers, setSelectedAnswers] = useState<Map<string, string>>(new Map());
+
+  // Extract current user identity from state - the source of truth
+  const currentUserPublicKey = state.currentKeyPair?.publicKey.hex;
 
   const handleAnswerSelect = (blockId: string, answer: string) => {
     setSelectedAnswers(prev => new Map(prev).set(blockId, answer));
@@ -25,6 +26,27 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
     }
   };
 
+  // Helper function to determine if current user mined the block
+  const isCurrentUserMiner = (block: Block): boolean => {
+    return currentUserPublicKey === block.publicKey;
+  };
+
+  // Helper function to get appropriate button text
+  const getButtonText = (block: Block): string => {
+    if (isCurrentUserMiner(block)) {
+      return 'You cannot vote on your own block';
+    }
+    if (!service.isEligibleToAttest(block)) {
+      return 'Complete related lessons to cast your vote';
+    }
+    return 'Cast My Vote';
+  };
+
+  // Helper function to determine if button should be disabled
+  const isButtonDisabled = (block: Block, userSelectedAnswer: string | undefined): boolean => {
+    return !userSelectedAnswer || !service.isEligibleToAttest(block) || isCurrentUserMiner(block);
+  };
+
   const answerChoices = ['A', 'B', 'C', 'D', 'E'];
 
   return (
@@ -35,6 +57,7 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
         // Find the matching question using the block's puzzleId
         const questionObject = questions.find(q => q.id.toString() === candidate.block.puzzleId);
         const userSelectedAnswer = selectedAnswers.get(candidate.block.id);
+        const isMinerCurrentUser = isCurrentUserMiner(candidate.block);
         
         return (
           <div key={candidate.block.id} className="border border-gray-300 rounded-lg p-6 mb-6 bg-white shadow-sm">
@@ -61,6 +84,11 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
           <div className="mb-4 p-3 bg-blue-50 rounded">
             <p className="text-sm font-medium text-blue-800">
               Miner's Proposed Answer: <span className="font-bold">{candidate.block.proposedAnswer}</span>
+              {isMinerCurrentUser && (
+                <span className="ml-2 text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded">
+                  Your Block
+                </span>
+              )}
             </p>
           </div>
           
@@ -72,9 +100,12 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
                 <button
                   key={choice}
                   onClick={() => handleAnswerSelect(candidate.block.id, choice)}
+                  disabled={isMinerCurrentUser}
                   className={`px-4 py-2 border rounded font-medium transition-colors ${
                     selectedAnswers.get(candidate.block.id) === choice
                       ? 'bg-blue-500 text-white border-blue-500'
+                      : isMinerCurrentUser
+                      ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                   }`}
                 >
@@ -84,17 +115,17 @@ export const AttestationView: React.FC<AttestationViewProps> = ({ candidates, qu
             </div>
           </div>
           
-            {/* Attest Button */}
+            {/* Attestation Button */}
             <button
               onClick={() => handleAttest(candidate.block)}
-              disabled={!userSelectedAnswer || !service.isEligibleToAttest(candidate.block)}
+              disabled={isButtonDisabled(candidate.block, userSelectedAnswer)}
               className={`px-6 py-2 rounded font-medium transition-colors ${
-                userSelectedAnswer && service.isEligibleToAttest(candidate.block)
+                !isButtonDisabled(candidate.block, userSelectedAnswer)
                   ? 'bg-green-500 text-white hover:bg-green-600'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {!service.isEligibleToAttest(candidate.block) ? 'You cannot attest to your own block' : 'Attest to This Block'}
+              {getButtonText(candidate.block)}
             </button>
           </div>
         );

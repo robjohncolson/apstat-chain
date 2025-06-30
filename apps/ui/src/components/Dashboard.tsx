@@ -255,7 +255,7 @@ export function Dashboard({
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 Review Candidate Blocks
               </h2>
-              <AttestationView candidates={candidatesWithEligibility} service={service} questions={ALL_QUESTIONS} />
+              <AttestationView candidates={candidatesWithEligibility} questions={ALL_QUESTIONS} />
             </div>
 
             {/* Mempool Section */}
