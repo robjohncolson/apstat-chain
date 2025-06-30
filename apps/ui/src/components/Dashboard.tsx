@@ -16,38 +16,50 @@ interface MempoolViewProps {
 
 function MempoolView({ transactions }: MempoolViewProps) {
   return (
-    <div className="bg-orange-50 dark:bg-orange-900 p-6 rounded-lg">
-      <h2 className="text-xl font-semibold text-orange-800 dark:text-orange-200 mb-4">
-        Mempool ({transactions.length} pending transactions)
-      </h2>
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          Pending Transactions
+        </h3>
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+          {transactions.length} pending
+        </span>
+      </div>
       
       {transactions.length === 0 ? (
-        <p className="text-orange-700 dark:text-orange-300 text-sm">
-          No pending transactions
-        </p>
+        <div className="text-center py-8">
+          <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            No pending transactions
+          </p>
+        </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-60 overflow-y-auto">
           {transactions.map((tx) => (
             <div
               key={tx.id}
-              className="bg-white dark:bg-gray-800 p-4 rounded border"
+              className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-100 dark:border-gray-700"
             >
               <div className="space-y-2">
                 <div>
-                  <label className="block text-xs font-medium text-orange-700 dark:text-orange-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                     Transaction ID
                   </label>
-                  <div className="font-mono text-xs text-gray-600 dark:text-gray-400 break-all">
+                  <div className="font-mono text-xs text-gray-600 dark:text-gray-300 break-all">
                     {tx.id}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-orange-700 dark:text-orange-300 mb-1">
-                    Payload
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    Type
                   </label>
-                  <div className="font-mono text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-2 rounded">
-                    {JSON.stringify(tx.payload, null, 2)}
-                  </div>
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                    {tx.payload?.type || 'Unknown'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -92,220 +104,283 @@ export function Dashboard({
   }));
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">
-          APStat Chain Dashboard
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-900">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            APStat Chain
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
+            Learn • Mine • Validate • Earn
+          </p>
+        </div>
 
         {/* Tab Navigation */}
-        <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
-          <nav className="-mb-px flex space-x-8">
-            <button
-              role="tab"
-              onClick={() => setActiveTab('activity')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'activity'
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
-            >
-              Network Activity
-            </button>
-            <button
-              role="tab"
-              onClick={() => setActiveTab('progress')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'progress'
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
-            >
-              My Progress
-            </button>
-            <button
-              role="tab"
-              onClick={() => setActiveTab('leaderboard')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'leaderboard'
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
-            >
-              Leaderboard
-            </button>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+          <nav className="flex">
+            {[
+              { id: 'activity', label: 'Network Activity', icon: '⚡' },
+              { id: 'progress', label: 'My Progress', icon: '📚' },
+              { id: 'leaderboard', label: 'Leaderboard', icon: '🏆' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                role="tab"
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 py-4 px-6 text-center font-medium transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700'
+                }`}
+              >
+                <div className="flex items-center justify-center space-x-2">
+                  <span className="text-xl">{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </div>
+              </button>
+            ))}
           </nav>
         </div>
 
         {/* Tab Content */}
         {activeTab === 'activity' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Wallet Information */}
-              <div className="bg-blue-50 dark:bg-blue-900 p-6 rounded-lg">
-                <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">
-                  Wallet Information
-                </h2>
+          <div className="space-y-8">
+            {/* Hero Status Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Network Progress - Most Important */}
+              <div className="lg:col-span-2 bg-gradient-to-r from-blue-500 to-indigo-600 p-8 rounded-2xl text-white">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">Network Progress</h2>
+                    <p className="text-blue-100">Contributing to collective knowledge</p>
+                  </div>
+                  <div className="text-4xl">🌐</div>
+                </div>
+                
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-lg font-semibold">
+                      {pendingTotal.toFixed(2)} / 1.0
+                    </span>
+                    <span className="text-sm text-blue-100">
+                      {((pendingTotal / 1.0) * 100).toFixed(1)}% complete
+                    </span>
+                  </div>
+                  <div className="w-full bg-blue-400 bg-opacity-30 rounded-full h-3">
+                    <div 
+                      className="bg-white bg-opacity-80 h-3 rounded-full transition-all duration-500 shadow-sm" 
+                      style={{ width: `${Math.min(100, (pendingTotal / 1.0) * 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
 
-                {publicKey && (
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">
-                        Public Key
-                      </label>
-                      <div className="bg-white dark:bg-gray-800 p-3 rounded border font-mono text-xs break-all">
-                        {publicKey.hex}
-                      </div>
-                    </div>
+                {pendingTotal >= 1.0 ? (
+                  <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                    <p className="text-sm font-medium">🎉 Ready for mining! Network threshold reached.</p>
+                  </div>
+                ) : (
+                  <div className="bg-white bg-opacity-10 rounded-lg p-4">
+                    <p className="text-sm">
+                      Need {(1.0 - pendingTotal).toFixed(2)} more contribution to unlock mining
+                    </p>
                   </div>
                 )}
               </div>
 
-              {/* P2P Network Information */}
-              <div className="bg-green-50 dark:bg-green-900 p-6 rounded-lg">
-                <h2 className="text-xl font-semibold text-green-800 dark:text-green-200 mb-4">
-                  P2P Network Status
-                </h2>
-
-                <div className="space-y-3">
+              {/* Connection Status */}
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Network Status</h3>
+                  <div className={`h-3 w-3 rounded-full ${peerId ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                </div>
+                
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-green-700 dark:text-green-300 mb-1">
-                      Peer ID
-                    </label>
-                    <div className="bg-white dark:bg-gray-800 p-3 rounded border font-mono text-xs">
-                      {peerId || 'Not connected'}
-                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Status</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {isConnecting ? 'Connecting...' : peerId ? 'Connected' : 'Disconnected'}
+                    </p>
                   </div>
-
+                  
                   <div>
-                    <label className="block text-sm font-medium text-green-700 dark:text-green-300 mb-1">
-                      Network Status
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <div
-                        className={`h-3 w-3 rounded-full ${
-                          peerId ? 'bg-green-500' : 'bg-red-500'
-                        }`}
-                      ></div>
-                      <span className="text-sm">
-                        {isConnecting ? 'Connecting...' : peerId ? 'Connected' : 'Disconnected'}
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Connected Peers</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {connectedPeers.length}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Mining Section */}
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm">
+                <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900 dark:to-green-900 p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-emerald-800 dark:text-emerald-200 mb-1">
+                        ⛏️ Mining Center
+                      </h3>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-300">
+                        Propose new blocks to earn rewards
+                      </p>
+                    </div>
+                    {isEligible && pendingTotal >= 1.0 && (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-200">
+                        Ready to mine
                       </span>
-                    </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Network Progress */}
-            <div className="bg-indigo-50 dark:bg-indigo-900 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold text-indigo-800 dark:text-indigo-200 mb-4">
-                Network Progress
-              </h2>
-              <div className="text-lg font-medium text-indigo-700 dark:text-indigo-300">
-                Network Progress: {pendingTotal.toFixed(2)} / 1.0
-              </div>
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                <div 
-                  className="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" 
-                  style={{ width: `${Math.min(100, (pendingTotal / 1.0) * 100)}%` }}
-                ></div>
-              </div>
-            </div>
-
-            {/* Lessons Section */}
-            <div className="bg-yellow-50 dark:bg-yellow-900 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-4">
-                Lessons
-              </h2>
-
-              <div className="flex flex-col space-y-4">
-                <button
-                  onClick={() => onCompleteLesson('1-2', '1-2_q1')}
-                  disabled={service.isActionPending('CREATE_TRANSACTION_1-2_q1')}
-                  className={`font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                    service.isActionPending('CREATE_TRANSACTION_1-2_q1')
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-yellow-600 hover:bg-yellow-700'
-                  } text-white`}
-                >
-                  {service.isActionPending('CREATE_TRANSACTION_1-2_q1') && (
-                    <LoadingSpinner size="sm" />
-                  )}
-                  {service.isActionPending('CREATE_TRANSACTION_1-2_q1') 
-                    ? 'Submitting...' 
-                    : 'Complete Unit 1 Quiz'
-                  }
-                </button>
-              </div>
-            </div>
-
-            {/* Propose a New Block Section */}
-            <div data-mining-section>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-                Propose a New Block
-              </h2>
-              
-              {pendingTotal >= 1.0 && isEligible ? (
-                <MiningView service={service} />
-              ) : (
-                <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg text-center">
-                  <p className="text-gray-600 dark:text-gray-300 mb-2">
-                    Mining not available
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {pendingTotal < 1.0 
-                      ? `Need ${(1.0 - pendingTotal).toFixed(2)} more contribution to enable mining`
-                      : 'You are not eligible to mine at this time'
-                    }
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Review Candidate Blocks Section */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-                Review Candidate Blocks
-              </h2>
-              <AttestationView candidates={candidatesWithEligibility} questions={ALL_QUESTIONS} />
-            </div>
-
-            {/* Mempool Section */}
-            <div>
-              <MempoolView transactions={service.getPendingTransactions()} />
-            </div>
-
-            {/* Connected Peers */}
-            <div className="bg-purple-50 dark:bg-purple-900 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold text-purple-800 dark:text-purple-200 mb-4">
-                Connected Peers ({connectedPeers.length})
-              </h2>
-
-              {connectedPeers.length > 0 ? (
-                <div className="grid grid-cols-1 gap-2">
-                  {connectedPeers.map((peerId, index) => (
-                    <div
-                      key={peerId}
-                      className="bg-white dark:bg-gray-800 p-3 rounded border font-mono text-xs flex items-center justify-between"
-                    >
-                      <span className="break-all">{peerId}</span>
-                      <span className="text-xs text-gray-500 ml-2">#{index + 1}</span>
+                
+                <div className="p-6">
+                  {pendingTotal >= 1.0 && isEligible ? (
+                    <MiningView service={service} />
+                  ) : (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                        <span className="text-2xl">⛏️</span>
+                      </div>
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-2">Mining Locked</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        {pendingTotal < 1.0 
+                          ? `Complete ${(1.0 - pendingTotal).toFixed(2)} more lessons to unlock mining`
+                          : 'You are not eligible to mine at this time'
+                        }
+                      </p>
+                      <button
+                        onClick={() => onCompleteLesson('1-2', '1-2_q1')}
+                        disabled={service.isActionPending('CREATE_TRANSACTION_1-2_q1')}
+                        className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                          service.isActionPending('CREATE_TRANSACTION_1-2_q1')
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400'
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        }`}
+                      >
+                        {service.isActionPending('CREATE_TRANSACTION_1-2_q1') && (
+                          <LoadingSpinner size="sm" />
+                        )}
+                        {service.isActionPending('CREATE_TRANSACTION_1-2_q1') 
+                          ? 'Submitting...' 
+                          : 'Complete Unit 1 Quiz'
+                        }
+                      </button>
                     </div>
-                  ))}
+                  )}
                 </div>
-              ) : (
-                <div className="text-purple-700 dark:text-purple-300 text-sm">
-                  No peers connected yet
+              </div>
+
+              {/* Attestation Section */}
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm">
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900 dark:to-indigo-900 p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-purple-800 dark:text-purple-200 mb-1">
+                        ✅ Validation Center
+                      </h3>
+                      <p className="text-sm text-purple-600 dark:text-purple-300">
+                        Review and validate candidate blocks
+                      </p>
+                    </div>
+                    {candidatesWithEligibility.length > 0 && (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-200">
+                        {candidatesWithEligibility.length} to review
+                      </span>
+                    )}
+                  </div>
                 </div>
-              )}
+                
+                <div className="p-6 max-h-96 overflow-y-auto">
+                  {candidatesWithEligibility.length > 0 ? (
+                    <AttestationView candidates={candidatesWithEligibility} questions={ALL_QUESTIONS} />
+                  ) : (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                        <span className="text-2xl">✅</span>
+                      </div>
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-2">No Blocks to Review</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Check back later for new candidate blocks to validate
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
+
+            {/* Network Details Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Wallet Information */}
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <span className="mr-2">👛</span>
+                  Wallet Information
+                </h3>
+
+                {publicKey ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                      Public Key
+                    </label>
+                    <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 font-mono text-xs break-all text-gray-700 dark:text-gray-300">
+                      {publicKey.hex}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 dark:text-gray-400">No wallet connected</p>
+                )}
+              </div>
+
+              {/* Connected Peers */}
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <span className="mr-2">🌐</span>
+                  Connected Peers
+                  <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                    {connectedPeers.length}
+                  </span>
+                </h3>
+
+                {connectedPeers.length > 0 ? (
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {connectedPeers.map((peerId, index) => (
+                      <div
+                        key={peerId}
+                        className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-between"
+                      >
+                        <span className="font-mono text-xs text-gray-600 dark:text-gray-400 break-all flex-1 mr-2">
+                          {peerId}
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
+                          #{index + 1}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      No peers connected yet
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Mempool */}
+            <MempoolView transactions={service.getPendingTransactions()} />
 
             {/* Error Display */}
             {error && (
-              <div className="bg-red-50 dark:bg-red-900 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
-                  Error
-                </h3>
+              <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 p-6 rounded-2xl">
+                <div className="flex items-center mb-2">
+                  <span className="text-2xl mr-3">⚠️</span>
+                  <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">
+                    Connection Error
+                  </h3>
+                </div>
                 <p className="text-red-700 dark:text-red-300 text-sm">{error}</p>
               </div>
             )}
@@ -313,13 +388,13 @@ export function Dashboard({
         )}
 
         {activeTab === 'progress' && (
-          <div>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 shadow-sm">
             <UnitAccordion service={service} state={state} />
           </div>
         )}
 
         {activeTab === 'leaderboard' && (
-          <div>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 shadow-sm">
             <Leaderboard transactions={service.getConfirmedTransactions()} />
           </div>
         )}
