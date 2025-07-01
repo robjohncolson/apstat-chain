@@ -12,13 +12,33 @@ export const ALL_LESSONS: Lesson[] = lessonsData as Lesson[];
  */
 export const ALL_QUESTIONS: QuizQuestion[] = questionsData as QuizQuestion[];
 
+// === CORE CURRICULUM DATA (Battle-tested V1) ===
+
+// Export curriculum data access
+export { ALL_UNITS_DATA } from './curriculumData.js';
+
 // === V2 CURRICULUM MANAGER (ADR 021) ===
 
 // Export the CurriculumManager service
 export { CurriculumManager } from './CurriculumManager.js';
 
-// Export curriculum data and utilities
-export { ALL_UNITS_DATA, getTotalItemCounts } from './curriculumData.js';
-
-// Re-export all types (legacy and new V2 types)
-export * from './types.js'; 
+// Export all types for use by UI components
+export type {
+  // Core data types
+  CurriculumUnit,
+  CurriculumTopic,
+  VideoActivity,
+  QuizActivity,
+  BlooketActivity,
+  OrigamiActivity,
+  TotalCounts,
+  CompletionStats,
+  
+  // Legacy types
+  QuizQuestion,
+  Lesson,
+  
+  // Phase 2 blockchain integration types
+  ActivityCompletionTransaction,
+  BlockchainIntegration
+} from './types.js'; 

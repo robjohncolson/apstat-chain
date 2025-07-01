@@ -97,9 +97,66 @@ npm test
 npm run clean
 ```
 
-## Phase 2 Integration
+## Phase 2: Blockchain Integration (ADR 021)
 
-The CurriculumManager is designed to integrate seamlessly with the blockchain service in Phase 2. All completion tracking methods return success indicators and automatically generate timestamps, ready for blockchain transaction recording.
+The CurriculumManager now supports blockchain transaction submission for activity completions. When an activity is marked as complete, a corresponding `ACTIVITY_COMPLETE` transaction is automatically created and submitted to the blockchain.
+
+### Setting Up Blockchain Integration
+
+```typescript
+import { CurriculumManager } from '@apstat-chain/data';
+import BlockchainService from '../services/BlockchainService';
+
+// Create curriculum manager
+const curriculumManager = new CurriculumManager();
+
+// Connect to blockchain service (typically done in the UI)
+const blockchainService = BlockchainService.getInstance();
+curriculumManager.setBlockchainService(blockchainService);
+
+// Now all activity completions will create blockchain transactions
+await curriculumManager.markVideoCompleted('unit1', '1-1', 0);
+// 👆 This creates an ACTIVITY_COMPLETE transaction on the blockchain
+```
+
+### Activity Completion Transactions
+
+When activities are completed, the following transaction is created:
+
+```typescript
+{
+  type: 'ACTIVITY_COMPLETE',
+  payload: {
+    unitId: 'unit1',           // The unit identifier
+    topicId: '1-1',            // The topic identifier  
+    activityType: 'video',     // 'video', 'quiz', or 'blooket'
+    activityId: 'https://...',  // Video URL, quiz ID, or blooket URL
+    timestamp: 1672531200000,   // Completion timestamp
+    studentId: 'public-key'     // Student's blockchain public key
+  }
+}
+```
+
+### Graceful Degradation
+
+The CurriculumManager works seamlessly in both online and offline modes:
+
+- **With Blockchain**: Activity completions are recorded both locally and on the blockchain
+- **Without Blockchain**: Activity completions are recorded locally only (offline mode)
+- **Blockchain Errors**: If blockchain submission fails, local completion still succeeds
+
+This ensures a robust student experience regardless of network connectivity or blockchain availability.
+
+### Mutation Methods (Now Async)
+
+All completion methods are now async to handle blockchain operations:
+
+```typescript
+// Mark activities as completed (returns Promise<boolean>)
+await curriculumManager.markVideoCompleted(unitId, topicId, videoIndex);
+await curriculumManager.markQuizCompleted(unitId, topicId, quizIndex);  
+await curriculumManager.markBlooketCompleted(unitId, topicId);
+```
 
 ## Structure
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CurriculumManager } from './CurriculumManager.js';
-import type { CurriculumUnit } from './types.js';
+import type { CurriculumUnit, BlockchainIntegration, ActivityCompletionTransaction } from './types.js';
 
 // Test data that matches our interface
 const mockCurriculumData: CurriculumUnit[] = [
@@ -139,11 +139,23 @@ const mockCurriculumData: CurriculumUnit[] = [
   }
 ];
 
+// Mock blockchain service for testing
+const mockBlockchainService: BlockchainIntegration = {
+  createTransaction: vi.fn().mockReturnValue({ id: 'mock-transaction-id', signature: 'mock-signature' }),
+  getState: vi.fn().mockReturnValue({
+    isInitialized: true,
+    currentKeyPair: {
+      publicKey: 'mock-public-key'
+    }
+  })
+};
+
 describe('CurriculumManager', () => {
   let manager: CurriculumManager;
 
   beforeEach(() => {
     manager = new CurriculumManager(mockCurriculumData);
+    vi.clearAllMocks();
   });
 
   describe('Core Data Access Methods', () => {
@@ -319,9 +331,124 @@ describe('CurriculumManager', () => {
     });
   });
 
+  describe('Blockchain Integration', () => {
+    it('should set blockchain service correctly', () => {
+      manager.setBlockchainService(mockBlockchainService);
+      // Test is successful if no errors are thrown
+      expect(true).toBe(true);
+    });
+
+    it('should submit blockchain transaction when marking video completed', async () => {
+      manager.setBlockchainService(mockBlockchainService);
+      
+      const success = await manager.markVideoCompleted('unit1', '1-1', 0, '2024-01-01T00:00:00.000Z');
+      expect(success).toBe(true);
+      
+      // Verify blockchain transaction was created
+      expect(mockBlockchainService.createTransaction).toHaveBeenCalledWith({
+        type: 'ACTIVITY_COMPLETE',
+        payload: {
+          unitId: 'unit1',
+          topicId: '1-1',
+          activityType: 'video',
+          activityId: 'https://example.com/video1',
+          timestamp: expect.any(Number),
+          studentId: 'mock-public-key'
+        }
+      });
+    });
+
+    it('should submit blockchain transaction when marking quiz completed', async () => {
+      manager.setBlockchainService(mockBlockchainService);
+      
+      const success = await manager.markQuizCompleted('unit1', '1-1', 0, '2024-01-01T00:00:00.000Z');
+      expect(success).toBe(true);
+      
+      // Verify blockchain transaction was created
+      expect(mockBlockchainService.createTransaction).toHaveBeenCalledWith({
+        type: 'ACTIVITY_COMPLETE',
+        payload: {
+          unitId: 'unit1',
+          topicId: '1-1',
+          activityType: 'quiz',
+          activityId: '1-1_q1',
+          timestamp: expect.any(Number),
+          studentId: 'mock-public-key'
+        }
+      });
+    });
+
+    it('should submit blockchain transaction when marking blooket completed', async () => {
+      manager.setBlockchainService(mockBlockchainService);
+      
+      const success = await manager.markBlooketCompleted('unit1', '1-1', '2024-01-01T00:00:00.000Z');
+      expect(success).toBe(true);
+      
+      // Verify blockchain transaction was created
+      expect(mockBlockchainService.createTransaction).toHaveBeenCalledWith({
+        type: 'ACTIVITY_COMPLETE',
+        payload: {
+          unitId: 'unit1',
+          topicId: '1-1',
+          activityType: 'blooket',
+          activityId: 'https://blooket.com/set/123',
+          timestamp: expect.any(Number),
+          studentId: 'mock-public-key'
+        }
+      });
+    });
+
+    it('should handle blockchain service not initialized gracefully', async () => {
+      const uninitializedService = {
+        ...mockBlockchainService,
+        getState: vi.fn().mockReturnValue({ isInitialized: false })
+      };
+      
+      manager.setBlockchainService(uninitializedService);
+      
+      const success = await manager.markVideoCompleted('unit1', '1-1', 0);
+      expect(success).toBe(true);
+      
+      // Should not attempt to create transaction
+      expect(uninitializedService.createTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should handle blockchain service errors gracefully', async () => {
+      const errorService = {
+        ...mockBlockchainService,
+        createTransaction: vi.fn().mockImplementation(() => {
+          throw new Error('Blockchain error');
+        })
+      };
+      
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      
+      manager.setBlockchainService(errorService);
+      
+      const success = await manager.markVideoCompleted('unit1', '1-1', 0);
+      expect(success).toBe(true); // Should still complete locally
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to submit activity completion to blockchain:',
+        expect.any(Error)
+      );
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should work without blockchain service (offline mode)', async () => {
+      // No blockchain service set
+      const success = await manager.markVideoCompleted('unit1', '1-1', 0);
+      expect(success).toBe(true);
+      
+      const topic = manager.getTopic('unit1', '1-1');
+      expect(topic?.videos[0].completed).toBe(true);
+    });
+  });
+
   describe('Data Mutation Methods', () => {
-    it('should mark video as completed', () => {
-      const success = manager.markVideoCompleted('unit1', '1-1', 0, '2024-01-01T00:00:00.000Z');
+    it('should mark video as completed', async () => {
+      const success = await manager.markVideoCompleted('unit1', '1-1', 0, '2024-01-01T00:00:00.000Z');
       expect(success).toBe(true);
       
       const topic = manager.getTopic('unit1', '1-1');
@@ -329,8 +456,8 @@ describe('CurriculumManager', () => {
       expect(topic?.videos[0].completionDate).toBe('2024-01-01T00:00:00.000Z');
     });
 
-    it('should mark quiz as completed', () => {
-      const success = manager.markQuizCompleted('unit1', '1-1', 0, '2024-01-01T00:00:00.000Z');
+    it('should mark quiz as completed', async () => {
+      const success = await manager.markQuizCompleted('unit1', '1-1', 0, '2024-01-01T00:00:00.000Z');
       expect(success).toBe(true);
       
       const topic = manager.getTopic('unit1', '1-1');
@@ -338,8 +465,8 @@ describe('CurriculumManager', () => {
       expect(topic?.quizzes[0].completionDate).toBe('2024-01-01T00:00:00.000Z');
     });
 
-    it('should mark blooket as completed', () => {
-      const success = manager.markBlooketCompleted('unit1', '1-1', '2024-01-01T00:00:00.000Z');
+    it('should mark blooket as completed', async () => {
+      const success = await manager.markBlooketCompleted('unit1', '1-1', '2024-01-01T00:00:00.000Z');
       expect(success).toBe(true);
       
       const topic = manager.getTopic('unit1', '1-1');
@@ -347,19 +474,19 @@ describe('CurriculumManager', () => {
       expect(topic?.blooket.completionDate).toBe('2024-01-01T00:00:00.000Z');
     });
 
-    it('should handle invalid indices gracefully', () => {
-      const videoSuccess = manager.markVideoCompleted('unit1', '1-1', 999);
-      const quizSuccess = manager.markQuizCompleted('unit1', '1-1', 999);
-      const invalidTopicSuccess = manager.markBlooketCompleted('invalid', 'invalid');
+    it('should handle invalid indices gracefully', async () => {
+      const videoSuccess = await manager.markVideoCompleted('unit1', '1-1', 999);
+      const quizSuccess = await manager.markQuizCompleted('unit1', '1-1', 999);
+      const invalidTopicSuccess = await manager.markBlooketCompleted('invalid', 'invalid');
       
       expect(videoSuccess).toBe(false);
       expect(quizSuccess).toBe(false);
       expect(invalidTopicSuccess).toBe(false);
     });
 
-    it('should auto-generate completion dates when not provided', () => {
+    it('should auto-generate completion dates when not provided', async () => {
       const beforeTime = new Date().toISOString();
-      manager.markVideoCompleted('unit1', '1-1', 0);
+      await manager.markVideoCompleted('unit1', '1-1', 0);
       const afterTime = new Date().toISOString();
       
       const topic = manager.getTopic('unit1', '1-1');
