@@ -395,15 +395,13 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
                 completionDate: null
             },
             {
-                questionPdf: "pdfs/unit1/unit1_pc_mcq_parta_answers.pdf",
-                answersPdf: null,
+                answersPdf: "pdfs/unit1/unit1_pc_mcq_parta_answers.pdf",
                 quizId: "1-capstone_q2",
                 completed: false,
                 completionDate: null
             },
             {
-                questionPdf: "pdfs/unit1/unit1_pc_mcq_partb_answers.pdf",
-                answersPdf: null,
+                answersPdf: "pdfs/unit1/unit1_pc_mcq_partb_answers.pdf",
                 quizId: "1-capstone_q3",
                 completed: false,
                 completionDate: null
@@ -788,14 +786,14 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
             },
             {
                 questionPdf: "pdfs/unit2/unit2_pc_mcq_parta_answers.pdf",
-                answersPdf: null,
+                answersPdf: "",
                 quizId: "2-capstone_q2",
                 completed: false,
                 completionDate: null
             },
             {
                 questionPdf: "pdfs/unit2/unit2_pc_mcq_partb_answers.pdf",
-                answersPdf: null,
+                answersPdf: "",
                 quizId: "2-capstone_q3",
                 completed: false,
                 completionDate: null
@@ -1093,14 +1091,14 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
           },
           {
             questionPdf: "pdfs/unit3/unit3_pc_mcq_parta_answers.pdf",
-            answersPdf: null,
+            answersPdf: "",
             quizId: "3-capstone_q2",
             completed: false,
             completionDate: null
           },
           {
             questionPdf: "pdfs/unit3/unit3_pc_mcq_partb_answers.pdf",
-            answersPdf: null,
+            answersPdf: "",
             quizId: "3-capstone_q3",
             completed: false,
             completionDate: null
@@ -1599,21 +1597,21 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
         },
         {
             questionPdf: "pdfs/unit4/unit4_pc_mcq_parta_answers.pdf",
-            answersPdf: null,
+            answersPdf: "",
             quizId: "4-capstone_q2",
             completed: false,
             completionDate: null
         },
         {
             questionPdf: "pdfs/unit4/unit4_pc_mcq_partb_answers.pdf",
-            answersPdf: null,
+            answersPdf: "",
             quizId: "4-capstone_q3",
             completed: false,
             completionDate: null
         },
         {
             questionPdf: "pdfs/unit4/unit4_pc_mcq_partc_answers.pdf",
-            answersPdf: null,
+            answersPdf: "",
             quizId: "4-capstone_q4",
             completed: false,
             completionDate: null
@@ -1960,22 +1958,19 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
               completionDate: null
           },
           {
-              questionPdf: null,
-              answersPdf: "pdfs/unit5/unit5_pc_mcq_parta_answers.pdf",
+                answersPdf: "pdfs/unit5/unit5_pc_mcq_parta_answers.pdf",
               quizId: "5-capstone_q2",
               completed: false,
               completionDate: null
           },
           {
-              questionPdf: null,
-              answersPdf: "pdfs/unit5/unit5_pc_mcq_partb_answers.pdf",
+                answersPdf: "pdfs/unit5/unit5_pc_mcq_partb_answers.pdf",
               quizId: "5-capstone_q3",
               completed: false,
               completionDate: null
           },
           {
-              questionPdf: null,
-              answersPdf: "pdfs/unit5/unit5_pc_mcq_partc_answers.pdf",
+                answersPdf: "pdfs/unit5/unit5_pc_mcq_partc_answers.pdf",
               quizId: "5-capstone_q4",
               completed: false,
               completionDate: null
@@ -2461,29 +2456,25 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
                     completionDate: null
                 },
                 {
-                    questionPdf: null,
-                    answersPdf: "pdfs/unit6/unit6_pc_mcq_parta_answers.pdf",
+                answersPdf: "pdfs/unit6/unit6_pc_mcq_parta_answers.pdf",
                     quizId: "6-capstone_q2",
                     completed: false,
                     completionDate: null
                 },
                 {
-                    questionPdf: null,
-                    answersPdf: "pdfs/unit6/unit6_pc_mcq_partb_answers.pdf",
+                answersPdf: "pdfs/unit6/unit6_pc_mcq_partb_answers.pdf",
                     quizId: "6-capstone_q3",
                     completed: false,
                     completionDate: null
                 },
                 {
-                    questionPdf: null,
-                    answersPdf: "pdfs/unit6/unit6_pc_mcq_partc_answers.pdf",
+                answersPdf: "pdfs/unit6/unit6_pc_mcq_partc_answers.pdf",
                     quizId: "6-capstone_q4",
                     completed: false,
                     completionDate: null
                 },
                 {
-                    questionPdf: null,
-                    answersPdf: "pdfs/unit6/unit6_pc_mcq_partd_answers.pdf",
+                answersPdf: "pdfs/unit6/unit6_pc_mcq_partd_answers.pdf",
                     quizId: "6-capstone_q5",
                     completed: false,
                     completionDate: null
@@ -2915,22 +2906,19 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
               completionDate: null
           },
           {
-              questionPdf: null,
-              answersPdf: "pdfs/unit7/unit7_pc_mcq_parta_answers.pdf",
+                answersPdf: "pdfs/unit7/unit7_pc_mcq_parta_answers.pdf",
               quizId: "7-capstone_q2",
               completed: false,
               completionDate: null
           },
           {
-              questionPdf: null,
-              answersPdf: "pdfs/unit7/unit7_pc_mcq_partb_answers.pdf",
+                answersPdf: "pdfs/unit7/unit7_pc_mcq_partb_answers.pdf",
               quizId: "7-capstone_q3",
               completed: false,
               completionDate: null
           },
           {
-              questionPdf: null,
-              answersPdf: "pdfs/unit7/unit7_pc_mcq_partc_answers.pdf",
+                answersPdf: "pdfs/unit7/unit7_pc_mcq_partc_answers.pdf",
               quizId: "7-capstone_q4",
               completed: false,
               completionDate: null
@@ -3236,14 +3224,14 @@ export const ALL_UNITS_DATA: CurriculumUnit[] = [
             },
             {
                 questionPdf: "pdfs/unit8/unit8_pc_mcq_partA_answers.pdf",
-                answersPdf: null,
+                answersPdf: "",
                 quizId: "8-capstone_q2",
                 completed: false,
                 completionDate: null
             },
             {
                 questionPdf: "pdfs/unit8/unit8_pc_mcq_partB_answers.pdf",
-                answersPdf: null,
+                answersPdf: "",
                 quizId: "8-capstone_q3",
                 completed: false,
                 completionDate: null

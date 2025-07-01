@@ -1,11 +1,21 @@
-import type { Lesson, Activity } from '@apstat-chain/data'
+import type { Lesson } from '@apstat-chain/data'
 import { useCurriculum } from '../providers/CurriculumProvider'
 import { parseActivityId } from '../utils/curriculumAdapter'
 import { LoadingSpinner } from './LoadingSpinner'
 import { useState } from 'react'
 
-interface EnrichedActivity extends Activity {
+interface EnrichedActivity {
+  id: string;
+  type: string;
+  title: string;
+  contribution: number;
   completed: boolean;
+  url?: string;
+  altUrl?: string;
+  blooketUrl?: string;
+  origamiVideoUrl?: string;
+  questionPdf?: string;
+  answersPdf?: string;
 }
 
 interface LessonItemProps {
@@ -13,7 +23,7 @@ interface LessonItemProps {
 }
 
 export function LessonItem({ lesson }: LessonItemProps) {
-  const { markVideoCompleted, markQuizCompleted, markBlooketCompleted } = useCurriculum();
+  const { markVideoCompleted, markQuizCompleted, markBlooketCompleted, units } = useCurriculum();
   const [completingActivities, setCompletingActivities] = useState<Set<string>>(new Set());
 
   // Calculate completion stats
@@ -21,6 +31,41 @@ export function LessonItem({ lesson }: LessonItemProps) {
   const totalActivities = lesson.activities.length;
   const progress = totalActivities > 0 ? (completedActivities / totalActivities) * 100 : 0;
   const isCompleted = progress === 100;
+
+  // Get the actual curriculum data to access URLs
+  const getActivityUrls = (activity: EnrichedActivity) => {
+    const { unitId, topicId, activityType, activityIndex } = parseActivityId(activity.id);
+    const unit = units.find(u => u.unitId === unitId);
+    const topic = unit?.topics.find(t => t.id === topicId);
+    
+    if (!topic) return {};
+
+    switch (activityType) {
+      case 'video':
+        if (activityIndex !== undefined && topic.videos[activityIndex]) {
+          const video = topic.videos[activityIndex];
+          return {
+            url: video.url,
+            altUrl: video.altUrl || undefined
+          };
+        }
+        break;
+      case 'blooket':
+        return { blooketUrl: topic.blooket.url };
+      case 'origami':
+        return { origamiVideoUrl: topic.origami.videoUrl };
+      case 'quiz':
+        if (activityIndex !== undefined && topic.quizzes[activityIndex]) {
+          const quiz = topic.quizzes[activityIndex];
+          return {
+            questionPdf: quiz.questionPdf || undefined,
+            answersPdf: quiz.answersPdf || undefined
+          };
+        }
+        break;
+    }
+    return {};
+  };
 
   const handleCompleteActivity = async (activity: EnrichedActivity) => {
     if (activity.completed || completingActivities.has(activity.id)) {
@@ -60,6 +105,10 @@ export function LessonItem({ lesson }: LessonItemProps) {
         return newSet;
       });
     }
+  };
+
+  const openInNewTab = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -132,6 +181,7 @@ export function LessonItem({ lesson }: LessonItemProps) {
         <div className="space-y-3">
           {lesson.activities.map((activity: EnrichedActivity) => {
             const isCompleting = completingActivities.has(activity.id);
+            const urls = getActivityUrls(activity);
             
             return (
               <div 
@@ -142,7 +192,7 @@ export function LessonItem({ lesson }: LessonItemProps) {
                     : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 flex-1">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                     activity.completed 
                       ? 'bg-green-500 text-white'
@@ -163,7 +213,69 @@ export function LessonItem({ lesson }: LessonItemProps) {
                     </div>
                   </div>
                 </div>
+                
+                {/* Action Buttons */}
                 <div className="flex items-center space-x-2">
+                  {/* Access Links */}
+                  {activity.type === 'video' && urls.url && (
+                    <div className="flex space-x-1">
+                      <button
+                        onClick={() => openInNewTab(urls.url!)}
+                        className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-300 dark:hover:bg-purple-800"
+                      >
+                        📺 AP Class
+                      </button>
+                      {urls.altUrl && (
+                        <button
+                          onClick={() => openInNewTab(urls.altUrl!)}
+                          className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+                        >
+                          📁 Drive
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  
+                  {activity.type === 'blooket' && urls.blooketUrl && (
+                    <button
+                      onClick={() => openInNewTab(urls.blooketUrl!)}
+                      className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800"
+                    >
+                      🎮 Play
+                    </button>
+                  )}
+                  
+                  {activity.type === 'origami' && urls.origamiVideoUrl && (
+                    <button
+                      onClick={() => openInNewTab(urls.origamiVideoUrl!)}
+                      className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-pink-100 text-pink-700 hover:bg-pink-200 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                    >
+                      📝 Tutorial
+                    </button>
+                  )}
+                  
+                  {activity.type === 'quiz' && (urls.questionPdf || urls.answersPdf) && (
+                    <div className="flex space-x-1">
+                      {urls.questionPdf && (
+                        <button
+                          onClick={() => openInNewTab(urls.questionPdf!)}
+                          className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-300 dark:hover:bg-indigo-800"
+                        >
+                          📋 Quiz
+                        </button>
+                      )}
+                      {urls.answersPdf && (
+                        <button
+                          onClick={() => openInNewTab(urls.answersPdf!)}
+                          className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800"
+                        >
+                          ✅ Answers
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Completion Button */}
                   {activity.completed ? (
                     <div className="flex items-center space-x-2">
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200">
@@ -198,15 +310,12 @@ export function LessonItem({ lesson }: LessonItemProps) {
           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <div className="text-center">
               {isCompleted ? (
-                <div className="text-green-600 dark:text-green-400">
-                  <span className="text-lg mr-2">🎉</span>
-                  <span className="font-semibold">Lesson completed!</span>
+                <div className="text-green-600 dark:text-green-400 font-medium">
+                  🎉 Lesson completed! Great work!
                 </div>
               ) : (
-                <div className="text-gray-600 dark:text-gray-400">
-                  <span className="text-sm">
-                    {totalActivities - completedActivities} more {totalActivities - completedActivities === 1 ? 'activity' : 'activities'} to complete
-                  </span>
+                <div className="text-gray-500 dark:text-gray-400 text-sm">
+                  {totalActivities - completedActivities} more activities to complete
                 </div>
               )}
             </div>
@@ -214,5 +323,5 @@ export function LessonItem({ lesson }: LessonItemProps) {
         )}
       </div>
     </div>
-  )
+  );
 } 

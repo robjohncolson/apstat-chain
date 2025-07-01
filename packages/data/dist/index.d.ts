@@ -7,6 +7,6 @@ export declare const ALL_LESSONS: Lesson[];
  * All questions data typed as QuizQuestion array
  */
 export declare const ALL_QUESTIONS: QuizQuestion[];
+export { ALL_UNITS_DATA } from './curriculumData.js';
 export { CurriculumManager } from './CurriculumManager.js';
-export { ALL_UNITS_DATA, getTotalItemCounts } from './curriculumData.js';
-export * from './types.js';
+export type { CurriculumUnit, CurriculumTopic, VideoActivity, QuizActivity, BlooketActivity, OrigamiActivity, TotalCounts, CompletionStats, QuizQuestion, Lesson, ActivityCompletionTransaction, BlockchainIntegration } from './types.js';

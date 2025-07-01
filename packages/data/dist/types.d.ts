@@ -132,3 +132,30 @@ export interface TotalCounts {
     quizzes: number;
     blookets: number;
 }
+/**
+ * Activity completion transaction interface as defined in ADR 021
+ */
+export interface ActivityCompletionTransaction {
+    type: 'ACTIVITY_COMPLETE';
+    payload: {
+        unitId: string;
+        topicId: string;
+        activityType: 'video' | 'quiz' | 'blooket';
+        activityId: string;
+        timestamp: number;
+        studentId: string;
+    };
+}
+/**
+ * Interface for blockchain service integration
+ * Allows the CurriculumManager to submit transactions without tight coupling
+ */
+export interface BlockchainIntegration {
+    createTransaction(payload: ActivityCompletionTransaction): any;
+    getState(): {
+        isInitialized: boolean;
+        currentKeyPair?: {
+            publicKey: string;
+        } | null;
+    };
+}
