@@ -4,7 +4,6 @@ import { OnboardingFlow } from './components/OnboardingFlow';
 import { Dashboard } from './components/Dashboard';
 import { NotificationManager } from './components/NotificationManager';
 import { useBlockchain } from './providers/BlockchainProvider';
-import { ALL_LESSONS } from '@apstat-chain/data';
 
 // Dashboard wrapper component that handles P2P initialization
 function DashboardWithP2P() {
@@ -62,30 +61,6 @@ function DashboardWithP2P() {
 
   }, [service, state.p2pNode, state.currentKeyPair]); // Added state.currentKeyPair to dependencies
 
-  const handleCompleteLesson = (lessonId: string, activityId: string) => {
-    // Find the lesson
-    const lesson = ALL_LESSONS.find(l => l.id === lessonId);
-    if (!lesson) {
-      console.error(`Lesson with id "${lessonId}" not found`);
-      return;
-    }
-
-    // Find the activity within the lesson
-    const activity = lesson.activities.find(a => a.id === activityId);
-    if (!activity) {
-      console.error(`Activity with id "${activityId}" not found in lesson "${lessonId}"`);
-      return;
-    }
-
-    // Create transaction with contribution value
-    service.createTransaction({
-      type: 'ACTIVITY_COMPLETE',
-      lessonId: lessonId,
-      activityId: activityId,
-      contribution: activity.contribution
-    });
-  };
-
   return (
     <Dashboard
       publicKey={state.currentKeyPair?.publicKey || null}
@@ -93,7 +68,6 @@ function DashboardWithP2P() {
       connectedPeers={state.connectedPeers}
       isConnecting={state.isConnecting}
       error={state.error}
-      onCompleteLesson={handleCompleteLesson}
       service={service}
     />
   );

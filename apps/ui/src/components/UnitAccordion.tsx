@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { LessonItem } from './LessonItem'
-import type BlockchainService from '../services/BlockchainService'
-import type { BlockchainState } from '../services/BlockchainService'
+import { useCurriculum } from '../providers/CurriculumProvider'
+import { convertUnitsToLessons, getUnitDisplayName } from '../utils/curriculumAdapter'
 import type { Lesson, Activity } from '@apstat-chain/data'
 
 interface EnrichedActivity extends Activity {
@@ -13,20 +13,19 @@ interface EnrichedLesson extends Lesson {
 }
 
 interface UnitAccordionProps {
-  service: BlockchainService;
-  state: BlockchainState;
+  // Remove old dependencies - now using CurriculumProvider
 }
 
-export function UnitAccordion({ service, state }: UnitAccordionProps) {
+export function UnitAccordion({}: UnitAccordionProps) {
+  const { units, completionStats, isLoading } = useCurriculum();
   const [lessons, setLessons] = useState<EnrichedLesson[]>([]);
   const [expandedUnits, setExpandedUnits] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (state.currentKeyPair) {
-      const personalProgress = service.getPersonalProgress(state.currentKeyPair.publicKey.hex);
-      setLessons(personalProgress as EnrichedLesson[]);
-    }
-  }, [service, state.currentKeyPair]);
+    // Convert new curriculum structure to legacy lesson structure for UI compatibility
+    const convertedLessons = convertUnitsToLessons(units);
+    setLessons(convertedLessons);
+  }, [units]);
 
   // Group lessons by unitId
   const unitGroups = lessons.reduce((groups, lesson) => {
@@ -56,12 +55,22 @@ export function UnitAccordion({ service, state }: UnitAccordionProps) {
     return { total: totalActivities, completed: completedActivities };
   };
 
-  // Sort units numerically (assuming unit IDs like "unit-1", "unit-2", etc.)
+  // Sort units numerically (assuming unit IDs like "unit1", "unit2", etc.)
   const sortedUnitIds = Object.keys(unitGroups).sort((a, b) => {
-    const aNum = parseInt(a.replace('unit-', ''));
-    const bNum = parseInt(b.replace('unit-', ''));
+    const aNum = parseInt(a.replace('unit', ''));
+    const bNum = parseInt(b.replace('unit', ''));
     return aNum - bNum;
   });
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-600 dark:text-gray-400">Loading curriculum...</p>
+      </div>
+    );
+  }
 
   if (sortedUnitIds.length === 0) {
     return (
@@ -109,7 +118,7 @@ export function UnitAccordion({ service, state }: UnitAccordionProps) {
           {sortedUnitIds.slice(0, 3).map((unitId) => {
             const stats = getUnitStats(unitGroups[unitId]);
             const progress = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
-            const unitNumber = unitId.replace('unit-', '');
+            const unitNumber = unitId.replace('unit', '');
             
             return (
               <div key={unitId} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-600">
@@ -133,7 +142,8 @@ export function UnitAccordion({ service, state }: UnitAccordionProps) {
       <div className="space-y-4">
         {sortedUnitIds.map((unitId) => {
           const isExpanded = expandedUnits.has(unitId);
-          const unitNumber = unitId.replace('unit-', '');
+          const unitNumber = unitId.replace('unit', '');
+          const unitDisplayName = getUnitDisplayName(unitId, units);
           const stats = getUnitStats(unitGroups[unitId]);
           const progress = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
           
@@ -152,7 +162,7 @@ export function UnitAccordion({ service, state }: UnitAccordionProps) {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-                        Unit {unitNumber}
+                        {unitDisplayName}
                       </h3>
                       <div className="flex items-center space-x-4">
                         <span className="text-sm text-gray-600 dark:text-gray-400">

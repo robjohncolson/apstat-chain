@@ -9,6 +9,7 @@ import { UnitAccordion } from './UnitAccordion'
 import { LoadingSpinner } from './LoadingSpinner'
 import type BlockchainService from '../services/BlockchainService'
 import { useBlockchain } from '../providers/BlockchainProvider'
+import { useCurriculum } from '../providers/CurriculumProvider'
 
 interface MempoolViewProps {
   transactions: Transaction[]
@@ -76,7 +77,6 @@ interface DashboardProps {
   connectedPeers: string[]
   isConnecting: boolean
   error: string | null
-  onCompleteLesson: (lessonId: string, activityId: string) => void
   service: BlockchainService
 }
 
@@ -86,7 +86,6 @@ export function Dashboard({
   connectedPeers,
   isConnecting,
   error,
-  onCompleteLesson,
   service,
 }: DashboardProps) {
   // Tab state management
@@ -94,6 +93,7 @@ export function Dashboard({
 
   // Get current network state and reactive blockchain state
   const { state } = useBlockchain();
+  const { markQuizCompleted } = useCurriculum();
   const pendingTotal = service.getPendingContributionTotal();
   const isEligible = publicKey ? service.isEligibleToMine(publicKey.hex) : false;
   
@@ -251,7 +251,13 @@ export function Dashboard({
                         }
                       </p>
                       <button
-                        onClick={() => onCompleteLesson('1-2', '1-2_q1')}
+                        onClick={async () => {
+                          try {
+                            await markQuizCompleted('unit1', '1-2', 0);
+                          } catch (error) {
+                            console.error('Failed to complete quiz:', error);
+                          }
+                        }}
                         disabled={service.isActionPending('CREATE_TRANSACTION_1-2_q1')}
                         className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                           service.isActionPending('CREATE_TRANSACTION_1-2_q1')
@@ -389,7 +395,7 @@ export function Dashboard({
 
         {activeTab === 'progress' && (
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 shadow-sm">
-            <UnitAccordion service={service} state={state} />
+            <UnitAccordion />
           </div>
         )}
 
