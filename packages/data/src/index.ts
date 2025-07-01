@@ -12,5 +12,13 @@ export const ALL_LESSONS: Lesson[] = lessonsData as Lesson[];
  */
 export const ALL_QUESTIONS: QuizQuestion[] = questionsData as QuizQuestion[];
 
-// Re-export all types
+// === V2 CURRICULUM MANAGER (ADR 021) ===
+
+// Export the CurriculumManager service
+export { CurriculumManager } from './CurriculumManager.js';
+
+// Export curriculum data and utilities
+export { ALL_UNITS_DATA, getTotalItemCounts } from './curriculumData.js';
+
+// Re-export all types (legacy and new V2 types)
 export * from './types.js'; 

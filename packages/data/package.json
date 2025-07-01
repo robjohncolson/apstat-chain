@@ -8,13 +8,15 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "rebuild": "npm run clean && npm run build"
+    "rebuild": "npm run clean && npm run build",
+    "test": "vitest run"
   },
   "keywords": ["ap-statistics", "curriculum", "data"],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
   },
   "files": [
     "dist/**/*",

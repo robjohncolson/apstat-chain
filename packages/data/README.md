@@ -1,6 +1,105 @@
 # @apstat-chain/data
 
-This package contains all curriculum data for the AP Statistics Chain project, including lessons, activities, and quiz questions.
+Curriculum data package for AP Statistics Chain
+
+## Overview
+
+This package provides the core curriculum data structures and management services for the AP Statistics Chain project. It implements the unified curriculum data architecture specified in ADR 021.
+
+## V2 CurriculumManager Service (ADR 021)
+
+The `CurriculumManager` is the core service for managing AP Statistics curriculum data according to ADR 021: Canonical V2 Curriculum Data Structure.
+
+### Features
+
+- **Type-Safe Data Access**: Full TypeScript interfaces for all curriculum structures
+- **Progress Tracking**: Comprehensive completion statistics across videos, quizzes, and blookets
+- **State Management**: Current topic navigation and session state
+- **Search & Discovery**: Topic search and filtering capabilities
+- **Data Mutation**: Methods for marking activities as completed (Phase 2 blockchain integration ready)
+
+### Usage
+
+```typescript
+import { CurriculumManager } from '@apstat-chain/data';
+
+// Initialize the manager
+const manager = new CurriculumManager();
+
+// Core data access
+const allUnits = manager.getAllUnits();
+const unit1 = manager.getUnit('unit1');
+const topic = manager.getTopic('unit1', '1-1');
+
+// Progress tracking
+const totalCounts = manager.getTotalCounts();
+const completionStats = manager.getCompletionStats();
+const unitStats = manager.getCompletionStats('unit1');
+
+// State management
+manager.setCurrentTopic('unit1', '1-1');
+const currentTopic = manager.getCurrentTopic();
+
+// Convenience methods
+const allTopics = manager.getAllTopics();
+const capstones = manager.getCapstoneTopics();
+const searchResults = manager.searchTopics('statistics');
+
+// Activity completion (ready for blockchain integration)
+manager.markVideoCompleted('unit1', '1-1', 0);
+manager.markQuizCompleted('unit1', '1-1', 0);
+manager.markBlooketCompleted('unit1', '1-1');
+```
+
+### Data Structure
+
+The curriculum follows the unified schema from ADR 021:
+
+- **CurriculumUnit**: Top-level unit with topics array
+- **CurriculumTopic**: Individual topics with videos, quizzes, blooket, and origami
+- **ActivityBase**: Base interface with completion tracking
+- **VideoActivity, QuizActivity, BlooketActivity**: Specific activity types
+- **OrigamiActivity**: Creative hands-on learning activities
+
+### Testing
+
+The service includes comprehensive test coverage:
+
+```bash
+npm test
+```
+
+All 24 tests pass, covering:
+- Core data access methods
+- Progress tracking functionality  
+- State management operations
+- Convenience methods
+- Data mutation capabilities
+
+## Legacy Data
+
+The package also maintains backward compatibility with the legacy lesson and question data structures:
+
+```typescript
+import { ALL_LESSONS, ALL_QUESTIONS } from '@apstat-chain/data';
+```
+
+## Development
+
+```bash
+# Build the package
+npm run build
+
+# Run tests
+npm test
+
+# Clean build artifacts
+npm run clean
+```
+
+## Phase 2 Integration
+
+The CurriculumManager is designed to integrate seamlessly with the blockchain service in Phase 2. All completion tracking methods return success indicators and automatically generate timestamps, ready for blockchain transaction recording.
 
 ## Structure
 
