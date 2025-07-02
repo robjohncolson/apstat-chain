@@ -26,4 +26,4 @@ function Progress({
   )
 }
 
-export { Progress } 
+export { Progress }
