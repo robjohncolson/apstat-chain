@@ -685,7 +685,7 @@ class BlockchainService {
   }
 
   // P2P Networking
-  public async initializeP2P(keyPair: KeyPair): Promise<string> {
+  public async initializeP2PWithKeyPair(keyPair: KeyPair): Promise<string> {
     try {
       this.updateState({ isConnecting: true, error: null });
 
@@ -955,6 +955,29 @@ class BlockchainService {
         isConnecting: false,
       });
       throw error;
+    }
+  }
+
+  /**
+   * Initializes the P2P networking layer, discovers peers, and connects.
+   */
+  public async initializeP2P(): Promise<void> {
+    if (!this.state.p2pNode) return;
+    try {
+      console.log('P2P_SERVICE: Starting peer discovery...');
+      
+      console.log('P2P_SERVICE: Discovering peers from DNS seed...');
+      const peers = await this.discoverPeers();
+      console.log(`P2P_SERVICE: Found ${peers.length} potential peers.`);
+
+      for (const peerId of peers) {
+        if (peerId !== this.state.p2pNode.getPeerId()) {
+          console.log(`P2P_SERVICE: Attempting to connect to peer: ${peerId}`);
+          this.state.p2pNode.connectToPeer(peerId);
+        }
+      }
+    } catch (error) {
+      console.error('P2P_SERVICE: Error during peer discovery:', error);
     }
   }
 

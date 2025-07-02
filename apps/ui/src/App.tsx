@@ -87,6 +87,9 @@ function App() {
     // @ts-ignore - Accessing private method for initialization purposes
     service.loadChainFromStorage();
 
+    // ADD THIS LINE TO START THE P2P NETWORK
+    service.initializeP2P();
+
     // Initialize the Gateway with the live service instance
     gateway.initializeGateway(service);
 
