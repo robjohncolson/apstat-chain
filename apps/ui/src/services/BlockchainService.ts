@@ -298,31 +298,29 @@ class BlockchainService {
     return inChain;
   }
 
-  public createTransaction(payload: any): Transaction | null {
-    // Check for duplicate ACTIVITY_COMPLETE transactions using the reliable method
-    if (payload.type === 'ACTIVITY_COMPLETE') {
-      const activityId = payload.activityId;
-      if (this.hasUserCompleted(activityId)) {
-        console.log(`User has already completed this activity (${activityId}). Transaction not created.`);
-        return null;
-      }
-    }
-
+  public createTransaction(txData: { type: string; payload: any }): Transaction | null {
     if (!this.state.currentKeyPair) {
       throw new Error('No wallet initialized. Please generate or restore a wallet first.');
     }
 
+    // Directly access the activityId from the incoming payload for the check.
+    const activityId = txData.payload.activityId;
+    if (this.hasUserCompleted(activityId)) {
+      console.log(`User has already completed this activity (${activityId}). Transaction not created.`);
+      return null;
+    }
+
     // Create action ID for transaction
-    const actionId = payload.activityId 
-      ? `CREATE_TRANSACTION_${payload.activityId}` 
+    const actionId = txData.payload.activityId 
+      ? `CREATE_TRANSACTION_${txData.payload.activityId}` 
       : `CREATE_TRANSACTION_${Date.now()}`;
 
     // Check if current user should receive priority transaction reward
-    let finalPayload = payload;
+    let finalPayload = { ...txData.payload, type: txData.type };
     let shouldClearMinerReward = false;
     
     if (this.state.currentKeyPair.publicKey.hex === this.state.lastBlockMiner) {
-      finalPayload = { ...payload, isPriority: true };
+      finalPayload = { ...finalPayload, isPriority: true };
       shouldClearMinerReward = true;
     }
 
@@ -330,6 +328,7 @@ class BlockchainService {
       // Set loading state
       this.setActionPending(actionId);
 
+      // Pass the correctly structured payload to the core createTransaction function
       const transaction = createTransaction(this.state.currentKeyPair.privateKey, finalPayload);
       
       // Add to pending transactions and clear miner reward if applicable
