@@ -31,6 +31,9 @@ describe('BlockchainProvider', () => {
   };
 
   beforeEach(async () => {
+    // Clear localStorage to prevent state persistence between tests
+    localStorage.clear();
+    
     // Reset the captured listener
     capturedListener = null;
 

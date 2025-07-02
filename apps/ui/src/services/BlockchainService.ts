@@ -49,6 +49,39 @@ class BlockchainService {
   private listeners: Set<BlockchainStateListener> = new Set();
   private static readonly MEMPOOL_STORAGE_KEY = 'apstat-mempool';
 
+  /**
+   * Saves the current chain state to localStorage.
+   */
+  private saveChainToStorage() {
+    if (this.state.currentKeyPair) {
+      const publicKey = this.state.currentKeyPair.publicKey.hex;
+      localStorage.setItem(`apstat-chain-${publicKey}`, JSON.stringify(this.state.blockchain.getChain()));
+      console.log('BLOCKCHAIN_SERVICE: Chain state saved to local storage.');
+    }
+  }
+
+  /**
+   * Loads the chain state from localStorage.
+   */
+  private loadChainFromStorage() {
+    if (this.state.currentKeyPair) {
+      const publicKey = this.state.currentKeyPair.publicKey.hex;
+      const chainData = localStorage.getItem(`apstat-chain-${publicKey}`);
+      if (chainData) {
+        try {
+          const blocks = JSON.parse(chainData);
+          this.state.blockchain.replaceChain(blocks);
+          console.log('BLOCKCHAIN_SERVICE: Chain state loaded from local storage.');
+          // After loading, we should also update the mempool with transactions from the chain
+          // For simplicity, we'll assume the mempool is cleared on load for now.
+          this.updateState({ pendingTransactions: [] });
+        } catch (error) {
+          console.warn('Failed to parse chain data from localStorage:', error);
+        }
+      }
+    }
+  }
+
   private constructor() {
     this.state = {
       isInitialized: false,
@@ -219,20 +252,36 @@ class BlockchainService {
   }
 
   // Transaction Management
+  /**
+   * Checks if a specific activity has already been recorded in the mempool or the chain.
+   * @param activityId The unique identifier for the activity.
+   * @returns {boolean} True if the activity is found, false otherwise.
+   */
+  private hasUserCompleted(activityId: string): boolean {
+    const authorPublicKey = this.state.currentKeyPair?.publicKey.hex;
+    if (!authorPublicKey) return false;
+
+    // Check the mempool first
+    const inMempool = this.state.pendingTransactions.some(tx => 
+      tx.payload.activityId === activityId && tx.publicKey === authorPublicKey
+    );
+    if (inMempool) return true;
+
+    // Check the entire chain
+    const inChain = this.state.blockchain.getChain().some(block =>
+      block.transactions.some(tx => 
+        tx.payload.activityId === activityId && tx.publicKey === authorPublicKey
+      )
+    );
+    return inChain;
+  }
+
   public createTransaction(payload: any): Transaction | null {
-    // Check for duplicate ACTIVITY_COMPLETE transactions
+    // Check for duplicate ACTIVITY_COMPLETE transactions using the reliable method
     if (payload.type === 'ACTIVITY_COMPLETE') {
-      const allTransactions = this.getAllTransactionsIncludingPending();
-      const currentPublicKey = this.state.currentKeyPair?.publicKey.hex;
-      
-      const isDuplicate = allTransactions.some(transaction => 
-        transaction.publicKey === currentPublicKey && 
-        transaction.payload?.type === 'ACTIVITY_COMPLETE' &&
-        transaction.payload?.activityId === payload.activityId
-      );
-      
-      if (isDuplicate) {
-        console.warn('User has already completed this activity. Transaction not created.');
+      const activityId = payload.activityId;
+      if (this.hasUserCompleted(activityId)) {
+        console.log(`User has already completed this activity (${activityId}). Transaction not created.`);
         return null;
       }
     }
@@ -362,6 +411,9 @@ class BlockchainService {
 
       // Try to add the finalized block to the main blockchain
       this.state.blockchain.addBlock(finalBlock);
+
+      // Save the updated chain to localStorage
+      this.saveChainToStorage();
 
       // Broadcast the final block to the network
       if (this.state.p2pNode) {

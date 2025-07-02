@@ -24,8 +24,8 @@ describe('MiningView', () => {
     // Act
     render(<MiningView service={mockService} />);
     
-    // Find and click the "Get Puzzle" button
-    const getPuzzleButton = screen.getByText('Get Puzzle');
+    // Find and click the "Get Mining Puzzle" button
+    const getPuzzleButton = screen.getByText('Get Mining Puzzle');
     fireEvent.click(getPuzzleButton);
 
     // Find and click one of the answer choice buttons (e.g., "C")

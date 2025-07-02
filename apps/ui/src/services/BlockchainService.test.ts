@@ -20,6 +20,9 @@ describe('BlockchainService - Mining Eligibility', () => {
   let userB: KeyPair;
 
   beforeEach(() => {
+    // Clear localStorage to prevent state persistence between tests
+    localStorage.clear();
+    
     // Reset the singleton instance for each test
     (BlockchainService as any).instance = undefined;
     service = BlockchainService.getInstance();
@@ -226,6 +229,9 @@ describe('BlockchainService - Attestation Eligibility', () => {
   let userB: KeyPair;
 
   beforeEach(() => {
+    // Clear localStorage to prevent state persistence between tests
+    localStorage.clear();
+    
     // Reset the singleton instance for each test
     (BlockchainService as any).instance = undefined;
     service = BlockchainService.getInstance();
@@ -358,6 +364,9 @@ describe('BlockchainService - Personal Progress', () => {
   let userA: KeyPair;
 
   beforeEach(() => {
+    // Clear localStorage to prevent state persistence between tests
+    localStorage.clear();
+    
     // Reset the singleton instance for each test
     (BlockchainService as any).instance = undefined;
     service = BlockchainService.getInstance();

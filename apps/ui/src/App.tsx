@@ -82,6 +82,10 @@ function App() {
       await service.generateNewWallet();
     }
 
+    // This is the new "rehydration" step - load the chain from storage
+    // @ts-ignore - Accessing private method for initialization purposes
+    service.loadChainFromStorage();
+
     // Initialize the Gateway with the live service instance
     gateway.initializeGateway(service);
 
