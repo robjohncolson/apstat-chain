@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { NewLessonItem } from './NewLessonItem';
 
 interface NewAppLayoutProps {
   children?: React.ReactNode;
@@ -14,6 +15,134 @@ export function NewAppLayout({ children }: NewAppLayoutProps) {
     { id: 2, title: "Unit 2: Sampling and Experimentation", lessons: 10, completed: 5 },
     { id: 3, title: "Unit 3: Anticipating Patterns", lessons: 15, completed: 2 },
     { id: 4, title: "Unit 4: Statistical Inference", lessons: 18, completed: 0 },
+  ];
+
+  // Mock lesson data to demonstrate the new NewLessonItem component
+  const mockLessons = [
+    {
+      id: "lesson-1-1",
+      title: "Introduction to Data and Statistics",
+      description: "Learn the fundamentals of statistical thinking and data collection methods",
+      unitId: "unit1",
+      activities: [
+        {
+          id: "video-1-1-1",
+          type: "video" as const,
+          title: "What is Statistics?",
+          description: "Explore the role of statistics in understanding our world",
+          url: "https://apclassroom.collegeboard.org/example",
+          completed: true,
+          duration: "15 min",
+          points: 25
+        },
+        {
+          id: "quiz-1-1-1",
+          type: "quiz" as const,
+          title: "Statistics Fundamentals Quiz",
+          description: "Test your understanding of basic statistical concepts",
+          url: "https://example.com/quiz",
+          completed: true,
+          duration: "10 min",
+          points: 50
+        },
+        {
+          id: "blooket-1-1-1",
+          type: "blooket" as const,
+          title: "Data Types Game",
+          description: "Interactive game to identify different types of data",
+          url: "https://blooket.com/example",
+          completed: false,
+          duration: "15 min",
+          points: 15
+        },
+        {
+          id: "origami-1-1-1",
+          type: "origami" as const,
+          title: "Data Collection Crane",
+          description: "Fold a crane while learning about data collection methods",
+          url: "https://youtube.com/example",
+          completed: false,
+          duration: "20 min",
+          points: 10
+        }
+      ]
+    },
+    {
+      id: "lesson-1-2",
+      title: "Categorical vs Quantitative Data",
+      description: "Distinguish between different types of variables and measurement scales",
+      unitId: "unit1",
+      activities: [
+        {
+          id: "video-1-2-1",
+          type: "video" as const,
+          title: "Types of Variables",
+          description: "Learn to identify categorical and quantitative variables",
+          url: "https://apclassroom.collegeboard.org/example2",
+          completed: false,
+          duration: "18 min",
+          points: 25
+        },
+        {
+          id: "video-1-2-2",
+          type: "video" as const,
+          title: "Levels of Measurement",
+          description: "Understand nominal, ordinal, interval, and ratio scales",
+          url: "https://apclassroom.collegeboard.org/example3",
+          completed: false,
+          duration: "22 min",
+          points: 25
+        },
+        {
+          id: "quiz-1-2-1",
+          type: "quiz" as const,
+          title: "Variable Classification Quiz",
+          description: "Practice identifying different types of variables",
+          url: "https://example.com/quiz2",
+          completed: false,
+          duration: "12 min",
+          points: 50
+        }
+      ]
+    },
+    {
+      id: "lesson-2-1",
+      title: "Sampling Methods and Bias",
+      description: "Explore different sampling techniques and potential sources of bias",
+      unitId: "unit2",
+      activities: [
+        {
+          id: "video-2-1-1",
+          type: "video" as const,
+          title: "Random Sampling Techniques",
+          description: "Learn about simple random, stratified, and cluster sampling",
+          url: "https://apclassroom.collegeboard.org/sampling",
+          completed: true,
+          duration: "25 min",
+          points: 30
+        },
+        {
+          id: "blooket-2-1-1",
+          type: "blooket" as const,
+          title: "Sampling Bias Detective",
+          description: "Identify bias in different sampling scenarios",
+          url: "https://blooket.com/sampling",
+          completed: true,
+          duration: "20 min",
+          points: 20
+        },
+        {
+          id: "quiz-2-1-1",
+          type: "quiz" as const,
+          title: "Sampling Methods Assessment",
+          description: "Comprehensive quiz on sampling techniques and bias",
+          url: "https://example.com/sampling-quiz",
+          completed: false,
+          duration: "15 min",
+          points: 50
+        }
+      ]
+    }
   ];
 
   return (
@@ -118,70 +247,63 @@ export function NewAppLayout({ children }: NewAppLayoutProps) {
           <div className="p-6">
             {children || (
               <div className="space-y-6">
-                {/* Welcome Section */}
+                {/* Phase Implementation Status */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Welcome to the UI Renaissance</CardTitle>
+                    <CardTitle>Phase 3.2: Lesson Item Redesign - Complete! 🎉</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground mb-4">
-                      This is the new layout foundation for our blockchain-powered learning platform.
-                      The interface has been rebuilt with shadcn/ui components to provide a modern,
-                      accessible, and engaging experience.
+                      Behold the new NewLessonItem component! Built from scratch with shadcn/ui components,
+                      this design prioritizes learning materials and creates an engaging, accessible interface
+                      for students to interact with their coursework.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Card>
-                        <CardContent className="pt-6">
-                          <h3 className="font-semibold mb-2">Modern Design</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Contemporary UI patterns that communicate platform quality
-                          </p>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardContent className="pt-6">
-                          <h3 className="font-semibold mb-2">Accessible</h3>
-                          <p className="text-sm text-muted-foreground">
-                            WCAG compliant components built on Radix UI primitives
-                          </p>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardContent className="pt-6">
-                          <h3 className="font-semibold mb-2">Blockchain Ready</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Designed to elegantly visualize decentralized learning
-                          </p>
-                        </CardContent>
-                      </Card>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span className="text-sm">Card-based lesson containers with visual hierarchy</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span className="text-sm">Prominent activity buttons using modern Button components</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span className="text-sm">Progress visualization with Badge and Progress components</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span className="text-sm">Celebration animations and blockchain attestation messaging</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Phase Implementation Status */}
-                <Card>
+                {/* Lesson Demonstrations */}
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground mb-2">Lesson Demonstrations</h2>
+                    <p className="text-muted-foreground mb-6">
+                      Here are sample lessons showcasing the new design. Notice how learning activities 
+                      are now the visual priority, with clear calls-to-action and engaging progress feedback.
+                    </p>
+                  </div>
+
+                  {mockLessons.map((lesson) => (
+                    <NewLessonItem key={lesson.id} lesson={lesson} />
+                  ))}
+                </div>
+
+                {/* Next Steps */}
+                <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
                   <CardHeader>
-                    <CardTitle>Phase 3.1: Foundation Complete</CardTitle>
+                    <CardTitle className="text-blue-700 dark:text-blue-300">Ready for Phase 3.3: Dashboard & Navigation</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="text-sm">shadcn/ui Integration</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="text-sm">Core Layout Architecture</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="text-sm">Foundational Components (Button, Card, Accordion, Sonner)</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <span className="text-sm">Ready for Phase 3.2: Lesson Item Redesign</span>
-                      </div>
-                    </div>
+                    <p className="text-blue-600 dark:text-blue-400 text-sm">
+                      With the lesson item redesign complete, we're ready to move on to enhancing the dashboard
+                      and navigation experience. The foundation is solid, and the learning materials now shine!
+                    </p>
                   </CardContent>
                 </Card>
               </div>

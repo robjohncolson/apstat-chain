@@ -16,6 +16,7 @@
     "@apstat-chain/data": "file:../../packages/data",
     "@apstat-chain/p2p": "file:../../packages/p2p",
     "@radix-ui/react-accordion": "^1.2.11",
+    "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.21",
