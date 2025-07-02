@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { gateway } from '@apstat-chain/core';
 import type { CurriculumUnit } from '@apstat-chain/data';
+import BlockchainService, { type BlockchainState } from '@/services/BlockchainService';
+import { P2PNode } from '@apstat-chain/p2p';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TopicCard } from '@/components/TopicCard';
 import { OverallProgressTab } from '@/components/OverallProgressTab';
@@ -9,13 +11,34 @@ import { GrokPromptTab } from '@/components/GrokPromptTab';
 function App() {
   const [units, setUnits] = useState<CurriculumUnit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const blockchainService = useRef<BlockchainService | null>(null);
 
-  // A simple way to force re-render when a child component updates state
   const [, setForceUpdate] = useState(0);
   const handleUpdate = () => setForceUpdate(val => val + 1);
 
+  // This effect runs once to initialize the entire application backend
   useEffect(() => {
+    console.log('APP_INIT: Initializing BlockchainService...');
+    
+    // Get the singleton instance of BlockchainService
+    const service = BlockchainService.getInstance();
+    blockchainService.current = service;
+
+    // Initialize the Gateway with the live service instance
+    gateway.initializeGateway(service);
+
+    // Set up a listener to see new transactions in the console
+    service.subscribe((state: BlockchainState) => {
+      if (state.lastEvent && state.lastEvent.type === 'TRANSACTION_MINED') {
+        console.log('APP_LISTENER: New transaction mined!', state.lastEvent.data);
+      }
+    });
+
+    console.log('APP_INIT: Backend services initialized.');
+
+    // Now fetch the static curriculum data
     const fetchLessons = async () => {
+      setIsLoading(true);
       try {
         const data = await gateway.getCurriculumData();
         setUnits(data);
@@ -26,7 +49,8 @@ function App() {
       }
     };
     fetchLessons();
-  }, []);
+    
+  }, []); // The empty array [] ensures this runs only once
 
   const renderUnitContent = (unit: CurriculumUnit) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -60,7 +84,6 @@ function App() {
                     <TabsTrigger key={unit.unitId} value={unit.unitId}>Unit {unit.unitId.replace('unit', '')}</TabsTrigger>
                   ))}
                 </TabsList>
-
                 {units.map(unit => (
                   <TabsContent key={unit.unitId} value={unit.unitId} className="mt-4">
                     <div className="p-4 bg-slate-50 rounded-lg border">
