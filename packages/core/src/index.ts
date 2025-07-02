@@ -6,3 +6,5 @@ export * from './chain/index.js';
 export * from './attestation/index.js';
 export * from './types/index.js';
 
+export * as gateway from './gateway';
+

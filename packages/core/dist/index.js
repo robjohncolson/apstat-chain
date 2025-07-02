@@ -5,4 +5,5 @@ export * from './block/index.js';
 export * from './chain/index.js';
 export * from './attestation/index.js';
 export * from './types/index.js';
+export * as gateway from './gateway';
 //# sourceMappingURL=index.js.map
