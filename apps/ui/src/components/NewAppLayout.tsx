@@ -1,149 +1,136 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { NewLessonItem } from './NewLessonItem';
+import { UnitCard } from './UnitCard';
+
+// Import real curriculum data
+import { ALL_UNITS_DATA } from '@apstat-chain/data';
 
 interface NewAppLayoutProps {
   children?: React.ReactNode;
 }
 
 export function NewAppLayout({ children }: NewAppLayoutProps) {
-  // Mock data for demonstration
-  const units = [
-    { id: 1, title: "Unit 1: Exploring Data", lessons: 12, completed: 8 },
-    { id: 2, title: "Unit 2: Sampling and Experimentation", lessons: 10, completed: 5 },
-    { id: 3, title: "Unit 3: Anticipating Patterns", lessons: 15, completed: 2 },
-    { id: 4, title: "Unit 4: Statistical Inference", lessons: 18, completed: 0 },
-  ];
+  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'dashboard' | 'unit'>('dashboard');
 
-  // Mock lesson data to demonstrate the new NewLessonItem component
-  const mockLessons = [
-    {
-      id: "lesson-1-1",
-      title: "Introduction to Data and Statistics",
-      description: "Learn the fundamentals of statistical thinking and data collection methods",
-      unitId: "unit1",
-      activities: [
-        {
-          id: "video-1-1-1",
-          type: "video" as const,
-          title: "What is Statistics?",
-          description: "Explore the role of statistics in understanding our world",
-          url: "https://apclassroom.collegeboard.org/example",
-          completed: true,
-          duration: "15 min",
-          points: 25
-        },
-        {
-          id: "quiz-1-1-1",
-          type: "quiz" as const,
-          title: "Statistics Fundamentals Quiz",
-          description: "Test your understanding of basic statistical concepts",
-          url: "https://example.com/quiz",
-          completed: true,
-          duration: "10 min",
-          points: 50
-        },
-        {
-          id: "blooket-1-1-1",
-          type: "blooket" as const,
-          title: "Data Types Game",
-          description: "Interactive game to identify different types of data",
-          url: "https://blooket.com/example",
-          completed: false,
-          duration: "15 min",
-          points: 15
-        },
-        {
-          id: "origami-1-1-1",
-          type: "origami" as const,
-          title: "Data Collection Crane",
-          description: "Fold a crane while learning about data collection methods",
-          url: "https://youtube.com/example",
-          completed: false,
-          duration: "20 min",
-          points: 10
-        }
-      ]
-    },
-    {
-      id: "lesson-1-2",
-      title: "Categorical vs Quantitative Data",
-      description: "Distinguish between different types of variables and measurement scales",
-      unitId: "unit1",
-      activities: [
-        {
-          id: "video-1-2-1",
-          type: "video" as const,
-          title: "Types of Variables",
-          description: "Learn to identify categorical and quantitative variables",
-          url: "https://apclassroom.collegeboard.org/example2",
-          completed: false,
-          duration: "18 min",
-          points: 25
-        },
-        {
-          id: "video-1-2-2",
-          type: "video" as const,
-          title: "Levels of Measurement",
-          description: "Understand nominal, ordinal, interval, and ratio scales",
-          url: "https://apclassroom.collegeboard.org/example3",
-          completed: false,
-          duration: "22 min",
-          points: 25
-        },
-        {
-          id: "quiz-1-2-1",
-          type: "quiz" as const,
-          title: "Variable Classification Quiz",
-          description: "Practice identifying different types of variables",
-          url: "https://example.com/quiz2",
-          completed: false,
-          duration: "12 min",
-          points: 50
-        }
-      ]
-    },
-    {
-      id: "lesson-2-1",
-      title: "Sampling Methods and Bias",
-      description: "Explore different sampling techniques and potential sources of bias",
-      unitId: "unit2",
-      activities: [
-        {
-          id: "video-2-1-1",
-          type: "video" as const,
-          title: "Random Sampling Techniques",
-          description: "Learn about simple random, stratified, and cluster sampling",
-          url: "https://apclassroom.collegeboard.org/sampling",
-          completed: true,
-          duration: "25 min",
-          points: 30
-        },
-        {
-          id: "blooket-2-1-1",
-          type: "blooket" as const,
-          title: "Sampling Bias Detective",
-          description: "Identify bias in different sampling scenarios",
-          url: "https://blooket.com/sampling",
-          completed: true,
-          duration: "20 min",
-          points: 20
-        },
-        {
-          id: "quiz-2-1-1",
-          type: "quiz" as const,
-          title: "Sampling Methods Assessment",
-          description: "Comprehensive quiz on sampling techniques and bias",
-          url: "https://example.com/sampling-quiz",
-          completed: false,
-          duration: "15 min",
-          points: 50
-        }
-      ]
-    }
-  ];
+  // Convert curriculum data for our needs
+  const units = useMemo(() => {
+    return ALL_UNITS_DATA.map(unit => {
+      const totalActivities = unit.topics.reduce((sum, topic) => {
+        return sum + 
+          topic.videos.length + 
+          topic.quizzes.length + 
+          (topic.blooket ? 1 : 0) + 
+          (topic.origami ? 1 : 0);
+      }, 0);
+
+      const completedActivities = unit.topics.reduce((sum, topic) => {
+        return sum + 
+          topic.videos.filter(v => v.completed).length + 
+          topic.quizzes.filter(q => q.completed).length + 
+          (topic.blooket?.completed ? 1 : 0) + 
+          (topic.origami ? 0 : 0); // Origami completion tracking not yet implemented
+      }, 0);
+
+      const completedTopics = unit.topics.filter(topic => {
+        const topicVideos = topic.videos.length;
+        const topicQuizzes = topic.quizzes.length;
+        const topicBlooket = topic.blooket ? 1 : 0;
+        const totalTopicActivities = topicVideos + topicQuizzes + topicBlooket;
+        
+        const completedTopicVideos = topic.videos.filter(v => v.completed).length;
+        const completedTopicQuizzes = topic.quizzes.filter(q => q.completed).length;
+        const completedTopicBlooket = topic.blooket?.completed ? 1 : 0;
+        const completedTopicActivities = completedTopicVideos + completedTopicQuizzes + completedTopicBlooket;
+        
+        return totalTopicActivities > 0 && completedTopicActivities === totalTopicActivities;
+      }).length;
+
+      return {
+        unitId: unit.unitId,
+        displayName: unit.displayName,
+        examWeight: unit.examWeight,
+        topicsCount: unit.topics.length,
+        completedTopics,
+        totalActivities,
+        completedActivities,
+        topics: unit.topics
+      };
+    });
+  }, []);
+
+  // Convert topics to lesson format for NewLessonItem
+  const convertTopicToLesson = (topic: any, unitId: string) => {
+    const activities = [
+      ...topic.videos.map((video: any, index: number) => ({
+        id: `${topic.id}-video-${index}`,
+        type: 'video' as const,
+        title: `Video ${index + 1}`,
+        description: "AP Classroom instructional video",
+        url: video.url,
+        completed: video.completed,
+        duration: "15 min",
+        points: 25
+      })),
+      ...topic.quizzes.map((quiz: any, index: number) => ({
+        id: `${topic.id}-quiz-${index}`,
+        type: 'quiz' as const,
+        title: `Practice Quiz ${index + 1}`,
+        description: "Test your understanding",
+        url: quiz.questionPdf,
+        completed: quiz.completed,
+        duration: "10 min",
+        points: 50
+      })),
+      ...(topic.blooket ? [{
+        id: `${topic.id}-blooket`,
+        type: 'blooket' as const,
+        title: "Interactive Game",
+        description: "Blooket review game",
+        url: topic.blooket.url,
+        completed: topic.blooket.completed,
+        duration: "15 min",
+        points: 20
+      }] : []),
+      ...(topic.origami ? [{
+        id: `${topic.id}-origami`,
+        type: 'origami' as const,
+        title: topic.origami.name,
+        description: topic.origami.description,
+        url: topic.origami.videoUrl,
+        completed: false,
+        duration: "20 min",
+        points: 15
+      }] : [])
+    ];
+
+    return {
+      id: `${unitId}-${topic.id}`,
+      title: topic.name,
+      description: topic.description,
+      unitId: unitId,
+      activities
+    };
+  };
+
+  const selectedUnit = units.find(unit => unit.unitId === selectedUnitId);
+  const selectedUnitLessons = selectedUnit ? selectedUnit.topics.map(topic => 
+    convertTopicToLesson(topic, selectedUnit.unitId)
+  ) : [];
+
+  const handleUnitSelect = (unitId: string) => {
+    setSelectedUnitId(unitId);
+    setViewMode('unit');
+  };
+
+  const handleBackToDashboard = () => {
+    setViewMode('dashboard');
+    setSelectedUnitId(null);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -180,23 +167,27 @@ export function NewAppLayout({ children }: NewAppLayoutProps) {
               </p>
             </div>
 
-            <Accordion type="single" collapsible className="space-y-2">
+            <Accordion type="single" collapsible className="space-y-2" value={selectedUnitId || ""}>
               {units.map((unit) => (
-                <AccordionItem key={unit.id} value={`unit-${unit.id}`}>
-                  <Card className="border">
+                <AccordionItem key={unit.unitId} value={unit.unitId}>
+                  <Card className={`border transition-all duration-200 ${
+                    selectedUnitId === unit.unitId ? 'border-primary shadow-sm' : ''
+                  }`}>
                     <AccordionTrigger className="px-4 py-3 hover:no-underline">
                       <div className="flex items-center justify-between w-full text-left">
                         <div>
-                          <div className="font-medium text-sm">{unit.title}</div>
+                          <div className="font-medium text-sm">{unit.displayName}</div>
                           <div className="text-xs text-muted-foreground mt-1">
-                            {unit.completed}/{unit.lessons} lessons completed
+                            {unit.completedTopics}/{unit.topicsCount} topics completed
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <div className="w-8 h-2 bg-muted rounded-full overflow-hidden">
                             <div 
                               className="h-full bg-primary transition-all"
-                              style={{ width: `${(unit.completed / unit.lessons) * 100}%` }}
+                              style={{ 
+                                width: `${unit.topicsCount > 0 ? (unit.completedTopics / unit.topicsCount) * 100 : 0}%` 
+                              }}
                             />
                           </div>
                         </div>
@@ -204,11 +195,37 @@ export function NewAppLayout({ children }: NewAppLayoutProps) {
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="px-4 pb-3 space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Lessons and activities for this unit will appear here
+                        <div className="text-xs text-muted-foreground mb-3">
+                          {unit.topics.length} topics • {unit.totalActivities} activities
                         </div>
-                        <Button variant="ghost" size="sm" className="w-full justify-start">
-                          View All Lessons
+                        
+                        <div className="space-y-2 max-h-32 overflow-y-auto">
+                          {unit.topics.slice(0, 5).map((topic, index) => (
+                            <div key={topic.id} className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground truncate flex-1">
+                                {topic.name}
+                              </span>
+                              <Badge variant="outline" className="ml-2 text-xs">
+                                {topic.videos.filter((v: any) => v.completed).length + 
+                                 topic.quizzes.filter((q: any) => q.completed).length}/
+                                {topic.videos.length + topic.quizzes.length + (topic.blooket ? 1 : 0)}
+                              </Badge>
+                            </div>
+                          ))}
+                          {unit.topics.length > 5 && (
+                            <div className="text-xs text-muted-foreground">
+                              +{unit.topics.length - 5} more topics...
+                            </div>
+                          )}
+                        </div>
+                        
+                        <Button 
+                          variant={selectedUnitId === unit.unitId ? "default" : "ghost"} 
+                          size="sm" 
+                          className="w-full justify-start mt-3"
+                          onClick={() => handleUnitSelect(unit.unitId)}
+                        >
+                          {selectedUnitId === unit.unitId ? "✨ Currently Viewing" : "View All Topics"}
                         </Button>
                       </div>
                     </AccordionContent>
@@ -246,67 +263,108 @@ export function NewAppLayout({ children }: NewAppLayoutProps) {
         <main className="flex-1 overflow-y-auto">
           <div className="p-6">
             {children || (
-              <div className="space-y-6">
-                {/* Phase Implementation Status */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Phase 3.2: Lesson Item Redesign - Complete! 🎉</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">
-                      Behold the new NewLessonItem component! Built from scratch with shadcn/ui components,
-                      this design prioritizes learning materials and creates an engaging, accessible interface
-                      for students to interact with their coursework.
-                    </p>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="text-sm">Card-based lesson containers with visual hierarchy</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="text-sm">Prominent activity buttons using modern Button components</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="text-sm">Progress visualization with Badge and Progress components</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="text-sm">Celebration animations and blockchain attestation messaging</span>
+              <>
+                {viewMode === 'dashboard' && (
+                  <div className="space-y-6">
+                    {/* Welcome Header */}
+                    <div className="text-center space-y-4">
+                      <h1 className="text-3xl font-bold text-foreground">
+                        Welcome to AP Statistics Chain
+                      </h1>
+                      <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                        Your blockchain-powered learning journey through all 9 units of AP Statistics. 
+                        Each completed activity is permanently recorded and verified by the network.
+                      </p>
+                    </div>
+
+                    {/* Unit Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {units.map((unit) => (
+                        <UnitCard
+                          key={unit.unitId}
+                          unitId={unit.unitId}
+                          displayName={unit.displayName}
+                          examWeight={unit.examWeight}
+                          topicsCount={unit.topicsCount}
+                          completedTopics={unit.completedTopics}
+                          totalActivities={unit.totalActivities}
+                          completedActivities={unit.completedActivities}
+                          onClick={() => handleUnitSelect(unit.unitId)}
+                          isSelected={selectedUnitId === unit.unitId}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Progress Summary */}
+                    <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800">
+                      <CardHeader>
+                        <CardTitle className="text-blue-700 dark:text-blue-300">Course Progress Summary</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                              {units.reduce((sum, unit) => sum + unit.completedTopics, 0)} / {units.reduce((sum, unit) => sum + unit.topicsCount, 0)}
+                            </div>
+                            <div className="text-sm text-blue-600 dark:text-blue-400">Topics Completed</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                              {units.reduce((sum, unit) => sum + unit.completedActivities, 0)} / {units.reduce((sum, unit) => sum + unit.totalActivities, 0)}
+                            </div>
+                            <div className="text-sm text-blue-600 dark:text-blue-400">Activities Completed</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                              {units.filter(unit => unit.completedActivities === unit.totalActivities && unit.totalActivities > 0).length} / 9
+                            </div>
+                            <div className="text-sm text-blue-600 dark:text-blue-400">Units Mastered</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {viewMode === 'unit' && selectedUnit && (
+                  <div className="space-y-6">
+                    {/* Unit Header */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleBackToDashboard}
+                          className="mb-4"
+                        >
+                          ← Back to Dashboard
+                        </Button>
+                        <h1 className="text-2xl font-bold text-foreground">
+                          {selectedUnit.displayName}
+                        </h1>
+                        <div className="flex items-center gap-4 mt-2">
+                          <Badge variant="outline">
+                            AP Exam Weight: {selectedUnit.examWeight}
+                          </Badge>
+                          <Badge variant="secondary">
+                            {selectedUnit.completedTopics}/{selectedUnit.topicsCount} Topics Complete
+                          </Badge>
+                          <Badge variant="secondary">
+                            {selectedUnit.completedActivities}/{selectedUnit.totalActivities} Activities Complete
+                          </Badge>
+                        </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
 
-                {/* Lesson Demonstrations */}
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-xl font-semibold text-foreground mb-2">Lesson Demonstrations</h2>
-                    <p className="text-muted-foreground mb-6">
-                      Here are sample lessons showcasing the new design. Notice how learning activities 
-                      are now the visual priority, with clear calls-to-action and engaging progress feedback.
-                    </p>
+                    {/* Lessons List */}
+                    <div className="space-y-6">
+                      {selectedUnitLessons.map((lesson) => (
+                        <NewLessonItem key={lesson.id} lesson={lesson} />
+                      ))}
+                    </div>
                   </div>
-
-                  {mockLessons.map((lesson) => (
-                    <NewLessonItem key={lesson.id} lesson={lesson} />
-                  ))}
-                </div>
-
-                {/* Next Steps */}
-                <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
-                  <CardHeader>
-                    <CardTitle className="text-blue-700 dark:text-blue-300">Ready for Phase 3.3: Dashboard & Navigation</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-blue-600 dark:text-blue-400 text-sm">
-                      With the lesson item redesign complete, we're ready to move on to enhancing the dashboard
-                      and navigation experience. The foundation is solid, and the learning materials now shine!
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+                )}
+              </>
             )}
           </div>
         </main>
