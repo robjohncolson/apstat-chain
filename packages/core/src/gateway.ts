@@ -26,22 +26,23 @@ export const getCurriculumData = async (): Promise<CurriculumUnit[]> => {
 
 /**
  * Creates a real transaction on the blockchain via the BlockchainService.
+ * This version explicitly maps parameters to the payload to prevent naming conflicts.
  */
-export const saveCompletion = async (unitId: string, activityId: string, activityType: string) => {
+export const saveCompletion = async (unitId: string, itemId: string, itemType: string) => {
   if (!blockchainServiceInstance) {
     console.error('GATEWAY ERROR: saveCompletion called before gateway was initialized.');
     return;
   }
-  console.log(`GATEWAY: Received request to save ${activityType} ${activityId}. Forwarding to BlockchainService.`);
+  console.log(`GATEWAY: Received request to save ${itemType} ${itemId}. Forwarding to BlockchainService.`);
   
-  // This is the "flip the switch" moment. We call the real service.
+  // Explicitly build the payload object to ensure correct property names.
+  // This maps the incoming 'itemId' parameter to the 'activityId' field required by the blockchain.
   blockchainServiceInstance.createTransaction({
     type: 'ACTIVITY_COMPLETE',
     payload: {
-      unitId,
-      activityId,
-      activityType,
-      // Add other relevant metadata if needed
+      unitId: unitId,
+      activityId: itemId,
+      activityType: itemType,
     },
   });
 };
