@@ -96,13 +96,37 @@ function App() {
       }
     });
     
-    // Fetch curriculum data and switch to the dashboard
+    // --- STATE REHYDRATION LOGIC ---
     try {
-      const data = await gateway.getCurriculumData();
-      setUnits(data);
+      // 1. Get the static curriculum data
+      const curriculumData = await gateway.getCurriculumData();
+      // 2. Get the set of completed activity IDs from the blockchain
+      const completedIds = await gateway.getOnChainCompletions();
+
+      // 3. Create a deep copy of the curriculum to modify
+      const rehydratedUnits = JSON.parse(JSON.stringify(curriculumData));
+
+      // 4. Loop through the data and update the 'completed' status
+      rehydratedUnits.forEach((unit: CurriculumUnit) => {
+        unit.topics.forEach(topic => {
+          topic.videos.forEach(video => {
+            if (completedIds.has(video.url) || (video.altUrl && completedIds.has(video.altUrl))) {
+              video.completed = true;
+            }
+          });
+          topic.quizzes.forEach(quiz => {
+            if (completedIds.has(quiz.quizId)) {
+              quiz.completed = true;
+            }
+          });
+        });
+      });
+      
+      // 5. Set the rehydrated state and switch to the dashboard
+      setUnits(rehydratedUnits);
       setAppState('dashboard');
     } catch (error) {
-      console.error('Failed to fetch curriculum data:', error);
+      console.error('Failed to fetch curriculum data or rehydrate state:', error);
     }
   };
 

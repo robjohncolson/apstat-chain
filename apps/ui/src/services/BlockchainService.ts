@@ -1132,6 +1132,31 @@ class BlockchainService {
   }
 
   /**
+   * Returns a Set of all completed activity IDs for the current user's wallet.
+   * This is used to rehydrate the UI state on load.
+   * @returns {Set<string>} A set of unique activity IDs.
+   */
+  public getCompletionState(): Set<string> {
+    const completedIds = new Set<string>();
+    const currentKeyPair = this.getCurrentKeyPair();
+    if (!currentKeyPair) return completedIds;
+
+    const authorPublicKey = currentKeyPair.publicKey.hex;
+
+    // We only need to check the chain, as the mempool is not persisted.
+    this.state.blockchain.getChain().forEach(block => {
+      block.transactions.forEach(tx => {
+        if (tx.publicKey === authorPublicKey && tx.payload.activityId) {
+          completedIds.add(tx.payload.activityId);
+        }
+      });
+    });
+    
+    console.log(`BLOCKCHAIN_SERVICE: Found ${completedIds.size} completed activities on-chain for the current user.`);
+    return completedIds;
+  }
+
+  /**
    * Get personalized progress report for a given user by merging static curriculum data 
    * with the user's confirmed transaction history
    */

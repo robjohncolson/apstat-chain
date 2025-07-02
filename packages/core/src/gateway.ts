@@ -102,6 +102,19 @@ export const getCurrentUserId = async (): Promise<number> => {
 };
 
 /**
+ * Gets the set of completed activity IDs from the blockchain for the current user.
+ * This is used to rehydrate the UI state on startup.
+ * @returns {Promise<Set<string>>} A promise resolving to a set of completed activity IDs.
+ */
+export const getOnChainCompletions = async (): Promise<Set<string>> => {
+  if (!blockchainServiceInstance) {
+    console.error('GATEWAY ERROR: getOnChainCompletions called before gateway was initialized.');
+    return new Set<string>();
+  }
+  return blockchainServiceInstance.getCompletionState();
+};
+
+/**
  * Returns the Grok AI tutor prompt for guided learning sessions.
  * This static content provides comprehensive instructions for AI-assisted study.
  */
