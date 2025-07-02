@@ -112,6 +112,7 @@ export const getOnChainCompletions = async (): Promise<Set<string>> => {
     console.error('GATEWAY ERROR: getOnChainCompletions called before gateway was initialized.');
     return new Set<string>();
   }
+  // @ts-ignore - Accessing a private method for this specific rehydration purpose
   return blockchainServiceInstance.getCompletionState();
 };
 

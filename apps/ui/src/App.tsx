@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { gateway } from '@apstat-chain/core';
 import type { CurriculumUnit } from '@apstat-chain/data';
+import type { Transaction } from '@apstat-chain/core';
+import { P2PNode } from '@apstat-chain/p2p';
 import BlockchainService, { type BlockchainState } from '@/services/BlockchainService';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TopicCard } from '@/components/TopicCard';
@@ -64,10 +66,9 @@ function App() {
   const [units, setUnits] = useState<CurriculumUnit[]>([]);
   const blockchainService = useRef<BlockchainService | null>(null);
 
-  // This function will be called by the Onboarding component
   const handleWalletInitialized = async (mnemonic: string) => {
     console.log('APP_CONTROLLER: Wallet phrase received. Initializing backend services...');
-    localStorage.setItem('apstat-mnemonic', mnemonic); // Persist mnemonic for future sessions
+    localStorage.setItem('apstat-mnemonic', mnemonic);
 
     // Initialize core services now that we have a wallet
     const service = BlockchainService.getInstance();
@@ -97,37 +98,38 @@ function App() {
     });
     
     // --- STATE REHYDRATION LOGIC ---
-    try {
-      // 1. Get the static curriculum data
-      const curriculumData = await gateway.getCurriculumData();
-      // 2. Get the set of completed activity IDs from the blockchain
-      const completedIds = await gateway.getOnChainCompletions();
+    console.log('APP_CONTROLLER: Rehydrating UI state from blockchain...');
+    
+    // 1. Get the static curriculum template
+    const curriculumTemplate = await gateway.getCurriculumData();
+    // 2. Get the set of all activity IDs this user has completed on-chain
+    const completedIds = await gateway.getOnChainCompletions();
 
-      // 3. Create a deep copy of the curriculum to modify
-      const rehydratedUnits = JSON.parse(JSON.stringify(curriculumData));
+    // 3. Create a deep copy of the template to safely modify
+    const rehydratedUnits = JSON.parse(JSON.stringify(curriculumTemplate));
 
-      // 4. Loop through the data and update the 'completed' status
-      rehydratedUnits.forEach((unit: CurriculumUnit) => {
-        unit.topics.forEach(topic => {
-          topic.videos.forEach(video => {
-            if (completedIds.has(video.url) || (video.altUrl && completedIds.has(video.altUrl))) {
-              video.completed = true;
-            }
-          });
-          topic.quizzes.forEach(quiz => {
-            if (completedIds.has(quiz.quizId)) {
-              quiz.completed = true;
-            }
-          });
+    // 4. Loop through our curriculum data and update the 'completed' status
+    //    based on whether the activity ID exists in our on-chain set.
+    rehydratedUnits.forEach((unit: CurriculumUnit) => {
+      unit.topics.forEach(topic => {
+        topic.videos.forEach(video => {
+          const videoId = video.url || video.altUrl;
+          if (videoId && completedIds.has(videoId)) {
+            video.completed = true;
+          }
+        });
+        topic.quizzes.forEach(quiz => {
+          if (completedIds.has(quiz.quizId)) {
+            quiz.completed = true;
+          }
         });
       });
-      
-      // 5. Set the rehydrated state and switch to the dashboard
-      setUnits(rehydratedUnits);
-      setAppState('dashboard');
-    } catch (error) {
-      console.error('Failed to fetch curriculum data or rehydrate state:', error);
-    }
+    });
+    
+    // 5. Set the rehydrated state and switch to the dashboard
+    console.log('APP_CONTROLLER: Rehydration complete. Rendering dashboard.');
+    setUnits(rehydratedUnits);
+    setAppState('dashboard');
   };
 
   // This effect runs only once on startup to check for a saved wallet
