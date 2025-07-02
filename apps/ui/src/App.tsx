@@ -3,6 +3,7 @@ import { gateway } from '@apstat-chain/core';
 import type { CurriculumUnit } from '@apstat-chain/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TopicCard } from '@/components/TopicCard';
+import { OverallProgressTab } from '@/components/OverallProgressTab';
 
 function App() {
   const [units, setUnits] = useState<CurriculumUnit[]>([]);
@@ -44,22 +45,35 @@ function App() {
       {isLoading ? (
         <p>Loading curriculum...</p>
       ) : (
-        <Tabs defaultValue="unit1" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 md:grid-cols-9">
-            {units.map(unit => (
-              <TabsTrigger key={unit.unitId} value={unit.unitId}>Unit {unit.unitId.replace('unit', '')}</TabsTrigger>
-            ))}
+        <Tabs defaultValue="study-materials" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="study-materials">Study Materials</TabsTrigger>
+            <TabsTrigger value="overall-progress">Overall Progress</TabsTrigger>
           </TabsList>
 
-          {units.map(unit => (
-            <TabsContent key={unit.unitId} value={unit.unitId} className="mt-4">
-              <div className="p-4 bg-slate-50 rounded-lg border">
-                 <h2 className="text-2xl font-semibold mb-1">{unit.displayName}</h2>
-                 <p className="text-sm text-slate-500 mb-4">Exam Weight: {unit.examWeight}</p>
-                 {renderUnitContent(unit)}
-              </div>
-            </TabsContent>
-          ))}
+          <TabsContent value="study-materials" className="mt-4">
+             <Tabs defaultValue="unit1" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 md:grid-cols-9">
+                  {units.map(unit => (
+                    <TabsTrigger key={unit.unitId} value={unit.unitId}>Unit {unit.unitId.replace('unit', '')}</TabsTrigger>
+                  ))}
+                </TabsList>
+
+                {units.map(unit => (
+                  <TabsContent key={unit.unitId} value={unit.unitId} className="mt-4">
+                    <div className="p-4 bg-slate-50 rounded-lg border">
+                       <h2 className="text-2xl font-semibold mb-1">{unit.displayName}</h2>
+                       <p className="text-sm text-slate-500 mb-4">Exam Weight: {unit.examWeight}</p>
+                       {renderUnitContent(unit)}
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+          </TabsContent>
+
+          <TabsContent value="overall-progress" className="mt-4">
+             <OverallProgressTab />
+          </TabsContent>
         </Tabs>
       )}
     </div>
