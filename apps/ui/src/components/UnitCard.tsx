@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Lock } from 'lucide-react';
 
 interface UnitCardProps {
   unitId: string;
@@ -113,12 +114,19 @@ export function UnitCard({
               <span className="text-muted-foreground">Activities:</span>
               <span className="font-medium">{completedActivities}/{totalActivities}</span>
             </div>
-            <Badge 
-              variant={isFullyCompleted ? "default" : progressPercentage > 0 ? "secondary" : "outline"} 
-              className="text-xs"
-            >
-              {isFullyCompleted ? "Complete" : progressPercentage > 0 ? "In Progress" : "Not Started"}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge 
+                variant={isFullyCompleted ? "default" : progressPercentage > 0 ? "secondary" : "outline"} 
+                className="text-xs"
+              >
+                {isFullyCompleted ? "Complete" : progressPercentage > 0 ? "In Progress" : "Not Started"}
+              </Badge>
+              {progressPercentage > 0 && (
+                <div title="Progress securely stored">
+                  <Lock className="w-3 h-3 text-blue-600 dark:text-blue-400 opacity-60" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

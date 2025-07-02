@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Toaster } from '@/components/ui/sonner';
 import { NewLessonItem } from './NewLessonItem';
 import { UnitCard } from './UnitCard';
 
@@ -369,6 +370,9 @@ export function NewAppLayout({ children }: NewAppLayoutProps) {
           </div>
         </main>
       </div>
+      
+      {/* Toast notifications */}
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 } 

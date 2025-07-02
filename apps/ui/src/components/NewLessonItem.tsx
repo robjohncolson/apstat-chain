@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { toast } from 'sonner';
+import { Shield, Lock } from 'lucide-react';
 
 interface MockActivity {
   id: string;
@@ -74,15 +76,35 @@ export function NewLessonItem({ lesson }: NewLessonItemProps) {
   const handleCompleteActivity = async (activityId: string) => {
     if (completingActivities.has(activityId)) return;
     
+    const activity = lesson.activities.find(a => a.id === activityId);
+    if (!activity) return;
+    
     setCompletingActivities(prev => new Set(prev).add(activityId));
     
+    // Show initial blockchain submission toast
+    const toastId = toast.loading("Submitting to network... ⛓️", {
+      description: "Recording your progress on the blockchain",
+      duration: Infinity,
+    });
+    
+    // Simulate blockchain transaction delay
     setTimeout(() => {
+      // Mark activity as completed
+      activity.completed = true;
+      
+      // Update toast to success
+      toast.success("Success! Activity recorded on-chain. ✅", {
+        id: toastId,
+        description: "Your progress is now permanently secured",
+        duration: 4000,
+      });
+      
       setCompletingActivities(prev => {
         const newSet = new Set(prev);
         newSet.delete(activityId);
         return newSet;
       });
-    }, 1000);
+    }, 2000);
   };
 
   return (
@@ -162,7 +184,12 @@ export function NewLessonItem({ lesson }: NewLessonItemProps) {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       {activity.completed ? (
-                        <span className="text-green-500">✅</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-green-500">✅</span>
+                          <div title="Verified on-chain">
+                            <Shield className="w-3 h-3 text-blue-600 dark:text-blue-400 opacity-70" />
+                          </div>
+                        </div>
                       ) : (
                         <span className="text-muted-foreground">⭕</span>
                       )}
