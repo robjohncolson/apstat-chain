@@ -8,3 +8,5 @@ export { entropyToMnemonic, mnemonicToEntropy, mnemonicToSeed, mnemonicToSeedSyn
 // Keys module exports (preferred generateMnemonic and keyPairFromMnemonic)
 export { generateMnemonic, keyPairFromMnemonic, peerIdFromPublicKey } from './keys.js';
 
+export { Wallet } from './Wallet.js';
+

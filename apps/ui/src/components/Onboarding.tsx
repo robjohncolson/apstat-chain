@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Wallet } from '@apstat-chain/core';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,8 +13,8 @@ export const Onboarding = ({ onWalletInitialized }: OnboardingProps) => {
   const [restoredMnemonic, setRestoredMnemonic] = useState('');
 
   const handleGenerateWallet = () => {
-    // In a real app, we'd use a crypto library. For now, we mock it.
-    const newMnemonic = "apple banana cherry dog elephant frog grape horse insect jazz kitten lemon";
+    // Call our new static method to get a REAL mnemonic
+    const newMnemonic = Wallet.generateMnemonic();
     setMnemonic(newMnemonic);
     // We don't call onWalletInitialized yet; user must confirm they saved it.
   };

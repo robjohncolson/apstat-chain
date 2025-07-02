@@ -218,27 +218,49 @@ class BlockchainService {
 
   // Key Management
   public async generateNewWallet(): Promise<{ mnemonic: string; keyPair: KeyPair }> {
-    const mnemonic = generateMnemonic();
-    const keyPair = await keyPairFromMnemonic(mnemonic);
-    
-    return { mnemonic, keyPair };
+    try {
+      const mnemonic = generateMnemonic();
+      const keyPair = await keyPairFromMnemonic(mnemonic);
+      
+      console.log('BLOCKCHAIN_SERVICE: New wallet generated successfully.');
+      return { mnemonic, keyPair };
+    } catch (error) {
+      console.error('BLOCKCHAIN_SERVICE: Failed to generate new wallet.', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate wallet';
+      this.updateState({ error: errorMessage });
+      throw error;
+    }
   }
 
   public async restoreWallet(mnemonic: string): Promise<KeyPair> {
     try {
+      // Validate mnemonic format first
+      if (!mnemonic || typeof mnemonic !== 'string') {
+        throw new Error('Invalid mnemonic: must be a non-empty string');
+      }
+
+      const words = mnemonic.trim().split(/\s+/);
+      if (words.length !== 12) {
+        throw new Error('Invalid mnemonic: must be exactly 12 words');
+      }
+
       const keyPair = await keyPairFromMnemonic(mnemonic);
       
       this.updateState({
         currentKeyPair: keyPair,
-        mnemonic,
+        mnemonic: mnemonic.trim(),
         isInitialized: true,
         error: null,
       });
 
+      console.log('BLOCKCHAIN_SERVICE: Wallet restored successfully.');
       return keyPair;
     } catch (error) {
+      console.error('BLOCKCHAIN_SERVICE: Failed to restore wallet from mnemonic.', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to restore wallet';
       this.updateState({ error: errorMessage });
+      // Do not throw an error here, allow the app to run in a "no-wallet" state
+      // The UI will handle this by showing the onboarding screen again if needed.
       throw error;
     }
   }
