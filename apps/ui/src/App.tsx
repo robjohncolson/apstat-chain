@@ -4,6 +4,7 @@ import type { CurriculumUnit } from '@apstat-chain/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TopicCard } from '@/components/TopicCard';
 import { OverallProgressTab } from '@/components/OverallProgressTab';
+import { GrokPromptTab } from '@/components/GrokPromptTab';
 
 function App() {
   const [units, setUnits] = useState<CurriculumUnit[]>([]);
@@ -46,8 +47,9 @@ function App() {
         <p>Loading curriculum...</p>
       ) : (
         <Tabs defaultValue="study-materials" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="study-materials">Study Materials</TabsTrigger>
+            <TabsTrigger value="grok-prompt">Grok Prompt</TabsTrigger>
             <TabsTrigger value="overall-progress">Overall Progress</TabsTrigger>
           </TabsList>
 
@@ -69,6 +71,10 @@ function App() {
                   </TabsContent>
                 ))}
               </Tabs>
+          </TabsContent>
+
+          <TabsContent value="grok-prompt" className="mt-4">
+             <GrokPromptTab units={units} onUpdate={handleUpdate} />
           </TabsContent>
 
           <TabsContent value="overall-progress" className="mt-4">
